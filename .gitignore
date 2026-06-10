@@ -6,6 +6,11 @@ BRIEF.md
 # Sheet-side deliverable (contains the private Sheet ID) — not part of the website
 wedding_sheet_setup.gs
 
+# Local verification artifacts (Playwright screenshots)
+.playwright-mcp/
+wedding-live-fullpage.png
+wedding-rsvp-viewport.png
+
 # OS / editor cruft
 .DS_Store
 Thumbs.db

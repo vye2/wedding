@@ -1,4 +1,4 @@
-# Victor &amp; Ashley — Wedding Website
+# Ashley &amp; Victor — Wedding Website
 
 A bespoke, single-page **static** wedding website (plain HTML, CSS, and vanilla
 JS — no framework, no build step, no backend). Designed to look like fine
@@ -16,7 +16,7 @@ wedding stationery and to be hosted for free on **GitHub Pages**.
 ├── css/styles.css    # LOCKED sage + blush theme (CSS variables + components). Extend, don't rewrite.
 ├── js/main.js        # CONFIG object + nav toggle, countdown, scroll reveal, FAQ accordion, RSVP handler
 ├── assets/
-│   ├── favicon.svg   # "V&A" monogram, on-palette
+│   ├── favicon.svg   # "A&V" monogram, on-palette
 │   └── og-image.png  # (optional) add your own 1200×630 social preview image
 ├── README.md         # this file
 └── .nojekyll         # tells GitHub Pages to serve files as-is (no Jekyll processing)

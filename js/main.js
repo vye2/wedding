@@ -7,8 +7,8 @@
  * CONFIG — the single source of truth. Change these values only.
  * ------------------------------------------------------------------ */
 const CONFIG = {
-  coupleNames: { partnerA: 'Victor', partnerB: 'Ashley' },
-  fullNames: 'Victor Ye & Ashley Huynh',
+  coupleNames: { partnerA: 'Ashley', partnerB: 'Victor' },
+  fullNames: 'Ashley Huynh & Victor Ye',
 
   // PLACEHOLDER wedding date. Use ISO 8601 (local time). Update when confirmed.
   // The countdown below reads from this value.
