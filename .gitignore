@@ -1,0 +1,11 @@
+# Build scaffolding / internal tooling — keep the public site repo clean
+headless_build.log
+headless_prompt.txt
+BRIEF.md
+
+# Sheet-side deliverable (contains the private Sheet ID) — not part of the website
+wedding_sheet_setup.gs
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
