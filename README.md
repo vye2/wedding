@@ -12,15 +12,51 @@ wedding stationery and to be hosted for free on **GitHub Pages**.
 
 ```
 .
-├── index.html        # The whole single page (Hero, Story, Details, Locations, RSVP, FAQ, Footer)
-├── css/styles.css    # LOCKED sage + blush theme (CSS variables + components). Extend, don't rewrite.
-├── js/main.js        # CONFIG object + nav toggle, countdown, scroll reveal, FAQ accordion, RSVP handler
+├── index.html            # The full detailed page (Hero, Story, Details, Locations, RSVP, FAQ, Footer)
+├── save-the-date.html    # Slim "open the envelope" experience — a bespoke save-the-date reveal
+├── css/styles.css        # LOCKED sage + blush theme (CSS variables + components). Extend, don't rewrite.
+├── css/save-the-date.css # Layered envelope (back/front/flap) + flip-open reveal styles
+├── js/main.js            # CONFIG object + nav toggle, countdown, scroll reveal, FAQ accordion, RSVP handler
+├── js/save-the-date.js   # Envelope open sequence (flap flip + slide-away), drifting petals, live countdown
 ├── assets/
-│   ├── favicon.svg   # "A&V" monogram, on-palette
-│   └── og-image.png  # (optional) add your own 1200×630 social preview image
+│   ├── favicon.svg      # "A&V" monogram, on-palette
+│   ├── env-back.webp    # envelope back (solid pocket)  — couple's own artwork, see Credits
+│   ├── env-front.webp   # envelope front pocket (covers the letter's lower half)
+│   ├── env-flap.webp    # the flap (flips down to close, rotates up to open); .png fallbacks alongside
+│   ├── paper-kraft.png  # legacy kraft texture (public domain — no longer used by the envelope)
+│   └── og-image.png     # (optional) add your own 1200×630 social preview image
 ├── README.md         # this file
 └── .nojekyll         # tells GitHub Pages to serve files as-is (no Jekyll processing)
 ```
+
+## Two experiences, one palette
+
+- **`index.html`** — the full site: story, itinerary, locations, RSVP, FAQ.
+- **`save-the-date.html`** — a slim, cinematic *save-the-date*. Guests land on the
+  couple's **own blush floral envelope**, built from three layered pieces
+  (`assets/env-back`, `env-front`, `env-flap`) that share one coordinate space so
+  they stack exactly. The flap is authored in the open position and shown **flipped
+  down** to seal the envelope. There's **no wax seal**: a gentle "tap to open" hint
+  and a soft sheen invite the tap. **Tap the envelope** and the **flap rotates up in
+  3D about its hinge**, revealing the **one letter sandwiched between the front
+  pocket and the back** — its top glimpsed through the opening. The **envelope
+  pieces then slide down off the letter**, which stays put and is exposed in full:
+  the *same* card, sized to fit inside the envelope, a **handmade deckle-edge letter**
+  (its torn edge is an SVG turbulence filter) with the details, drifting petals, and
+  a live countdown to **Saturday, May 15, 2027**. Blush + sage throughout. Everyone sees the
+  same page — no personalization. Fully keyboard-accessible; honors
+  `prefers-reduced-motion` (skips the envelope, shows the letter outright) and falls
+  back gracefully with JavaScript disabled.
+
+The names on the letter and the inside card are plain HTML text (edit them in
+`save-the-date.html`). The wedding date lives in `CONFIG.weddingDate` at the top of
+`js/save-the-date.js` (drives that page's countdown), separate from the detailed
+site's own `CONFIG` in `js/main.js`.
+
+> **Note on 3D:** the flap hinge relies on the `.stage` element's `perspective`. A
+> CSS `filter` on that same element would flatten its 3D children (the flap would
+> slide instead of rotating), so the envelope's drop shadow is drawn on a
+> pseudo-element rather than as a filter on the stage.
 
 ## Edit the content (one place: the CONFIG object)
 
@@ -104,6 +140,18 @@ Until then, treat any "submitted" RSVP as **not recorded**.
 - Semantic HTML5, labelled form inputs, `aria` on the mobile nav and FAQ accordion.
 - Visible keyboard focus, a skip-to-content link, and `prefers-reduced-motion` support.
 - Fully responsive (mobile hamburger nav, fluid type, single-column on small screens).
+
+## Credits
+
+- **Envelope** — `assets/env-back`, `env-front`, and `env-flap` (WebP, with `.png`
+  fallbacks) are the couple's **own artwork** — their blush, floral-embossed envelope
+  supplied as separate pieces (back, front pocket, flap) so the flap can flip open —
+  cropped to a shared coordinate space and compressed for the web. No third-party
+  license applies.
+- **Kraft paper** — `assets/paper-kraft.png` (*"Kraft tileable 1024×1024"* from
+  [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Kraft_tileable_1024x1024.png),
+  released into the **public domain**) is retained from the earlier design but is no
+  longer used by the save-the-date envelope.
 
 ---
 

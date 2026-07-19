@@ -1,0 +1,293 @@
+/* =====================================================================
+   Victor & Ashley — Save the Date (bespoke envelope experience)
+   Palette mirrors the LOCKED sage + blush theme in css/styles.css.
+   The envelope is the couple's own artwork in layered pieces (assets/env-back,
+   env-front, env-flap); the flap flips down to close and rotates up to open,
+   the letter sits sandwiched between back and front, then it slides away.
+   ===================================================================== */
+
+:root {
+  /* Sage greens */
+  --sage-50:  #f3f6f0;
+  --sage-100: #e6ece0;
+  --sage-200: #cdd9c2;
+  --sage-300: #b2c2a8;
+  --sage-400: #9caf88;   /* primary sage */
+  --sage-500: #7f9468;
+  --sage-600: #6a7f54;
+  --sage-700: #50633f;
+
+  /* Blush / pink */
+  --blush-50:  #fdf3f4;
+  --blush-100: #fce4e8;
+  --blush-200: #f8cdd4;
+  --blush-300: #f1b0bb;
+  --blush-400: #e79aa8;  /* primary blush */
+  --blush-500: #d9879a;
+
+  /* Neutrals + metallic */
+  --ivory: #faf7f2;
+  --cream: #f5efe6;
+  --ink:   #3d3a36;
+  --muted: #6f6a62;
+  --line:  #e7e0d6;
+  --white: #ffffff;
+  --gold:  #c9a96a;
+
+  /* Envelope paper tones — soft off-white */
+  --paper:      #f2ece1;
+  --paper-flap: #efe8db;
+  --paper-deep: #e6ddcb;
+  /* Handmade deckle-edge letter stock */
+  --paper-letter: #f8f3ea;
+
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-script: 'Great Vibes', 'Cormorant Garamond', cursive;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--ink);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background:
+    radial-gradient(120% 85% at 12% 0%, var(--blush-100), transparent 52%),
+    radial-gradient(130% 95% at 100% 100%, var(--sage-100), transparent 55%),
+    var(--ivory);
+}
+
+/* When the envelope is showing, lock scroll so it feels like a single moment. */
+body.is-sealed { overflow: hidden; }
+
+.skip-link {
+  position: absolute; left: 0.75rem; top: -3.5rem; z-index: 200;
+  background: var(--sage-600); color: var(--white);
+  padding: 0.6rem 1rem; border-radius: 10px; font-weight: 600; text-decoration: none;
+  transition: top 0.2s var(--ease);
+}
+.skip-link:focus { top: 0.75rem; }
+
+/* ============================ PETALS ============================ */
+.petals { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+.petal {
+  position: absolute; top: -8vh; width: 14px; height: 14px; opacity: 0;
+  background: var(--blush-300);
+  border-radius: 80% 0 80% 0;
+  will-change: transform, opacity;
+  animation-name: petal-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.petal--sage { background: var(--sage-300); }
+.petal--pale { background: var(--blush-200); }
+@keyframes petal-fall {
+  0%   { opacity: 0; transform: translateY(-10vh) translateX(0) rotate(0deg); }
+  8%   { opacity: 0.85; }
+  50%  { transform: translateY(50vh) translateX(6vw) rotate(220deg); }
+  92%  { opacity: 0.85; }
+  100% { opacity: 0; transform: translateY(112vh) translateX(-4vw) rotate(460deg); }
+}
+
+/* ============================ OPENER (full screen) ============================ */
+/* A transparent stage over the page background. The letter lives sandwiched
+   INSIDE the envelope and is uncovered when the envelope pieces slide away. */
+.opener {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+}
+.opener[hidden] { display: none !important; }   /* reduced-motion / no-JS fallback */
+
+/* On reveal: the envelope pieces (back, front pocket, flap) slide straight down
+   and off, exposing the letter — which stays exactly where it was. The now-open
+   flap drops behind the letter so it doesn't sweep across it on the way down. */
+.opener.is-sliding .env__back,
+.opener.is-sliding .env__front {
+  transition: transform 1.15s var(--ease-soft);
+  transform: translateY(128vh);
+}
+/* the flap keeps its open rotation while sliding, and drops behind the letter.
+   (`.is-open.is-sliding` out-specifies the plain `.is-open` open rule.) */
+.opener.is-open.is-sliding .env__flap {
+  transition: transform 1.15s var(--ease-soft);
+  transform: translateY(128vh) rotateX(0deg);
+  z-index: 0;
+}
+.opener.is-sliding .stage::before { opacity: 0; transition: opacity 0.5s var(--ease-soft); }
+
+/* The envelope: three layered pieces the couple made — a solid back, a front
+   pocket, and a flap — all sharing one 938×1048 coordinate space so they stack
+   exactly. The letter is sandwiched between the back and the front pocket. */
+.stage {
+  position: relative;
+  width: min(92vmin, 600px);
+  aspect-ratio: 938 / 1048;
+  perspective: 1100px;
+  /* the pocket sits in the lower ~57% of the stage; lift it so the pocket (and
+     the letter inside it) is roughly screen-centred, with room above for the flap. */
+  transform: translateY(-18%);
+}
+/* Soft shadow under the closed envelope. IMPORTANT: on a pseudo-element, never a
+   `filter` on .stage itself — a filter on the perspective element would flatten
+   the flap's 3D hinge (it would just slide instead of rotating). */
+.stage::before {
+  content: ""; position: absolute; z-index: 0; inset: 45% 4% 2%;
+  border-radius: 14px; background: rgba(108, 76, 74, 0.26); filter: blur(24px);
+}
+
+.env__back, .env__front, .env__flap {
+  position: absolute; inset: 0;
+  background-repeat: no-repeat; background-position: center; background-size: 100% 100%;
+}
+.env__back  { z-index: 1; background-image: image-set(url(../assets/env-back.webp)  type("image/webp"), url(../assets/env-back.png)  type("image/png")); }
+.env__front { z-index: 3; background-image: image-set(url(../assets/env-front.webp) type("image/webp"), url(../assets/env-front.png) type("image/png")); }
+
+/* The flap is authored in the OPEN (up) position; flipped down about its hinge
+   (y≈43.4% of the piece) it covers the pocket = closed. One image, both faces. */
+.env__flap {
+  z-index: 4;
+  background-image: image-set(url(../assets/env-flap.webp) type("image/webp"), url(../assets/env-flap.png) type("image/png"));
+  transform-origin: 50% 43.4%;
+  transform: rotateX(180deg);
+  backface-visibility: visible;
+  transition: transform 1.2s var(--ease-soft);
+}
+.opener.is-open .env__flap { transform: rotateX(0deg); }
+
+/* ---- THE LETTER: the actual save-the-date, sandwiched between back (z1) and
+   front pocket (z3). Sized to sit INSIDE the pocket; text scales to the card via
+   container units so it always fits, whatever the envelope's size. ---- */
+.std {
+  position: absolute; z-index: 2;
+  left: 12%; right: 12%; top: 45.5%; bottom: 4.5%;
+  border-radius: 4px;
+  background: linear-gradient(168deg, var(--paper-letter), #efe6d4);
+}
+/* the letter is focused programmatically for screen readers on reveal — no ring */
+.std:focus { outline: none; }
+/* handmade, deckle torn edge — a backing of the SAME paper (so it reads as a
+   torn silhouette, not a darker frame), kept off the container so it isn't clipped */
+.std::before {
+  content: ""; position: absolute; inset: -6px; z-index: -1;
+  background: linear-gradient(168deg, var(--paper-letter), #efe6d4);
+  filter: url(#deckle) drop-shadow(0 7px 18px rgba(90, 70, 60, 0.16));
+  border-radius: 6px;
+}
+.std__content {
+  position: absolute; inset: 0; container-type: size;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 6% 9%; overflow: hidden;
+  border-radius: 5px;
+  background: radial-gradient(130% 62% at 50% 0%, #fffdf8, transparent 60%);
+}
+
+.std__eyebrow {
+  margin: 0; font-family: var(--font-body); font-weight: 600;
+  font-size: 3.1cqmin; letter-spacing: 0.34em; text-transform: uppercase;
+  color: var(--sage-600);
+}
+.std__sprig { width: 32cqmin; margin: 1.6cqmin 0; }
+.std__sprig svg { width: 100%; height: auto; display: block; }
+.std__names {
+  margin: 0; font-family: var(--font-script); font-weight: 400;
+  font-size: 15cqmin; line-height: 1; color: var(--ink);
+}
+.std__amp { color: var(--blush-400); padding: 0 0.05em; }
+.std__script {
+  margin: 1cqmin 0 0; font-family: var(--font-display); font-style: italic; font-weight: 500;
+  font-size: 5cqmin; line-height: 1.1; color: var(--sage-600);
+}
+.std__date { margin: 2.4cqmin 0 0; }
+.std__day {
+  margin: 0; font-family: var(--font-display); font-weight: 500;
+  font-size: 5.4cqmin; line-height: 1.1; color: var(--ink);
+}
+.std__year {
+  margin: 1.4cqmin 0 0; display: flex; align-items: center; justify-content: center; gap: 0.7em;
+  font-family: var(--font-body); font-size: 2.5cqmin; letter-spacing: 0.26em;
+  text-transform: uppercase; color: var(--sage-600);
+}
+.std__year-dot { color: var(--blush-400); }
+.std__place {
+  margin: 2.2cqmin 0 0; font-family: var(--font-body);
+  font-size: 2.7cqmin; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted);
+}
+
+/* ---- Slim live countdown ---- */
+.std-count {
+  display: flex; align-items: stretch; justify-content: center;
+  gap: 3.4cqmin; margin: 3cqmin 0 0;
+}
+.std-count__unit { display: flex; flex-direction: column; align-items: center; min-width: 8cqmin; }
+.std-count__num {
+  font-family: var(--font-display); font-weight: 600; font-size: 7cqmin; line-height: 1;
+  color: var(--sage-700); font-variant-numeric: tabular-nums;
+}
+.std-count__label { margin-top: 0.6cqmin; font-size: 2cqmin; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.std-count__sep { width: 1px; background: linear-gradient(var(--sage-200), transparent); align-self: center; height: 7cqmin; }
+.std-count__done { margin: 0; font-family: var(--font-display); font-size: 4cqmin; color: var(--sage-600); }
+
+.std__follow {
+  margin: 3cqmin 0 0; font-family: var(--font-display); font-style: italic;
+  font-size: 4cqmin; color: var(--blush-500);
+}
+
+/* Soft luminous sheen on the closed envelope — a gentle 'open here' cue. */
+.env__tip-glow {
+  position: absolute; z-index: 5; left: 50%; top: 60%;
+  width: 46%; aspect-ratio: 1.6; transform: translate(-50%, -50%);
+  border-radius: 50%; pointer-events: none; mix-blend-mode: soft-light;
+  background: radial-gradient(closest-side, rgba(255,252,246,0.95), rgba(255,252,246,0.25) 48%, transparent 72%);
+  filter: blur(8px);
+  animation: tip-pulse 3.4s var(--ease-soft) infinite;
+}
+.opener.is-open .env__tip-glow { opacity: 0; transition: opacity 0.4s var(--ease); }
+@keyframes tip-pulse {
+  0%, 100% { opacity: 0.35; transform: translate(-50%, -50%) scale(0.92); }
+  50%      { opacity: 0.85; transform: translate(-50%, -50%) scale(1.06); }
+}
+
+/* Transparent control over the whole envelope (keyboard + screen-reader entry). */
+.env__open {
+  position: absolute; inset: 0; z-index: 5;
+  padding: 0; border: 0; background: none; cursor: pointer; border-radius: 10px;
+}
+.env__open:focus-visible { outline: 3px solid var(--sage-500); outline-offset: 10px; }
+
+/* ---- Hint ---- */
+.opener__hint {
+  position: absolute; left: 0; right: 0; bottom: clamp(6%, 8vh, 11%); z-index: 20;
+  margin: 0; text-align: center;
+}
+.opener__hint-text {
+  font-family: var(--font-body); font-size: 0.74rem; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--sage-700);
+  animation: hint-breathe 2.8s var(--ease-soft) infinite;
+}
+.opener__hint-text::before,
+.opener__hint-text::after { content: "·"; margin: 0 0.7em; color: var(--blush-400); }
+.opener.is-open .opener__hint { opacity: 0; transition: opacity 0.4s var(--ease); }
+@keyframes hint-breathe { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+
+/* ============================ REDUCED MOTION ============================ */
+@media (prefers-reduced-motion: reduce) {
+  .petals { display: none; }
+  .env__tip-glow { animation: none; }
+  .opener__hint-text { animation: none; opacity: 0.85; }
+  *,
+  .env__flap, .env__back, .env__front, .std, .opener {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+  }
+}
