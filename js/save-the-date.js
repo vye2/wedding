@@ -61,7 +61,7 @@ function initOpener() {
     setTimeout(function () {
       opener.classList.add('is-sliding');
       document.body.classList.remove('is-sealed');
-    }, 1400);
+    }, 2000);
 
     // 3) The envelope is gone; the letter stays on screen. Move focus to it.
     //    (The opener is NOT hidden — the letter lives inside it.)
@@ -71,7 +71,7 @@ function initOpener() {
         main.setAttribute('tabindex', '-1');
         main.focus({ preventScroll: true });
       }
-    }, 2850);
+    }, 3500);
   }
 
   // The whole envelope is the control — a generous, obvious hit area.

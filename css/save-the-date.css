@@ -118,11 +118,13 @@ body.is-sealed { overflow: hidden; }
   transition: transform 1.15s var(--ease-soft);
   transform: translateY(128vh);
 }
-/* the flap keeps its open rotation while sliding, and drops behind the letter.
+/* On reveal the flap has opened up beyond the top edge, so FADE it out instead of
+   sliding it (sliding an off-screen flap would sweep it back across the screen).
    (`.is-open.is-sliding` out-specifies the plain `.is-open` open rule.) */
 .opener.is-open.is-sliding .env__flap {
-  transition: transform 1.15s var(--ease-soft);
-  transform: translateY(128vh) rotateX(0deg);
+  transition: opacity 0.5s var(--ease-soft);
+  transform: rotateX(0deg);
+  opacity: 0;
   z-index: 0;
 }
 .opener.is-sliding .stage::before { opacity: 0; transition: opacity 0.5s var(--ease-soft); }
@@ -132,30 +134,26 @@ body.is-sealed { overflow: hidden; }
    exactly. The letter is sandwiched between the back and the front pocket. */
 .stage {
   position: relative;
-  /* Desktop: nearly fill the viewport — bounded by height, or width on narrow
-     windows. Lifted so the flap has room above and the hint clears below. */
-  width: min(96vw, 82vh);
+  /* Fill the viewport. Desktop: bounded by width (96vw) — this landscape envelope
+     spans nearly the whole window, so the flap opens up beyond the top edge.
+     translateY(-21.5%) centres the POCKET (the envelope you actually see) on
+     screen for ANY stage size, since the pocket sits at ~71.5% of the tall stage. */
+  width: min(96vw, 148vh);
   aspect-ratio: 938 / 1048;
   flex-shrink: 0;   /* don't let the flex parent shrink the (intentionally oversized) stage */
-  perspective: 1500px;
-  transform: translateY(-9%);
+  perspective: 1600px;
+  transform: translateY(-21.5%);
 }
 /* Phones: zoom the envelope in so it fills the screen VERTICALLY. It's a
    landscape envelope, so its sides run well past the screen edges (a deliberate
    zoomed-in crop of the florals). The flap opens up beyond the top edge. The
    letter is capped to the viewport, so it still fits; it's dropped lower in the
    pocket so its reveal lands centred on screen. */
+/* Phones: a landscape envelope on a portrait screen — fill by height (the floral
+   sides run past the edges, a deliberate zoomed-in crop). Centring and the flap
+   fade are inherited from the base rules. */
 @media (max-width: 640px) {
-  /* lift so the pocket (the visible envelope) is vertically centred on screen */
-  .stage { width: min(230vw, 106vh); transform: translateY(-21%); }
-  /* `.opener .std` (0,2,0) so it beats the base `.std` rule that comes later in
-     the file; drops the letter lower in the tall stage so its reveal is centred. */
-  .opener .std { top: 59%; }
-  /* the flap opens mostly above the screen here, so fade it out on reveal
-     rather than sliding it down (which would sweep it across the screen) */
-  .opener.is-open.is-sliding .env__flap {
-    transform: rotateX(0deg); opacity: 0; transition: opacity 0.45s var(--ease-soft);
-  }
+  .stage { width: min(230vw, 106vh); }
 }
 /* Soft shadow under the closed envelope. IMPORTANT: on a pseudo-element, never a
    `filter` on .stage itself — a filter on the perspective element would flatten
@@ -180,7 +178,7 @@ body.is-sealed { overflow: hidden; }
   transform-origin: 50% 43.4%;
   transform: rotateX(180deg);
   backface-visibility: visible;
-  transition: transform 1.2s var(--ease-soft);
+  transition: transform 1.7s var(--ease-soft);   /* a slower, more graceful open */
 }
 .opener.is-open .env__flap { transform: rotateX(0deg); }
 
@@ -189,11 +187,13 @@ body.is-sealed { overflow: hidden; }
    container units so it always fits, whatever the envelope's size. ---- */
 .std {
   position: absolute; z-index: 2;
-  left: 50%; top: 44.5%; transform: translateX(-50%);   /* below the flap hinge (43.4%) so it's hidden when closed */
-  /* Sized to the smaller of: the pocket, and the screen — so the letter ALWAYS
-     fits the viewport, even when the envelope is zoomed in past the screen edges.
-     Height is content-driven; text scales to this width via container units. */
-  width: min(84%, 90vw, 660px);
+  /* Centred on the pocket centre (71.5% of the tall stage) via translate(-50%,-50%)
+     — so its reveal lands in the middle of the screen at any size, and it stays
+     hidden behind the flap when closed regardless of its height. */
+  left: 50%; top: 71.5%; transform: translate(-50%, -50%);
+  /* the smaller of the pocket and the screen, so the letter ALWAYS fits the
+     viewport; text scales to this width via container units. */
+  width: min(86%, 92vw, 820px);
   container-type: inline-size;
   border-radius: 4px;
   background: linear-gradient(168deg, var(--paper-letter), #efe6d4);
