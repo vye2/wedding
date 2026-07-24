@@ -39,6 +39,7 @@
       .env__back, .env__front, .env__flap, .env__tip-glow, .env__open,
       .opener__hint { display: none !important; }
       .stage::before { display: none !important; }
+      .std { transform: translate(-50%, -50%) scale(1) !important; }
     </style>
   </noscript>
 </head>
@@ -63,47 +64,49 @@
            flap lifts; the whole letter is exposed as the envelope slides down. -->
       <main class="std" id="std-main" aria-labelledby="std-names">
         <div class="std__content">
-          <p class="std__eyebrow">Save the Date</p>
+          <!-- botanical crest — echoes the envelope's embossed sprays (the signature) -->
+          <svg class="std__crest" viewBox="0 0 140 86" fill="none" aria-hidden="true" focusable="false">
+            <g stroke="#7f9468" stroke-width="1.3" stroke-linecap="round">
+              <path d="M70 80 C55 73 41 59 35 37"/>
+              <path d="M70 80 C85 73 99 59 105 37"/>
+              <path d="M70 45 L70 20"/>
+            </g>
+            <g fill="#9caf88">
+              <ellipse cx="46" cy="62" rx="7.5" ry="3" transform="rotate(-34 46 62)"/>
+              <ellipse cx="40" cy="52" rx="8" ry="3.1" transform="rotate(-44 40 52)"/>
+              <ellipse cx="36" cy="42" rx="7.5" ry="2.9" transform="rotate(-54 36 42)"/>
+              <ellipse cx="34.5" cy="33" rx="6" ry="2.5" transform="rotate(-62 34.5 33)"/>
+              <ellipse cx="94" cy="62" rx="7.5" ry="3" transform="rotate(34 94 62)"/>
+              <ellipse cx="100" cy="52" rx="8" ry="3.1" transform="rotate(44 100 52)"/>
+              <ellipse cx="104" cy="42" rx="7.5" ry="2.9" transform="rotate(54 104 42)"/>
+              <ellipse cx="105.5" cy="33" rx="6" ry="2.5" transform="rotate(62 105.5 33)"/>
+            </g>
+            <circle cx="70" cy="16" r="3.6" fill="#c19a53"/>
+            <circle cx="62.5" cy="22" r="2.5" fill="#e0a6b2"/>
+            <circle cx="77.5" cy="22" r="2.5" fill="#e0a6b2"/>
+          </svg>
 
-          <div class="std__sprig" aria-hidden="true">
-            <svg viewBox="0 0 240 60" focusable="false" xmlns="http://www.w3.org/2000/svg">
-              <path d="M120 12 C120 30 120 40 120 52" fill="none" stroke="#9caf88" stroke-width="1.6" stroke-linecap="round"/>
-              <g fill="#b2c2a8">
-                <ellipse cx="120" cy="10" rx="7" ry="4" />
-                <ellipse cx="112" cy="22" rx="9" ry="4.5" transform="rotate(28 112 22)" />
-                <ellipse cx="128" cy="22" rx="9" ry="4.5" transform="rotate(-28 128 22)" />
-                <ellipse cx="110" cy="35" rx="8" ry="4" transform="rotate(30 110 35)" />
-                <ellipse cx="130" cy="35" rx="8" ry="4" transform="rotate(-30 130 35)" />
-              </g>
-              <g stroke="#cdd9c2" stroke-width="1.2" stroke-linecap="round">
-                <line x1="6" y1="30" x2="96" y2="30" />
-                <line x1="144" y1="30" x2="234" y2="30" />
-              </g>
-              <g fill="#e79aa8">
-                <circle cx="96" cy="30" r="2.4" />
-                <circle cx="144" cy="30" r="2.4" />
-              </g>
-            </svg>
-          </div>
+          <p class="std__eyebrow">Save the Date</p>
 
           <h1 class="std__names" id="std-names">
             Victor Ye <span class="std__amp">&amp;</span> Ashley Huynh
           </h1>
 
-          <p class="std__script">are getting married</p>
+          <p class="std__vow">are getting married</p>
 
-          <p class="std__date">Saturday, May 15th, 2027</p>
+          <div class="std__rule" aria-hidden="true"><i></i><span></span><i></i></div>
 
-          <p class="std__place">San Francisco Bay Area</p>
+          <div class="std__when">
+            <span class="std__dow">Saturday</span>
+            <span class="std__date">May 15<sup>th</sup>, 2027</span>
+            <span class="std__place">San Francisco Bay Area</span>
+          </div>
 
-          <!-- Slim live countdown (reads the date in js/save-the-date.js) -->
+          <!-- Live countdown (reads the date in js/save-the-date.js) -->
           <div class="std-count" id="countdown" role="timer" aria-label="Time remaining until the wedding day">
             <div class="std-count__unit"><span class="std-count__num" data-unit="days">--</span><span class="std-count__label">Days</span></div>
-            <div class="std-count__sep" aria-hidden="true"></div>
             <div class="std-count__unit"><span class="std-count__num" data-unit="hours">--</span><span class="std-count__label">Hrs</span></div>
-            <div class="std-count__sep" aria-hidden="true"></div>
             <div class="std-count__unit"><span class="std-count__num" data-unit="minutes">--</span><span class="std-count__label">Min</span></div>
-            <div class="std-count__sep" aria-hidden="true"></div>
             <div class="std-count__unit"><span class="std-count__num" data-unit="seconds">--</span><span class="std-count__label">Sec</span></div>
           </div>
           <p class="std-count__done" id="countdown-done" hidden>Today is the day — with all our love, thank you for celebrating with us. 🌿</p>

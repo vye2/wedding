@@ -23,6 +23,11 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   initCountdown();
+  fitLetter();
+  // Re-measure once the web fonts load (they change the letter's height) and on
+  // resize, so the sandwiched letter always fits the pocket.
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(fitLetter); }
+  window.addEventListener('resize', fitLetter);
 
   if (reduceMotion) {
     // No theatrics — present the card straight away.
@@ -32,6 +37,19 @@ document.addEventListener('DOMContentLoaded', function () {
     initOpener();
   }
 });
+
+/* Scale the letter down just enough to hide inside the pocket while sandwiched;
+   it grows back to full size (scale 1) as it rises out on reveal. */
+function fitLetter() {
+  var std = document.getElementById('std-main');
+  var stage = document.querySelector('.stage');
+  if (!std || !stage) return;
+  // the letter must fit within the flap/front-covered band (~52% of the stage).
+  var coverable = stage.offsetHeight * 0.52;
+  var natural = std.offsetHeight;               // layout height — unaffected by the scale transform
+  var fit = natural > 0 ? Math.min(1, coverable / natural) : 1;
+  std.style.setProperty('--fit', fit.toFixed(3));
+}
 
 /* ------------------------------------------------------------------ *
  * The opener — tap the envelope, the flap hinges open, the envelope
@@ -93,27 +111,39 @@ function makePetals() {
   var field = document.getElementById('petals');
   if (!field) return;
 
-  var COUNT = 16;
-  var kinds = ['', 'petal--sage', 'petal--pale', ''];
+  // Shape mix — more blossoms than leaves, a few pale ones for lightness.
+  var shapes = ['petal--leaf', 'petal--bloom', 'petal--bloom', 'petal--leaf', 'petal--pale'];
+
+  // Three depth layers: farther pieces are smaller, fainter, blurrier and slower.
+  var layers = [
+    { n: 7, sz: [9, 12],  op: 0.30, bl: 1.4,  fall: [26, 34], sway: [8, 11] },
+    { n: 8, sz: [13, 17], op: 0.55, bl: 0.35, fall: [19, 25], sway: [6, 8] },
+    { n: 7, sz: [18, 24], op: 0.82, bl: 0,    fall: [13, 18], sway: [4.5, 6.5] }
+  ];
+
+  function rnd(a, b) { return a + Math.random() * (b - a); }
   var frag = document.createDocumentFragment();
 
-  for (var i = 0; i < COUNT; i++) {
-    var p = document.createElement('span');
-    p.className = 'petal ' + kinds[i % kinds.length];
+  layers.forEach(function (L) {
+    for (var i = 0; i < L.n; i++) {
+      var p = document.createElement('span');
+      p.className = 'petal ' + shapes[Math.floor(Math.random() * shapes.length)];
 
-    var size = 8 + Math.random() * 12;          // 8–20px
-    var dur = 11 + Math.random() * 12;           // 11–23s fall
-    var delay = -Math.random() * 22;             // negative = mid-flight on load
+      var fall = rnd(L.fall[0], L.fall[1]);
+      p.style.left = rnd(-2, 100).toFixed(2) + 'vw';
+      p.style.setProperty('--sz', rnd(L.sz[0], L.sz[1]).toFixed(1) + 'px');
+      p.style.setProperty('--op', L.op.toFixed(2));
+      p.style.setProperty('--bl', L.bl + 'px');
+      p.style.setProperty('--fall', fall.toFixed(1) + 's');
+      p.style.setProperty('--sway', rnd(L.sway[0], L.sway[1]).toFixed(1) + 's');
+      p.style.animationDelay = (-Math.random() * fall).toFixed(1) + 's';   // start mid-flight
 
-    p.style.left = (Math.random() * 100).toFixed(2) + 'vw';
-    p.style.width = size.toFixed(1) + 'px';
-    p.style.height = (size * 0.9).toFixed(1) + 'px';
-    p.style.animationDuration = dur.toFixed(1) + 's';
-    p.style.animationDelay = delay.toFixed(1) + 's';
-    p.style.opacity = (0.45 + Math.random() * 0.4).toFixed(2);
-
-    frag.appendChild(p);
-  }
+      var inner = document.createElement('i');
+      inner.style.animationDelay = (-Math.random() * 8).toFixed(1) + 's';   // desync the sway
+      p.appendChild(inner);
+      frag.appendChild(p);
+    }
+  });
   field.appendChild(frag);
 }
 

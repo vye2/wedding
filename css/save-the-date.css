@@ -79,25 +79,38 @@ body.is-sealed { overflow: hidden; }
 }
 .skip-link:focus { top: 0.75rem; }
 
-/* ============================ PETALS ============================ */
+/* ===================== DRIFTING LEAVES & BLOSSOMS =====================
+   A living, layered atmosphere. Each piece: the OUTER span falls straight down
+   (and fades in/out at the edges); the INNER shape sways side-to-side and wobbles
+   — nested transforms compose into a natural flutter. Size, opacity, blur and
+   speed are set per-piece in JS to build three depth layers (far/mid/near). */
 .petals { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
 .petal {
-  position: absolute; top: -8vh; width: 14px; height: 14px; opacity: 0;
-  background: var(--blush-300);
-  border-radius: 80% 0 80% 0;
-  will-change: transform, opacity;
-  animation-name: petal-fall;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
+  position: absolute; top: 0; left: 0; will-change: transform, opacity;
+  animation: leaf-fall var(--fall, 20s) linear infinite;
 }
-.petal--sage { background: var(--sage-300); }
-.petal--pale { background: var(--blush-200); }
-@keyframes petal-fall {
-  0%   { opacity: 0; transform: translateY(-10vh) translateX(0) rotate(0deg); }
-  8%   { opacity: 0.85; }
-  50%  { transform: translateY(50vh) translateX(6vw) rotate(220deg); }
-  92%  { opacity: 0.85; }
-  100% { opacity: 0; transform: translateY(112vh) translateX(-4vw) rotate(460deg); }
+.petal > i {
+  display: block; width: var(--sz, 15px); height: calc(var(--sz, 15px) * 1.15);
+  opacity: var(--op, 0.7); filter: blur(var(--bl, 0px)); will-change: transform;
+  animation: leaf-sway var(--sway, 6s) ease-in-out infinite alternate;
+}
+/* botanical silhouettes, on-palette with a soft top-left highlight */
+.petal--leaf  > i { border-radius: 0 100% 0 100%;
+  background: radial-gradient(125% 125% at 30% 22%, var(--sage-200), var(--sage-500)); }
+.petal--bloom > i { border-radius: 64% 36% 62% 38% / 62% 40% 60% 38%;
+  background: radial-gradient(125% 125% at 32% 24%, #fbe2e6, var(--blush-400)); }
+.petal--pale  > i { border-radius: 60% 40% 58% 42% / 58% 42% 56% 44%;
+  background: radial-gradient(125% 125% at 32% 24%, #fdf3f2, var(--blush-200)); }
+
+@keyframes leaf-fall {
+  0%   { transform: translateY(-14vh); opacity: 0; }
+  9%   { opacity: 1; }
+  91%  { opacity: 1; }
+  100% { transform: translateY(120vh); opacity: 0; }
+}
+@keyframes leaf-sway {
+  from { transform: translateX(-1.5vw) rotate(-16deg); }
+  to   { transform: translateX(1.5vw)  rotate(18deg); }
 }
 
 /* ============================ OPENER (full screen) ============================ */
@@ -122,27 +135,29 @@ body.is-sealed { overflow: hidden; }
    sliding it (sliding an off-screen flap would sweep it back across the screen).
    (`.is-open.is-sliding` out-specifies the plain `.is-open` open rule.) */
 .opener.is-open.is-sliding .env__flap {
-  transition: opacity 0.5s var(--ease-soft);
-  transform: rotateX(0deg);
-  opacity: 0;
-  z-index: 0;
+  transition: transform 1.15s var(--ease-soft);
+  transform: translateY(128vh) rotateX(0deg);
+  z-index: 0;   /* drop behind the letter so it doesn't cover it on the way down */
 }
 .opener.is-sliding .stage::before { opacity: 0; transition: opacity 0.5s var(--ease-soft); }
+/* the letter grows to full size and rises to screen centre as the envelope drops
+   away (it sits low in the pocket, scaled down, so it's hidden until then). */
+.opener.is-sliding .std { transform: translate(-50%, -50%) translateY(-18vh) scale(1); }
 
 /* The envelope: three layered pieces the couple made — a solid back, a front
    pocket, and a flap — all sharing one 938×1048 coordinate space so they stack
    exactly. The letter is sandwiched between the back and the front pocket. */
 .stage {
   position: relative;
-  /* Fill the viewport. Desktop: bounded by width (96vw) — this landscape envelope
-     spans nearly the whole window, so the flap opens up beyond the top edge.
-     translateY(-21.5%) centres the POCKET (the envelope you actually see) on
-     screen for ANY stage size, since the pocket sits at ~71.5% of the tall stage. */
-  width: min(96vw, 148vh);
+  /* Sized so the WHOLE envelope — including the flap when it swings fully up —
+     stays on screen (bounded by height). This is the largest it can be while
+     showing the complete flap opening; the flap needs ~77% of the pocket height
+     as clear space above it. */
+  width: min(96vw, 90vh);
   aspect-ratio: 938 / 1048;
-  flex-shrink: 0;   /* don't let the flex parent shrink the (intentionally oversized) stage */
+  flex-shrink: 0;
   perspective: 1600px;
-  transform: translateY(-21.5%);
+  transform: translateY(-4%);
 }
 /* Phones: zoom the envelope in so it fills the screen VERTICALLY. It's a
    landscape envelope, so its sides run well past the screen edges (a deliberate
@@ -150,10 +165,15 @@ body.is-sealed { overflow: hidden; }
    letter is capped to the viewport, so it still fits; it's dropped lower in the
    pocket so its reveal lands centred on screen. */
 /* Phones: a landscape envelope on a portrait screen — fill by height (the floral
-   sides run past the edges, a deliberate zoomed-in crop). Centring and the flap
-   fade are inherited from the base rules. */
+   sides run past the edges, a deliberate zoomed-in crop). The big pocket is
+   centred, the flap opens above the fold so it fades out on reveal, and the
+   letter is already centred (no rise needed). */
 @media (max-width: 640px) {
-  .stage { width: min(230vw, 106vh); }
+  .stage { width: min(230vw, 106vh); transform: translateY(-21.5%); }
+  .opener.is-open.is-sliding .env__flap {
+    transform: rotateX(0deg); opacity: 0; transition: opacity 0.45s var(--ease-soft);
+  }
+  .opener.is-sliding .std { transform: translate(-50%, -50%) translateY(0) scale(1); }
 }
 /* Soft shadow under the closed envelope. IMPORTANT: on a pseudo-element, never a
    `filter` on .stage itself — a filter on the perspective element would flatten
@@ -190,10 +210,14 @@ body.is-sealed { overflow: hidden; }
   /* Centred on the pocket centre (71.5% of the tall stage) via translate(-50%,-50%)
      — so its reveal lands in the middle of the screen at any size, and it stays
      hidden behind the flap when closed regardless of its height. */
-  left: 50%; top: 71.5%; transform: translate(-50%, -50%);
+  left: 50%; top: 71.5%;
+  /* scaled down to fit inside the pocket while sandwiched (--fit is measured in
+     JS), then grows to full size as it rises out on reveal. */
+  transform: translate(-50%, -50%) translateY(0) scale(var(--fit, 0.66));
+  transition: transform 1.25s var(--ease-soft);
   /* the smaller of the pocket and the screen, so the letter ALWAYS fits the
      viewport; text scales to this width via container units. */
-  width: min(86%, 92vw, 820px);
+  width: min(86%, 92vw, 760px);
   container-type: inline-size;
   border-radius: 4px;
   background: linear-gradient(168deg, var(--paper-letter), #efe6d4);
@@ -215,48 +239,66 @@ body.is-sealed { overflow: hidden; }
   background: radial-gradient(130% 62% at 50% 0%, #fffdf8, transparent 60%);
 }
 
+/* ---- Letter: "pressed-botanical stationery" — a delicate crest echoing the
+   envelope's florals crowns a quiet, tightly-set hierarchy, gold used sparingly. */
+.std__crest { display: block; width: 23cqw; max-width: 164px; height: auto; margin: 0 auto 2.6cqw; }
+
 .std__eyebrow {
-  margin: 0; font-family: var(--font-body); font-weight: 600;
-  font-size: 2.1cqw; letter-spacing: 0.34em; text-transform: uppercase;
-  color: var(--sage-600);
+  margin: 0; font-family: var(--font-display); font-weight: 600;
+  font-size: 2.5cqw; letter-spacing: 0.44em; text-indent: 0.44em;
+  text-transform: uppercase; color: var(--sage-600);
 }
-.std__sprig { width: 20cqw; margin: 1.4cqw 0; }
-.std__sprig svg { width: 100%; height: auto; display: block; }
 .std__names {
-  margin: 0.4cqw 0 0; font-family: var(--font-script); font-weight: 400;
-  font-size: 8cqw; line-height: 1.04; color: var(--ink); text-wrap: balance;
+  margin: 1.4cqw 0 0; font-family: var(--font-script); font-weight: 400;
+  font-size: 8.6cqw; line-height: 1.02; color: var(--ink); text-wrap: balance;
 }
-.std__amp { color: var(--blush-400); padding: 0 0.05em; }
-.std__script {
-  margin: 0.8cqw 0 0; font-family: var(--font-display); font-style: italic; font-weight: 500;
-  font-size: 3.4cqw; line-height: 1.1; color: var(--sage-600);
+.std__amp { color: #b0894a; padding: 0 0.03em; }   /* soft gold */
+.std__vow {
+  margin: 0.4cqw 0 0; font-family: var(--font-display); font-style: italic; font-weight: 500;
+  font-size: 3.4cqw; line-height: 1.1; color: var(--sage-600); letter-spacing: 0.01em;
+}
+
+/* a hairline gold rule with a small center diamond */
+.std__rule { display: flex; align-items: center; justify-content: center; gap: 1.6cqw; width: 48%; margin: 3.2cqw auto; }
+.std__rule i { flex: 1; height: 1px; background: linear-gradient(to right, transparent, #cbb27e); }
+.std__rule i + i { background: linear-gradient(to left, transparent, #cbb27e); }
+.std__rule span { flex: none; width: 5px; height: 5px; transform: rotate(45deg); background: #b0894a; }
+
+.std__when { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 0.9cqw; }
+.std__dow {
+  font-family: var(--font-display); font-size: 2.5cqw; letter-spacing: 0.42em; text-indent: 0.42em;
+  text-transform: uppercase; color: var(--muted);
 }
 .std__date {
-  margin: 2cqw 0 0; font-family: var(--font-display); font-weight: 500;
-  font-size: 3.9cqw; line-height: 1.15; color: var(--ink); letter-spacing: 0.3px;
+  font-family: var(--font-display); font-weight: 500; font-size: 6.2cqw; line-height: 1;
+  color: var(--ink); letter-spacing: 0.005em;
 }
+.std__date sup { font-size: 0.5em; vertical-align: 0.75em; margin: 0 0.02em 0 0.04em; letter-spacing: 0; }
 .std__place {
-  margin: 1.6cqw 0 0; font-family: var(--font-body);
-  font-size: 1.9cqw; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted);
+  font-family: var(--font-display); font-size: 2.2cqw; letter-spacing: 0.36em; text-indent: 0.36em;
+  text-transform: uppercase; color: var(--muted);
 }
 
-/* ---- Slim live countdown ---- */
-.std-count {
-  display: flex; align-items: stretch; justify-content: center;
-  gap: 2.4cqw; margin: 2.4cqw 0 0;
+/* ---- refined live countdown: tabular serif numerals, hairline dividers ---- */
+.std-count { display: flex; align-items: baseline; justify-content: center; gap: 5cqw; margin: 3.4cqw 0 0; }
+.std-count__unit { position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.5cqw; }
+.std-count__unit + .std-count__unit::before {
+  content: ""; position: absolute; left: -2.5cqw; top: 6%; height: 66%; width: 1px;
+  background: linear-gradient(var(--sage-200), transparent);
 }
-.std-count__unit { display: flex; flex-direction: column; align-items: center; min-width: 6cqw; }
 .std-count__num {
-  font-family: var(--font-display); font-weight: 600; font-size: 4.8cqw; line-height: 1;
+  font-family: var(--font-display); font-weight: 500; font-size: 5cqw; line-height: 1;
   color: var(--sage-700); font-variant-numeric: tabular-nums;
 }
-.std-count__label { margin-top: 0.5cqw; font-size: 1.4cqw; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-.std-count__sep { width: 1px; background: linear-gradient(var(--sage-200), transparent); align-self: center; height: 4.8cqw; }
-.std-count__done { margin: 0; font-family: var(--font-display); font-size: 2.8cqw; color: var(--sage-600); }
+.std-count__label {
+  font-family: var(--font-body); font-size: 1.3cqw; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--muted);
+}
+.std-count__done { margin: 0; font-family: var(--font-display); font-style: italic; font-size: 3cqw; color: var(--sage-600); }
 
 .std__follow {
-  margin: 2.4cqw 0 0; font-family: var(--font-display); font-style: italic;
-  font-size: 2.8cqw; color: var(--blush-500);
+  margin: 3.4cqw 0 0; font-family: var(--font-display); font-style: italic;
+  font-size: 3cqw; color: var(--blush-500); letter-spacing: 0.01em;
 }
 
 /* Soft luminous sheen on the closed envelope — a gentle 'open here' cue. */
