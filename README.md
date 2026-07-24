@@ -13,9 +13,9 @@ wedding stationery and to be hosted for free on **GitHub Pages**.
 ```
 .
 ├── index.html            # The full detailed page (Hero, Story, Details, Locations, RSVP, FAQ, Footer)
-├── save-the-date.html    # Slim "open the envelope" experience — a bespoke save-the-date reveal
+├── save-the-date.html    # Single-screen photo-collage + "open the envelope" reveal
 ├── css/styles.css        # LOCKED sage + blush theme (CSS variables + components). Extend, don't rewrite.
-├── css/save-the-date.css # Layered envelope (back/front/flap) + flip-open reveal styles
+├── css/save-the-date.css # Photo-wall collage + layered envelope (back/front/flap) + flip-open reveal
 ├── js/main.js            # CONFIG object + nav toggle, countdown, scroll reveal, FAQ accordion, RSVP handler
 ├── js/save-the-date.js   # Envelope open sequence (flap flip + slide-away), drifting petals, live countdown
 ├── assets/
@@ -32,21 +32,31 @@ wedding stationery and to be hosted for free on **GitHub Pages**.
 ## Two experiences, one palette
 
 - **`index.html`** — the full site: story, itinerary, locations, RSVP, FAQ.
-- **`save-the-date.html`** — a slim, cinematic *save-the-date*. Guests land on the
-  couple's **own blush floral envelope**, built from three layered pieces
-  (`assets/env-back`, `env-front`, `env-flap`) that share one coordinate space so
-  they stack exactly. The flap is authored in the open position and shown **flipped
-  down** to seal the envelope. There's **no wax seal**: a gentle "tap to open" hint
-  and a soft sheen invite the tap. **Tap the envelope** and the **flap rotates up in
-  3D about its hinge**, revealing the **one letter sandwiched between the front
-  pocket and the back** — its top glimpsed through the opening. The **envelope
-  pieces then slide down off the letter**, which stays put and is exposed in full:
-  the *same* card, sized to fit inside the envelope, a **handmade deckle-edge letter**
-  (its torn edge is an SVG turbulence filter) with the details, drifting petals, and
-  a live countdown to **Saturday, May 15, 2027**. Blush + sage throughout. Everyone sees the
-  same page — no personalization. Fully keyboard-accessible; honors
-  `prefers-reduced-motion` (skips the envelope, shows the letter outright) and falls
-  back gracefully with JavaScript disabled.
+- **`save-the-date.html`** — a cinematic *save-the-date* on **one non-scrolling
+  screen**. The couple's engagement photos form a full-bleed **collage that frames
+  the centre** (a wall of eight around an open middle on desktop; a two-wide grid on
+  phones), and the couple's **own blush floral envelope** sits centered on top,
+  lifted off the photos by a soft cream halo. The envelope is built from three
+  layered pieces (`assets/env-back`, `env-front`, `env-flap`) that share one
+  coordinate space so they stack exactly; the flap is authored open and shown
+  **flipped down** to seal it. There's **no wax seal** — a "tap to open" hint and a
+  soft sheen invite the tap. **Tap the envelope** and the **flap rotates up in 3D
+  about its hinge**, revealing the **one letter sandwiched between the front pocket
+  and the back**; the **envelope pieces then slide down off the letter**, which stays
+  put and grows into the centerpiece — framed by the photos. It's a **handmade
+  deckle-edge letter** (its torn edge is an SVG turbulence filter) with a live
+  countdown to **Saturday, May 15, 2027**, and a quiet footer link back to the full
+  site. Blush + sage throughout, with drifting leaves. Everyone sees the same page —
+  no personalization. Fully keyboard-accessible; honors `prefers-reduced-motion`
+  (skips the envelope, shows the letter outright) and falls back gracefully with
+  JavaScript disabled.
+
+  **Add your engagement photos:** the collage lives in `#photo-wall` in
+  `save-the-date.html` as eight `<figure class="tile">` placeholders. Swap a tile's
+  `<span class="tile__ph">…</span>` for `<img class="tile__img" src="assets/photo-1.jpg"
+  alt="" />` — any orientation works, each photo is cropped to fill its cell
+  (`object-fit: cover`). Fewer than eight? Delete tiles (desktop uses eight to frame
+  all four sides; the phone grid reflows to whatever's left).
 
 The names on the letter and the inside card are plain HTML text (edit them in
 `save-the-date.html`). The wedding date lives in `CONFIG.weddingDate` at the top of
