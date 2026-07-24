@@ -83,18 +83,20 @@ body {
    so the 8 photos sit around it. On phones it reflows to a 2-wide wall. */
 .photo-wall {
   position: fixed; inset: 0; z-index: 0;
-  display: grid; gap: 8px; padding: 8px;
-  grid-template-columns: 0.86fr 2fr 0.86fr;
-  grid-template-rows: 0.92fr 2.15fr 0.92fr;
+  display: grid; gap: 4px; padding: 0;   /* edge-to-edge, thin seams only */
+  /* a small open centre — smaller than the envelope/letter, so the centerpiece
+     always overlaps the surrounding photos with no gap between them. */
+  grid-template-columns: 1fr 0.8fr 1fr;
+  grid-template-rows: 1fr 0.76fr 1fr;
   grid-template-areas:
     "a b c"
     "d . e"
     "f g h";
 }
 .tile {
-  position: relative; margin: 0; overflow: hidden; border-radius: 3px;
+  position: relative; margin: 0; overflow: hidden;
   background: linear-gradient(150deg, #f7e9ec, #eef0e6 55%, #e6ecdd);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5), 0 10px 26px -18px rgba(90,70,60,0.5);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45);
 }
 /* alternate soft on-palette tints so the placeholders read as distinct photos */
 .tile:nth-child(3n+1) { background: linear-gradient(150deg, #f8e7ec, #efe6dc); }
@@ -164,16 +166,6 @@ body {
   overflow: hidden;   /* clip the flap swing + the slide-away to the screen */
 }
 .opener[hidden] { display: none !important; }   /* reduced-motion / no-JS fallback */
-/* the cream halo — a soft bed under the centerpiece so photos don't crowd it */
-.opener::before {
-  content: ""; position: absolute; z-index: 0; left: 50%; top: 50%;
-  width: min(150vw, 128vh); height: min(150vw, 128vh);
-  transform: translate(-50%, -50%);
-  background: radial-gradient(closest-side,
-    rgba(250, 247, 242, 0.94), rgba(250, 247, 242, 0.72) 34%,
-    rgba(250, 247, 242, 0.3) 55%, transparent 70%);
-  pointer-events: none;
-}
 
 /* On reveal: the envelope pieces (back, front pocket, flap) slide straight down
    and off, exposing the letter — which stays exactly where it was. The now-open
@@ -192,9 +184,9 @@ body {
   z-index: 0;   /* drop behind the letter so it doesn't cover it on the way down */
 }
 .opener.is-sliding .stage::before { opacity: 0; transition: opacity 0.5s var(--ease-soft); }
-/* the letter grows to full size and rises to screen centre as the envelope drops
-   away (it sits low in the pocket, scaled down, so it's hidden until then). */
-.opener.is-sliding .std { transform: translate(-50%, -50%) translateY(-16vh) scale(1); }
+/* the letter grows to full size as the envelope drops away — it's already centred
+   on screen (the stage lifts the pocket to centre), so no extra rise is needed. */
+.opener.is-sliding .std { transform: translate(-50%, -50%) scale(1); }
 
 /* The envelope: three layered pieces the couple made — a solid back, a front
    pocket, and a flap — all sharing one 938×1048 coordinate space so they stack
@@ -202,11 +194,14 @@ body {
    Sized to DOMINATE the centre while leaving a frame of photos around it. */
 .stage {
   position: relative; z-index: 1;
-  width: min(60vw, 66vh);
+  width: min(56vw, 60vh);
   aspect-ratio: 938 / 1048;
   flex-shrink: 0;
   perspective: 1600px;
-  transform: translateY(-2%);
+  /* the canvas reserves ~43% of its height at the top for the open flap, so its
+     visible pocket sits at ~71.5% of the box. Lift by ~21.5% so that POCKET —
+     and the letter revealed in it — lands at the centre of the screen. */
+  transform: translateY(-21.5%);
 }
 /* Phones (portrait): the frame reflows to a 2-wide wall behind, and the envelope
    grows to fill most of the width while photos peek above/below. */
@@ -217,8 +212,7 @@ body {
     grid-template-areas: none;
   }
   .tile { grid-area: auto !important; }
-  .stage { width: min(94vw, 66vh); transform: translateY(-1%); }
-  .opener.is-sliding .std { transform: translate(-50%, -50%) translateY(0) scale(1); }
+  .stage { width: min(96vw, 62vh); transform: translateY(-21.5%); }
 }
 /* Soft shadow under the closed envelope. IMPORTANT: on a pseudo-element, never a
    `filter` on .stage itself — a filter on the perspective element would flatten
@@ -274,7 +268,8 @@ body {
 .std::before {
   content: ""; position: absolute; inset: -6px; z-index: -1;
   background: linear-gradient(168deg, var(--paper-letter), #efe6d4);
-  filter: url(#deckle) drop-shadow(0 10px 26px rgba(90, 70, 60, 0.28));
+  /* a firmer shadow now that the cream halo is gone — lifts the card off the photos */
+  filter: url(#deckle) drop-shadow(0 16px 36px rgba(66, 52, 46, 0.38));
   border-radius: 6px;
 }
 .std__content {
