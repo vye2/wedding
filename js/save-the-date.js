@@ -36,7 +36,25 @@ document.addEventListener('DOMContentLoaded', function () {
     makePetals();
     initOpener();
   }
+
+  initReveals();   // fade the gallery / closing sections in as they scroll into view
 });
+
+/* Reveal sections on scroll (IntersectionObserver). */
+function initReveals() {
+  var items = document.querySelectorAll('.reveal');
+  if (!items.length) return;
+  if (!('IntersectionObserver' in window)) {
+    items.forEach(function (el) { el.classList.add('is-in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+  items.forEach(function (el) { io.observe(el); });
+}
 
 /* Scale the letter down just enough to hide inside the pocket while sandwiched;
    it grows back to full size (scale 1) as it rises out on reveal. */
@@ -84,6 +102,7 @@ function initOpener() {
     // 3) The envelope is gone; the letter stays on screen. Move focus to it.
     //    (The opener is NOT hidden — the letter lives inside it.)
     setTimeout(function () {
+      opener.classList.add('is-done');   // reveal the "scroll for more" cue
       var main = document.getElementById('std-main');
       if (main) {
         main.setAttribute('tabindex', '-1');
@@ -100,7 +119,7 @@ function initOpener() {
    once so the letter (sandwiched inside) is shown outright. */
 function revealInstant() {
   var opener = document.getElementById('opener');
-  if (opener) { opener.classList.add('is-open'); opener.classList.add('is-sliding'); }
+  if (opener) { opener.classList.add('is-open', 'is-sliding', 'is-done'); }
   document.body.classList.remove('is-sealed');
 }
 

@@ -37,9 +37,10 @@
   <noscript>
     <style>
       .env__back, .env__front, .env__flap, .env__tip-glow, .env__open,
-      .opener__hint { display: none !important; }
+      .opener__hint, .scroll-cue { display: none !important; }
       .stage::before { display: none !important; }
       .std { transform: translate(-50%, -50%) scale(1) !important; }
+      .reveal { opacity: 1 !important; transform: none !important; }
     </style>
   </noscript>
 </head>
@@ -54,7 +55,7 @@
   <!-- envelope in layered pieces (env-back/front/flap). Tap to open:   -->
   <!-- the flap flips up, the letter inside is glimpsed, then it slides. -->
   <!-- ============================================================= -->
-  <div class="opener" id="opener">
+  <section class="opener" id="opener">
     <div class="stage" role="group" aria-label="A sealed envelope from Victor and Ashley">
       <!-- Back of the envelope pocket (solid) -->
       <div class="env__back" aria-hidden="true"></div>
@@ -96,11 +97,8 @@
 
           <div class="std__rule" aria-hidden="true"><i></i><span></span><i></i></div>
 
-          <div class="std__when">
-            <span class="std__dow">Saturday</span>
-            <span class="std__date">May 15<sup>th</sup>, 2027</span>
-            <span class="std__place">San Francisco Bay Area</span>
-          </div>
+          <p class="std__date">Saturday, May 15<sup>th</sup>, 2027</p>
+          <p class="std__place">San Francisco Bay Area</p>
 
           <!-- Live countdown (reads the date in js/save-the-date.js) -->
           <div class="std-count" id="countdown" role="timer" aria-label="Time remaining until the wedding day">
@@ -133,7 +131,83 @@
     <p class="opener__hint" id="opener-hint">
       <span class="opener__hint-text">Tap to open</span>
     </p>
-  </div>
+
+    <!-- revealed once the letter is exposed; scrolls down to the photos -->
+    <a class="scroll-cue" id="scroll-cue" href="#gallery">
+      <span class="scroll-cue__text">Our story below</span>
+      <svg class="scroll-cue__arw" viewBox="0 0 24 26" fill="none" aria-hidden="true" focusable="false">
+        <path d="M12 2v18M5 14l7 7 7-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- ENGAGEMENT PHOTOS — swap each .shot__frame for a 4:5 <img>.       -->
+  <!-- ============================================================= -->
+  <section class="gallery" id="gallery" aria-label="A few of our photos">
+    <div class="gallery__intro reveal">
+      <svg class="gallery__mark" viewBox="0 0 72 22" fill="none" aria-hidden="true" focusable="false">
+        <path d="M6 11h20M46 11h20" stroke="#cbb27e" stroke-width="1"/>
+        <path d="M36 4l3.4 7-3.4 7-3.4-7z" fill="#b0894a"/>
+      </svg>
+      <p class="gallery__eyebrow">A little of us</p>
+      <p class="gallery__note">While we finish the details, a few of our favourite moments — we can't wait to make more with you.</p>
+    </div>
+
+    <div class="gallery__grid">
+      <figure class="shot reveal">
+        <span class="shot__frame">
+          <span class="shot__ph" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 20.5s-6.6-4-8.9-8C1 9.3 2.7 6 6 6c2 0 3.3 1.2 4 2.4C10.7 7.2 12 6 14 6c3.3 0 5 3.3 2.9 6.5-2.3 4-8.9 8-8.9 8z" fill="currentColor"/></svg>
+            <em>Your photo · 4×5</em>
+          </span>
+        </span>
+        <figcaption>The day he asked</figcaption>
+      </figure>
+      <figure class="shot reveal">
+        <span class="shot__frame">
+          <span class="shot__ph" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 20.5s-6.6-4-8.9-8C1 9.3 2.7 6 6 6c2 0 3.3 1.2 4 2.4C10.7 7.2 12 6 14 6c3.3 0 5 3.3 2.9 6.5-2.3 4-8.9 8-8.9 8z" fill="currentColor"/></svg>
+            <em>Your photo · 4×5</em>
+          </span>
+        </span>
+        <figcaption>Golden hour, together</figcaption>
+      </figure>
+      <figure class="shot reveal">
+        <span class="shot__frame">
+          <span class="shot__ph" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 20.5s-6.6-4-8.9-8C1 9.3 2.7 6 6 6c2 0 3.3 1.2 4 2.4C10.7 7.2 12 6 14 6c3.3 0 5 3.3 2.9 6.5-2.3 4-8.9 8-8.9 8z" fill="currentColor"/></svg>
+            <em>Your photo · 4×5</em>
+          </span>
+        </span>
+        <figcaption>Where it began</figcaption>
+      </figure>
+      <figure class="shot reveal">
+        <span class="shot__frame">
+          <span class="shot__ph" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 20.5s-6.6-4-8.9-8C1 9.3 2.7 6 6 6c2 0 3.3 1.2 4 2.4C10.7 7.2 12 6 14 6c3.3 0 5 3.3 2.9 6.5-2.3 4-8.9 8-8.9 8z" fill="currentColor"/></svg>
+            <em>Your photo · 4×5</em>
+          </span>
+        </span>
+        <figcaption>Us, lately</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- CLOSING -->
+  <!-- ============================================================= -->
+  <section class="closing" aria-label="Save the date">
+    <div class="closing__inner reveal">
+      <p class="closing__names">Victor <span class="closing__amp">&amp;</span> Ashley</p>
+      <p class="closing__date">Saturday, May 15<sup>th</sup>, 2027 · San Francisco Bay Area</p>
+      <p class="closing__follow">Formal invitation to follow</p>
+      <p class="closing__foot">
+        <a class="closing__link" href="index.html">Explore the full site</a>
+        <span class="closing__hash">#HappilyEverHuynh</span>
+      </p>
+    </div>
+  </section>
 
   <!-- SVG filter that gives the letter its torn, handmade deckle edge -->
   <svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
