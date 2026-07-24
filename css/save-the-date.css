@@ -106,6 +106,7 @@ body.is-sealed { overflow: hidden; }
 .opener {
   position: fixed; inset: 0; z-index: 100;
   display: flex; align-items: center; justify-content: center;
+  overflow: hidden;   /* clip the zoomed-in envelope's overflow to the viewport */
 }
 .opener[hidden] { display: none !important; }   /* reduced-motion / no-JS fallback */
 
@@ -131,12 +132,30 @@ body.is-sealed { overflow: hidden; }
    exactly. The letter is sandwiched between the back and the front pocket. */
 .stage {
   position: relative;
-  width: min(92vmin, 600px);
+  /* Desktop: nearly fill the viewport — bounded by height, or width on narrow
+     windows. Lifted so the flap has room above and the hint clears below. */
+  width: min(96vw, 82vh);
   aspect-ratio: 938 / 1048;
-  perspective: 1100px;
-  /* the pocket sits in the lower ~57% of the stage; lift it so the pocket (and
-     the letter inside it) is roughly screen-centred, with room above for the flap. */
-  transform: translateY(-18%);
+  flex-shrink: 0;   /* don't let the flex parent shrink the (intentionally oversized) stage */
+  perspective: 1500px;
+  transform: translateY(-9%);
+}
+/* Phones: zoom the envelope in so it fills the screen VERTICALLY. It's a
+   landscape envelope, so its sides run well past the screen edges (a deliberate
+   zoomed-in crop of the florals). The flap opens up beyond the top edge. The
+   letter is capped to the viewport, so it still fits; it's dropped lower in the
+   pocket so its reveal lands centred on screen. */
+@media (max-width: 640px) {
+  /* lift so the pocket (the visible envelope) is vertically centred on screen */
+  .stage { width: min(230vw, 106vh); transform: translateY(-21%); }
+  /* `.opener .std` (0,2,0) so it beats the base `.std` rule that comes later in
+     the file; drops the letter lower in the tall stage so its reveal is centred. */
+  .opener .std { top: 59%; }
+  /* the flap opens mostly above the screen here, so fade it out on reveal
+     rather than sliding it down (which would sweep it across the screen) */
+  .opener.is-open.is-sliding .env__flap {
+    transform: rotateX(0deg); opacity: 0; transition: opacity 0.45s var(--ease-soft);
+  }
 }
 /* Soft shadow under the closed envelope. IMPORTANT: on a pseudo-element, never a
    `filter` on .stage itself — a filter on the perspective element would flatten
@@ -170,14 +189,19 @@ body.is-sealed { overflow: hidden; }
    container units so it always fits, whatever the envelope's size. ---- */
 .std {
   position: absolute; z-index: 2;
-  left: 12%; right: 12%; top: 45.5%; bottom: 4.5%;
+  left: 50%; top: 44.5%; transform: translateX(-50%);   /* below the flap hinge (43.4%) so it's hidden when closed */
+  /* Sized to the smaller of: the pocket, and the screen — so the letter ALWAYS
+     fits the viewport, even when the envelope is zoomed in past the screen edges.
+     Height is content-driven; text scales to this width via container units. */
+  width: min(84%, 90vw, 660px);
+  container-type: inline-size;
   border-radius: 4px;
   background: linear-gradient(168deg, var(--paper-letter), #efe6d4);
 }
 /* the letter is focused programmatically for screen readers on reveal — no ring */
 .std:focus { outline: none; }
 /* handmade, deckle torn edge — a backing of the SAME paper (so it reads as a
-   torn silhouette, not a darker frame), kept off the container so it isn't clipped */
+   torn silhouette, not a darker frame) */
 .std::before {
   content: ""; position: absolute; inset: -6px; z-index: -1;
   background: linear-gradient(168deg, var(--paper-letter), #efe6d4);
@@ -185,62 +209,54 @@ body.is-sealed { overflow: hidden; }
   border-radius: 6px;
 }
 .std__content {
-  position: absolute; inset: 0; container-type: size;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; padding: 6% 9%; overflow: hidden;
-  border-radius: 5px;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; padding: 8cqw 9cqw;
+  border-radius: 4px;
   background: radial-gradient(130% 62% at 50% 0%, #fffdf8, transparent 60%);
 }
 
 .std__eyebrow {
   margin: 0; font-family: var(--font-body); font-weight: 600;
-  font-size: 3.1cqmin; letter-spacing: 0.34em; text-transform: uppercase;
+  font-size: 2.1cqw; letter-spacing: 0.34em; text-transform: uppercase;
   color: var(--sage-600);
 }
-.std__sprig { width: 32cqmin; margin: 1.6cqmin 0; }
+.std__sprig { width: 20cqw; margin: 1.4cqw 0; }
 .std__sprig svg { width: 100%; height: auto; display: block; }
 .std__names {
-  margin: 0; font-family: var(--font-script); font-weight: 400;
-  font-size: 15cqmin; line-height: 1; color: var(--ink);
+  margin: 0.4cqw 0 0; font-family: var(--font-script); font-weight: 400;
+  font-size: 8cqw; line-height: 1.04; color: var(--ink); text-wrap: balance;
 }
 .std__amp { color: var(--blush-400); padding: 0 0.05em; }
 .std__script {
-  margin: 1cqmin 0 0; font-family: var(--font-display); font-style: italic; font-weight: 500;
-  font-size: 5cqmin; line-height: 1.1; color: var(--sage-600);
+  margin: 0.8cqw 0 0; font-family: var(--font-display); font-style: italic; font-weight: 500;
+  font-size: 3.4cqw; line-height: 1.1; color: var(--sage-600);
 }
-.std__date { margin: 2.4cqmin 0 0; }
-.std__day {
-  margin: 0; font-family: var(--font-display); font-weight: 500;
-  font-size: 5.4cqmin; line-height: 1.1; color: var(--ink);
+.std__date {
+  margin: 2cqw 0 0; font-family: var(--font-display); font-weight: 500;
+  font-size: 3.9cqw; line-height: 1.15; color: var(--ink); letter-spacing: 0.3px;
 }
-.std__year {
-  margin: 1.4cqmin 0 0; display: flex; align-items: center; justify-content: center; gap: 0.7em;
-  font-family: var(--font-body); font-size: 2.5cqmin; letter-spacing: 0.26em;
-  text-transform: uppercase; color: var(--sage-600);
-}
-.std__year-dot { color: var(--blush-400); }
 .std__place {
-  margin: 2.2cqmin 0 0; font-family: var(--font-body);
-  font-size: 2.7cqmin; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted);
+  margin: 1.6cqw 0 0; font-family: var(--font-body);
+  font-size: 1.9cqw; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted);
 }
 
 /* ---- Slim live countdown ---- */
 .std-count {
   display: flex; align-items: stretch; justify-content: center;
-  gap: 3.4cqmin; margin: 3cqmin 0 0;
+  gap: 2.4cqw; margin: 2.4cqw 0 0;
 }
-.std-count__unit { display: flex; flex-direction: column; align-items: center; min-width: 8cqmin; }
+.std-count__unit { display: flex; flex-direction: column; align-items: center; min-width: 6cqw; }
 .std-count__num {
-  font-family: var(--font-display); font-weight: 600; font-size: 7cqmin; line-height: 1;
+  font-family: var(--font-display); font-weight: 600; font-size: 4.8cqw; line-height: 1;
   color: var(--sage-700); font-variant-numeric: tabular-nums;
 }
-.std-count__label { margin-top: 0.6cqmin; font-size: 2cqmin; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-.std-count__sep { width: 1px; background: linear-gradient(var(--sage-200), transparent); align-self: center; height: 7cqmin; }
-.std-count__done { margin: 0; font-family: var(--font-display); font-size: 4cqmin; color: var(--sage-600); }
+.std-count__label { margin-top: 0.5cqw; font-size: 1.4cqw; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.std-count__sep { width: 1px; background: linear-gradient(var(--sage-200), transparent); align-self: center; height: 4.8cqw; }
+.std-count__done { margin: 0; font-family: var(--font-display); font-size: 2.8cqw; color: var(--sage-600); }
 
 .std__follow {
-  margin: 3cqmin 0 0; font-family: var(--font-display); font-style: italic;
-  font-size: 4cqmin; color: var(--blush-500);
+  margin: 2.4cqw 0 0; font-family: var(--font-display); font-style: italic;
+  font-size: 2.8cqw; color: var(--blush-500);
 }
 
 /* Soft luminous sheen on the closed envelope — a gentle 'open here' cue. */
@@ -267,7 +283,7 @@ body.is-sealed { overflow: hidden; }
 
 /* ---- Hint ---- */
 .opener__hint {
-  position: absolute; left: 0; right: 0; bottom: clamp(6%, 8vh, 11%); z-index: 20;
+  position: absolute; left: 0; right: 0; bottom: clamp(2.5%, 3.5vh, 4.5%); z-index: 20;
   margin: 0; text-align: center;
 }
 .opener__hint-text {
