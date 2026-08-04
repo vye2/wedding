@@ -157,24 +157,27 @@ body {
    pocket, and a flap — all sharing one 938×1048 coordinate space so they stack
    exactly. The letter is sandwiched between the back and the front pocket.
 
-   FULL BLEED. The canvas reserves the top ~43.4% for the open flap, so the
-   envelope BODY is the bottom 56.6% of the canvas — i.e. body height = width ×
-   (1048/938) × 0.566 ≈ width × 0.632. To cover the viewport the body must be at
-   least as wide as the screen AND at least as tall, so:
-       width ≥ 100vw   and   0.632 × width ≥ 100vh  →  width ≥ 158vh
-   One formula therefore serves both layouts: on a landscape desktop it resolves
-   to ~100vw (edge to edge, the flap swinging up out of view), and on a tall
-   phone it resolves to ~158vh — a deep zoom that leaves only the middle of the
-   envelope on screen. The extra 1% is slack against sub-pixel rounding. */
+   SIZE. The canvas reserves the top ~43.4% for the open flap, so the envelope
+   BODY is the bottom 56.6% of the canvas — body height = width × (1048/938) ×
+   0.566 ≈ width × 0.632. The width below is the dial: it's set so the body nests
+   inside the open centre of the floral backdrop, with the wreath framing it,
+   rather than covering the whole screen. Height binds on a monitor (92vh puts the
+   body at ~58% of the screen height); 80vw stops it crowding a wide-short window.
+   The flap still swings up past the top edge as it opens, which is intended. */
 .stage {
   position: relative; z-index: 1;
-  width: max(101vw, 160vh);
+  width: min(80vw, 92vh);
   aspect-ratio: 938 / 1048;
   flex-shrink: 0;
   perspective: 1600px;
   /* the flap headroom means the body's centre sits at ~71.5% of the box. Lift by
      ~21.5% so that BODY — and the letter revealed in it — lands screen-centre. */
   transform: translateY(-21.5%);
+}
+/* Phones: a landscape envelope on a tall screen — fill the width and let it sit
+   in the middle of the frame's open centre. */
+@media (orientation: portrait) {
+  .stage { width: min(88vw, 60vh); }
 }
 
 .env__back, .env__front, .env__flap {
@@ -209,13 +212,13 @@ body {
      JS), then grows to full size as it rises out on reveal. */
   transform: translate(-50%, -50%) translateY(0) scale(var(--fit, 0.66));
   transition: transform 1.25s var(--ease-soft);
-  /* Full (revealed) size — as large as the screen allows, to match the full-bleed
-     envelope. Bounded BOTH ways: 94vw keeps side margins, and 120vh keeps the card
-     (roughly 1.4:1 once the portrait is added) inside the viewport height so no
-     text is ever cut off — it lands at ~86% of the screen height.
-     NOTE: percentage widths would resolve against the oversized stage, so the
-     cap must be in viewport units. */
-  width: min(94vw, 120vh);
+  /* Full (revealed) size — kept just under the envelope's body width, so it reads
+     as the card that came OUT of that envelope rather than something larger than
+     it, and so it still nests inside the floral frame's open centre. Track this
+     against the .stage width above if either changes.
+     NOTE: percentage widths would resolve against the stage, not the viewport,
+     so the cap must be in viewport units. */
+  width: min(84vw, 78vh);
   container-type: inline-size;
   border-radius: 4px;
   background: linear-gradient(168deg, var(--paper-letter), #efe6d4);
