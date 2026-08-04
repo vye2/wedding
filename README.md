@@ -177,7 +177,7 @@ Until then, treat any "submitted" RSVP as **not recorded**.
   cropped to a shared coordinate space and compressed for the web. No third-party
   license applies.
 
-  They were supplied in **blush** and have been **recoloured to a deep olive** (~`#7a895b`).
+  They were supplied in **blush** and have been **recoloured to a muted olive-sage** (`#819171`).
   The embossing is carried entirely in luminance, so the recolour pins the hue and
   rescales saturation and value, leaving every petal and fern untouched. The blush
   originals are in git history if they're ever wanted back. The envelope URLs carry
