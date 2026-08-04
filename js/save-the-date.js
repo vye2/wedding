@@ -38,23 +38,16 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-/* Size the letter for its two moments, and hand both to CSS as custom properties:
-     --grow  the REVEALED size: as tall as the screen with a small buffer. The
-             card's height is content-driven, so measuring beats arithmetic —
-             this holds even if the web fonts render taller than expected.
-     --fit   the SANDWICHED size: small enough to hide inside the pocket, which
-             is the band the flap and front cover (~52% of the stage). */
+/* Scale the letter down just enough to hide inside the pocket while sandwiched;
+   it grows back to full size (scale 1) as it rises out on reveal. */
 function fitLetter() {
   var std = document.getElementById('std-main');
   var stage = document.querySelector('.stage');
   if (!std || !stage) return;
-  var natural = std.offsetHeight;          // layout height — ignores the scale transform
-  if (!natural) return;
-
-  var grow = Math.min(1, (window.innerHeight * 0.94) / natural);
-  var fit = Math.min(grow, (stage.offsetHeight * 0.52) / natural);
-
-  std.style.setProperty('--grow', grow.toFixed(3));
+  // the letter must fit within the flap/front-covered band (~52% of the stage).
+  var coverable = stage.offsetHeight * 0.52;
+  var natural = std.offsetHeight;               // layout height — unaffected by the scale transform
+  var fit = natural > 0 ? Math.min(1, coverable / natural) : 1;
   std.style.setProperty('--fit', fit.toFixed(3));
 }
 
