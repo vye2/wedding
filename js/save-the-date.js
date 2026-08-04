@@ -72,14 +72,16 @@ function initOpener() {
     // 1) The top flap hinges open in 3D, revealing the letter tucked inside.
     opener.classList.add('is-open');
 
-    // 2) A beat to take in the open envelope + the letter inside, then the
-    //    whole envelope slides straight down, uncovering the letter from the top.
+    // 2) A short beat to take in the open envelope, then the whole envelope
+    //    slides straight down and out of frame, uncovering the letter.
+    //    The flap's 1.7s swing is ~85% done by now (it eases out, so it already
+    //    reads as open); it finishes on the way down rather than sitting still.
     setTimeout(function () {
       opener.classList.add('is-sliding');
-    }, 2000);
+    }, 1000);
 
-    // 3) The envelope is gone; the letter stays centred, framed by the photos.
-    //    Fade in the footer and move focus to the letter.
+    // 3) The envelope has cleared the frame (1.15s slide) and the letter stands
+    //    alone. Fade in the footer and move focus to the letter.
     setTimeout(function () {
       document.body.classList.add('is-revealed');
       var main = document.getElementById('std-main');
@@ -87,7 +89,7 @@ function initOpener() {
         main.setAttribute('tabindex', '-1');
         main.focus({ preventScroll: true });
       }
-    }, 3500);
+    }, 2500);
   }
 
   // The whole envelope is the control — a generous, obvious hit area.
