@@ -458,32 +458,26 @@ body.is-ready .petals { opacity: 1; }
     border-radius: 0;
     display: flex; flex-direction: column;
   }
-  /* The photo is capped at 60% of the viewport height. flex-grow is 0 so it can
-     never exceed that basis, and flex-shrink is 1 so it gives way if the type
-     ever needs more room than what's left. (max-height repeats the cap as a
-     guard; the vh pair is a fallback for browsers without dvh.) */
-  /* No border here — the picture runs to all three edges of the card and melts
-     into the stock at its foot instead of stopping on a line. */
+  /* No border, and no height cap — the picture runs to all three edges of the
+     card and takes every pixel the text block doesn't, melting into the stock at
+     its foot rather than stopping on a line. */
   .std__photo {
-    flex: 0 1 60vh;  max-height: 60vh;
-    flex: 0 1 60dvh; max-height: 60dvh;
-    height: auto; min-height: 0;
+    flex: 1; height: auto; min-height: 0;
     margin: 0;
     border-radius: 0;
   }
-  /* The dissolve is kept short — a quarter of the frame — because the title sits
-     just above it and a longer one would climb into the type. */
+  /* The dissolve is short and low, since the title now sits near the foot of the
+     frame — a longer one would climb into the type and wash the white out. */
   .std__photo-media {
-    -webkit-mask-image: linear-gradient(to bottom, #000 74%, rgba(0, 0, 0, 0) 99%);
-            mask-image: linear-gradient(to bottom, #000 74%, rgba(0, 0, 0, 0) 99%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 86%, rgba(0, 0, 0, 0) 100%);
+            mask-image: linear-gradient(to bottom, #000 86%, rgba(0, 0, 0, 0) 100%);
   }
-  /* The text block takes whatever the photo leaves and centres itself in it, so
-     capping the photo opens up the lower half rather than leaving dead stock at
-     the foot of the card. It doesn't shrink — the photo yields first.
+  /* The text block takes only what it needs; the photo has the rest. It doesn't
+     shrink, so the picture yields if the type ever needs more room.
      The card runs into the bottom edge, so keep the last line clear of a phone's
      home indicator. */
   .std__content {
-    flex: 1 0 auto; justify-content: center;
+    flex: 0 0 auto;
     padding-bottom: calc(5cqw + env(safe-area-inset-bottom, 0px));
   }
   /* The frame is much narrower than the 3:4 photo, so here it's the SIDES that
@@ -494,24 +488,31 @@ body.is-ready .petals { opacity: 1; }
   /* TYPE STEPS UP. Every size on the card is in cqw, i.e. relative to the card's
      WIDTH — and a phone card is ~390px where a monitor's is ~620px, so the scale
      that reads well on a desktop comes out around a third too small here.
-     Capping the photo at 60vh freed the room to correct it. */
+     The text block takes only what it needs, so there's room to correct it. */
   /* THE TITLE STACKS — SAVE / the / DATE — with the two key words carrying it and
-     "the" reduced to a hinge between them. Its foot sits at 72%, just clear of
-     the dissolve at 74%, so the white type always lands on solid picture.
+     "the" reduced to a hinge between them. Its foot sits low on the frame, at
+     85%, still clear of the dissolve at 86% so the white type always lands on
+     solid picture rather than fading out with it.
+
+     The three lines are set tight: 0.8 line-height on the display words (safe —
+     they're all caps, so nothing descends into the line below) and no margins
+     around the small one, so the stack reads as one block rather than three
+     separate lines.
+
      The parent's tracking and indent are cleared; each line sets its own, since
      they need very different amounts at these sizes. */
   .std__eyebrow {
-    top: 72%;
+    top: 85%;
     letter-spacing: normal; text-indent: 0;
   }
   .std__eyebrow-key {
-    display: block; font-size: 24cqw; line-height: 0.98;
+    display: block; font-size: 24cqw; line-height: 0.8;
     letter-spacing: 0.1em; text-indent: 0.1em;   /* indent offsets the trailing space, keeping it centred */
   }
   .std__eyebrow-mid {
-    display: block; font-size: 5.5cqw; line-height: 1.5;
+    display: block; font-size: 5.5cqw; line-height: 1.1;
     letter-spacing: 0.42em; text-indent: 0.42em;
-    margin: 0.8cqw 0;
+    margin: 0;
   }
   .std__names   { font-size: 9cqw; }
   .std__date    { font-size: 6.5cqw; }
