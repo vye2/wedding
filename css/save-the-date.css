@@ -188,10 +188,17 @@ body.is-ready .petals { opacity: 1; }
      ~21.5% so that BODY — and the letter revealed in it — lands screen-centre. */
   transform: translateY(-21.5%);
 }
-/* Phones: a landscape envelope on a tall screen — fill the width and let it sit
-   in the middle of the frame's open centre. */
+/* PHONES — zoom into the middle of the envelope so it COVERS the screen, rather
+   than sitting small inside the backdrop. A landscape envelope can't fill a tall
+   screen while staying whole, so it's sized to cover: the body must be at least
+   as wide as the screen AND at least as tall —
+       width ≥ 100vw   and   0.632 × width ≥ 100vh  →  width ≥ 158vh
+   which on a phone resolves to the height term and leaves roughly the middle
+   third of the envelope on screen: the seam of the V, and the inner tips of the
+   floral sprays at the lower corners. The extra 1% is slack for rounding.
+   The backdrop is deliberately hidden behind it until the envelope slides away. */
 @media (orientation: portrait) {
-  .stage { width: min(80vw, 54vh); }
+  .stage { width: max(101vw, 160vh); }
 }
 
 .env__back, .env__front, .env__flap {
@@ -241,7 +248,7 @@ body.is-ready .petals { opacity: 1; }
      Safe with the 3D hinge: a filter only flattens an element's own children, and
      this has none. It is the PERSPECTIVE element (.stage) that must never carry
      one — that was the bug that made the flap slide instead of rotate. */
-  filter: drop-shadow(0 -6px 9px rgba(84, 64, 58, 0.3));
+  filter: drop-shadow(0 -6px 9px rgba(84, 64, 58, 0.15));   /* half strength */
 }
 .opener.is-open .env__flap { transform: translateY(0) rotateX(0deg); }
 
