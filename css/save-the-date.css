@@ -337,16 +337,20 @@ body.is-ready .petals { opacity: 1; }
   position: absolute; left: 0; right: 0; top: 93%; z-index: 1;
   transform: translateY(-100%);
   margin: 0; text-align: center;
-  font-family: var(--font-display); font-weight: 600;
+  /* Light weight, for a finer, daintier line than the rest of the card's serif.
+     Cormorant's 300 is genuinely thin at display size, which is the point. */
+  font-family: var(--font-display); font-weight: 300;
   font-size: 6cqw; letter-spacing: 0.3em; text-indent: 0.3em;
   text-transform: uppercase; color: #fff;
-  text-shadow: 0 0.2cqw 1.6cqw rgba(0, 0, 0, 0.5);   /* holds it against a light frame */
+  /* two shadows: a tight one to keep the thin strokes crisp against busy pixels,
+     a wide soft one to hold the whole line against a light frame */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0.2cqw 1.6cqw rgba(0, 0, 0, 0.5);
 }
 .std__names {
   margin: 0; font-family: var(--font-script); font-weight: 400;
   font-size: 6cqw; line-height: 1.02; color: var(--ink);
 }
-.std__amp { color: #b0894a; padding: 0 0.03em; }   /* soft gold */
+.std__amp { color: var(--ink); padding: 0 0.03em; }   /* same ink as the names */
 
 /* a hairline gold rule with a small center diamond */
 .std__rule { display: flex; align-items: center; justify-content: center; gap: 1.6cqw; width: 44%; margin: 2cqw auto; }
