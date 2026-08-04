@@ -185,7 +185,18 @@ body {
   position: absolute; inset: 0;
   background-repeat: no-repeat; background-position: center; background-size: 100% 100%;
 }
-.env__back  { z-index: 1; background-image: image-set(url(../assets/env-back.webp)  type("image/webp"), url(../assets/env-back.png)  type("image/png")); }
+/* The base piece (the envelope with its flap missing) carries a slight shadow, so
+   the envelope lifts off the floral backdrop instead of sitting flat on it.
+   drop-shadow (not box-shadow) because it traces the image's ALPHA — the true
+   envelope silhouette — where box-shadow would outline the whole transparent
+   938×1048 canvas as a rectangle. Safe here even though the flap hinges in 3D: a
+   filter only flattens an element's own children, and this piece has none. Never
+   move it up to .stage, which owns the perspective. */
+.env__back  {
+  z-index: 1;
+  background-image: image-set(url(../assets/env-back.webp)  type("image/webp"), url(../assets/env-back.png)  type("image/png"));
+  filter: drop-shadow(0 7px 14px rgba(84, 64, 58, 0.26));
+}
 .env__front { z-index: 3; background-image: image-set(url(../assets/env-front.webp) type("image/webp"), url(../assets/env-front.png) type("image/png")); }
 
 /* The flap is authored in the OPEN (up) position; flipped down about its hinge
