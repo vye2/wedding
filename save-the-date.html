@@ -33,7 +33,7 @@
   <!-- Bespoke save-the-date theme (mirrors the locked sage + blush palette).
        The ?v= query is a cache buster — bump it whenever the CSS or JS changes so
        browsers pick the new file up without a hard refresh. -->
-  <link rel="stylesheet" href="css/save-the-date.css?v=14" />
+  <link rel="stylesheet" href="css/save-the-date.css?v=15" />
 
   <!-- No-JS fallback: hide the envelope pieces so the sandwiched letter shows. -->
   <noscript>
@@ -65,20 +65,16 @@
            (between the back and the front pocket). Its top is glimpsed when the
            flap lifts; the whole letter is exposed as the envelope slides down. -->
       <main class="std" id="std-main" aria-labelledby="std-names">
-        <!-- THE PORTRAIT — a hero photo across the top two thirds of the card, its
-             lower edge dissolving into the paper. "Save the Date" sits over it.
-             TO ADD THE REAL PHOTO: replace the <span class="std__photo-ph">…</span>
-             below with:
-               <img class="std__photo-img" src="assets/portrait.jpg"
-                    alt="Victor and Ashley" />
-             It's cropped to fill the frame (object-fit: cover). -->
+        <!-- THE PORTRAIT — the hero across the top two thirds of the card, its lower
+             edge dissolving into the paper. "Save the Date" sits over it.
+             The frame is wider than the square photo, so it's cropped to fill;
+             .std__photo-img's object-position decides which band shows. -->
         <figure class="std__photo">
-          <span class="std__photo-media">
-            <span class="std__photo-ph" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M12 20.5s-6.6-4-8.9-8C1 9.3 2.7 6 6 6c2 0 3.3 1.2 4 2.4C10.7 7.2 12 6 14 6c3.3 0 5 3.3 2.9 6.5-2.3 4-8.9 8-8.9 8z" fill="currentColor"/></svg>
-              <em>Your photo</em>
-            </span>
-          </span>
+          <picture class="std__photo-media">
+            <source srcset="assets/portrait.webp?v=1" type="image/webp" />
+            <img class="std__photo-img" src="assets/portrait.jpg?v=1"
+                 alt="Victor and Ashley, arms wrapped together, her engagement ring on show" />
+          </picture>
           <p class="std__eyebrow">Save the Date</p>
         </figure>
 

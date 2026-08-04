@@ -72,10 +72,10 @@ body {
   /* the ?v= is a cache buster on the IMAGE itself — bump it whenever bg-floral is
      re-exported, or browsers keep serving the previous picture from cache even
      though the file on disk changed. */
-  background-image: url(../assets/bg-floral.jpg?v=3);
+  background-image: url(../assets/bg-floral.jpg?v=4);
   background-image: image-set(
-    url(../assets/bg-floral.webp?v=3) type("image/webp"),
-    url(../assets/bg-floral.jpg?v=3)  type("image/jpeg"));
+    url(../assets/bg-floral.webp?v=4) type("image/webp"),
+    url(../assets/bg-floral.jpg?v=4)  type("image/jpeg"));
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -293,23 +293,20 @@ body {
    ending on a hard seam. A mask rather than an overlay gradient, so it fades to
    whatever is actually behind it — no colour to keep in sync with the stock. */
 .std__photo-media {
-  position: absolute; inset: 0;
-  background: linear-gradient(150deg, #f7e9ec, #eef0e6 55%, #e6ecdd);
-  -webkit-mask-image: linear-gradient(to bottom, #000 56%, rgba(0, 0, 0, 0) 97%);
-          mask-image: linear-gradient(to bottom, #000 56%, rgba(0, 0, 0, 0) 97%);
+  display: block; position: absolute; inset: 0;
+  background: linear-gradient(150deg, #f7e9ec, #eef0e6 55%, #e6ecdd);   /* while it loads */
+  /* The fade is kept short — it starts two thirds down — because the photo's
+     subject (the clasped hands and the ring) sits low in the frame and a longer
+     dissolve would wash it out. */
+  -webkit-mask-image: linear-gradient(to bottom, #000 66%, rgba(0, 0, 0, 0) 99%);
+          mask-image: linear-gradient(to bottom, #000 66%, rgba(0, 0, 0, 0) 99%);
 }
-/* the real photo: <img class="std__photo-img" …> — cropped to fill the frame */
-.std__photo-img { display: block; width: 100%; height: 100%; object-fit: cover; }
-/* placeholder shown until a real photo is dropped in — biased upward so it sits
-   in the solid part of the frame rather than down in the fade */
-.std__photo-ph {
-  position: absolute; inset: 0; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 1cqw; padding-bottom: 20cqw;
-}
-.std__photo-ph svg { width: 6.5cqw; height: auto; color: #d3a6ad; opacity: 0.9; }
-.std__photo-ph em {
-  font-family: var(--font-body); font-style: normal; font-size: 1.7cqw;
-  letter-spacing: 0.18em; text-transform: uppercase; color: #b08e96;
+.std__photo-img {
+  display: block; width: 100%; height: 100%; object-fit: cover;
+  /* The frame is wider than the square photo, so it shows a horizontal band of it.
+     Biased low so the hands and the ring land above the dissolving edge rather
+     than in it — raise this number to show more of the photo's lower half. */
+  object-position: center 78%;
 }
 
 /* "Save the Date" sits ON the photo, low enough to land in its dissolving edge —
