@@ -293,9 +293,8 @@ body.is-ready .petals { opacity: 1; }
 .std:focus { outline: none; }
 .std__content {
   display: flex; flex-direction: column; align-items: center;
-  /* the 4cqw top matches the photo's other three margins, so the picture sits in
-     an even band of stock on all sides */
-  text-align: center; padding: 4cqw 6cqw 5cqw;
+  /* the band of stock under the full-bleed photo — the polaroid's bottom margin */
+  text-align: center; padding: 5cqw 6cqw 5.5cqw;
   border-radius: 0 0 3px 3px;
 }
 
@@ -309,12 +308,12 @@ body.is-ready .petals { opacity: 1; }
    the type below, or the ratio drifts. */
 .std__photo {
   position: relative; flex: none;
-  /* the polaroid margin — an even band of stock above and beside the picture.
-     The bottom margin comes from .std__content's padding, so the gap below the
-     photo matches; the wider run of stock under it is the text block. */
-  margin: 4cqw 4cqw 0;
-  height: 77cqw;
-  border-radius: 1px; overflow: hidden;
+  /* Full bleed: the picture runs the card's whole width and up to its top edge,
+     so the only band of stock is the one BELOW it holding the text — the polaroid
+     read now comes from that bottom margin alone. Its top corners take the card's
+     radius; the bottom two stay square where the text block meets it. */
+  margin: 0; width: 100%; height: 77cqw;
+  border-radius: 3px 3px 0 0; overflow: hidden;
 }
 /* The image layer, MASKED so its lower edge dissolves into the paper instead of
    ending on a hard seam. A mask rather than an overlay gradient, so it fades to
