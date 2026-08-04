@@ -64,10 +64,18 @@ body {
   overflow: hidden;          /* one fixed screen — nothing scrolls */
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  background:
-    radial-gradient(120% 70% at 12% 0%, var(--blush-100), transparent 52%),
-    radial-gradient(130% 80% at 100% 100%, var(--sage-100), transparent 55%),
-    var(--ivory);
+  /* The backdrop: a sunlit floral frame — roses, eucalyptus and fern around an
+     open cream centre, which is exactly where the envelope and letter sit. The
+     ivory keeps the page on-palette while the image loads; the plain url() is a
+     fallback for browsers without image-set(). */
+  background-color: var(--ivory);
+  background-image: url(../assets/bg-floral.jpg);
+  background-image: image-set(
+    url(../assets/bg-floral.webp) type("image/webp"),
+    url(../assets/bg-floral.jpg)  type("image/jpeg"));
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .skip-link {

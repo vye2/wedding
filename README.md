@@ -23,6 +23,7 @@ wedding stationery and to be hosted for free on **GitHub Pages**.
 │   ├── env-back.webp    # envelope back (solid pocket)  — couple's own artwork, see Credits
 │   ├── env-front.webp   # envelope front pocket (covers the letter's lower half)
 │   ├── env-flap.webp    # the flap (flips down to close, rotates up to open); .png fallbacks alongside
+│   ├── bg-floral.webp   # full-screen backdrop: floral frame around an open cream centre (.jpg fallback)
 │   ├── paper-kraft.png  # legacy kraft texture (public domain — no longer used by the envelope)
 │   └── og-image.png     # (optional) add your own 1200×630 social preview image
 ├── README.md         # this file
@@ -154,6 +155,10 @@ Until then, treat any "submitted" RSVP as **not recorded**.
 
 ## Credits
 
+- **Backdrop** — `assets/bg-floral.webp` (with a `.jpg` fallback) is the couple's
+  **own artwork**: a sunlit floral frame — roses, eucalyptus and fern around an open
+  cream centre — compressed for the web. It's set on `body` with `background-size:
+  cover`, so its open centre stays behind the envelope and letter at any size.
 - **Envelope** — `assets/env-back`, `env-front`, and `env-flap` (WebP, with `.png`
   fallbacks) are the couple's **own artwork** — their blush, floral-embossed envelope
   supplied as separate pieces (back, front pocket, flap) so the flap can flip open —
