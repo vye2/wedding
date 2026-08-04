@@ -72,10 +72,10 @@ body {
   /* the ?v= is a cache buster on the IMAGE itself — bump it whenever bg-floral is
      re-exported, or browsers keep serving the previous picture from cache even
      though the file on disk changed. */
-  background-image: url(../assets/bg-floral.jpg?v=2);
+  background-image: url(../assets/bg-floral.jpg?v=3);
   background-image: image-set(
-    url(../assets/bg-floral.webp?v=2) type("image/webp"),
-    url(../assets/bg-floral.jpg?v=2)  type("image/jpeg"));
+    url(../assets/bg-floral.webp?v=3) type("image/webp"),
+    url(../assets/bg-floral.jpg?v=3)  type("image/jpeg"));
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -215,6 +215,23 @@ body {
   transform: translateY(0) rotateX(180deg);
   backface-visibility: visible;
   transition: transform 1.7s var(--ease-soft);   /* a slower, more graceful open */
+  /* A shadow under the flap's V, where it overlaps the envelope front — and none
+     along its straight edge, which is flush with the envelope's own top edge.
+
+     Both fall out of ONE offset, because drop-shadow traces the image's alpha and
+     hides whatever the shape itself covers. The image is a triangle with its apex
+     at the top and a horizontal base at the hinge (verified against the alpha
+     channel), so an offset AWAY from the base leaves the shadow visible along the
+     two diagonals and tucked out of sight behind the straight edge.
+
+     The offset is negative because the closed flap is rotateX(180deg): the filter
+     is painted in the element's own space and then flipped with it, so local "up"
+     lands as "down" on screen — a shadow cast downward off the V, as it should be.
+
+     Safe with the 3D hinge: a filter only flattens an element's own children, and
+     this has none. It is the PERSPECTIVE element (.stage) that must never carry
+     one — that was the bug that made the flap slide instead of rotate. */
+  filter: drop-shadow(0 -6px 9px rgba(84, 64, 58, 0.3));
 }
 .opener.is-open .env__flap { transform: translateY(0) rotateX(0deg); }
 
