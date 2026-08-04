@@ -39,7 +39,7 @@
   <!-- Bespoke save-the-date theme (mirrors the locked sage + blush palette).
        The ?v= query is a cache buster — bump it whenever the CSS or JS changes so
        browsers pick the new file up without a hard refresh. -->
-  <link rel="stylesheet" href="css/save-the-date.css?v=22" />
+  <link rel="stylesheet" href="css/save-the-date.css?v=23" />
 
   <!-- No-JS fallback: hide the envelope pieces so the sandwiched letter shows. -->
   <noscript>
@@ -73,12 +73,17 @@
            (between the back and the front pocket). Its top is glimpsed when the
            flap lifts; the whole letter is exposed as the envelope slides down. -->
       <main class="std" id="std-main" aria-labelledby="std-names">
-        <!-- THE PORTRAIT — the hero across the top two thirds of the card, framed by
-             an even band of stock. "Save the Date" sits over its foot.
-             The frame is wider than the square photo, so it's cropped to fill;
-             .std__photo-img's object-position decides which band shows. -->
+        <!-- THE PORTRAIT — the hero of the card, with "Save the Date" over its foot.
+             On landscape it bleeds to the card's edges; on portrait it sits inside a
+             polaroid border and the card fills the phone. Either way it's cropped to
+             fill, and .std__photo-img's object-position picks what survives. -->
         <figure class="std__photo">
           <picture class="std__photo-media">
+            <!-- Portrait screens get the TALL crop: the card fills a phone there, so
+                 the frame is far taller than it is wide and the square version would
+                 lose its top and bottom. First matching source wins, so these lead. -->
+            <source media="(orientation: portrait)" srcset="assets/portrait-tall.webp?v=1" type="image/webp" />
+            <source media="(orientation: portrait)" srcset="assets/portrait-tall.jpg?v=1" />
             <source srcset="assets/portrait.webp?v=1" type="image/webp" />
             <img class="std__photo-img" src="assets/portrait.jpg?v=1"
                  alt="Victor and Ashley, arms wrapped together, her engagement ring on show" />

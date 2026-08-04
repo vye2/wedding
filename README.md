@@ -160,10 +160,13 @@ Until then, treat any "submitted" RSVP as **not recorded**.
 
 ## Credits
 
-- **Portrait** — `assets/portrait.webp` (with a `.jpg` fallback) is the couple's own
-  engagement photo, downscaled from 4480px square to 1600px and compressed. It is
-  the hero across the top of the letter, cropped to fill; `object-position` in
-  `.std__photo-img` chooses which band of the square shows.
+- **Portrait** — the couple's own engagement photo, in two crops. `assets/portrait`
+  (square, from a 4480px original) is used on landscape screens, where it bleeds to
+  the card's edges; `assets/portrait-tall` (3:4, from a 4480×5974 original) is used
+  on portrait screens, where the card fills the phone and the frame is far taller
+  than it is wide. Both have `.webp` with a `.jpg` fallback, and the right one is
+  picked by a `media="(orientation: portrait)"` `<source>` in the `<picture>`.
+  Each is cropped to fill; `object-position` in `.std__photo-img` picks what survives.
 - **Backdrop** — `assets/bg-floral.webp` (with a `.jpg` fallback) is the couple's
   **own artwork**: a sunlit floral frame — roses, eucalyptus and fern around an open
   cream centre — compressed for the web. It's set on `body` with `background-size:

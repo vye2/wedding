@@ -199,6 +199,25 @@ body.is-ready .petals { opacity: 1; }
    The backdrop is deliberately hidden behind it until the envelope slides away. */
 @media (orientation: portrait) {
   .stage { width: max(101vw, 160vh); }
+
+  /* THE CARD FILLS THE PHONE. Its height is pinned rather than left to the
+     content, and the photo takes whatever the text block doesn't — so the card
+     lands at exactly 92vh however the type reflows, and the picture absorbs the
+     difference instead of the total drifting.
+
+     The polaroid border comes back here: a band of stock above and beside the
+     photo, with the text block as the wider margin below. (On landscape the
+     photo bleeds to the card's edges instead.) */
+  .std { width: 90vw; height: 92vh; display: flex; flex-direction: column; }
+  .std__photo {
+    flex: 1; height: auto; min-height: 0;
+    margin: 4cqw 4cqw 0;
+    border-radius: 2px;
+  }
+  /* The frame is much narrower than the 3:4 photo, so here it's the SIDES that
+     get cropped, not the top and bottom — the vertical bias used on desktop
+     would do nothing, and centred keeps the clasped hands in the middle. */
+  .std__photo-img { object-position: center center; }
 }
 
 .env__back, .env__front, .env__flap {
