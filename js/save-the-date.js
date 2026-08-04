@@ -78,16 +78,31 @@ function whenBackdropReady(done) {
   Promise.all(waits).then(go, go);
 }
 
-/* Scale the letter down just enough to hide inside the pocket while sandwiched;
-   it grows back to full size (scale 1) as it rises out on reveal. */
+/* How small the card is held while sandwiched. Two things decide it:
+
+   1. It MUST fit the band the flap and front cover (~52% of the stage), or it
+      pokes out past the sealed envelope.
+   2. It should be visibly smaller than its revealed size, so the reveal has that
+      growth to it rather than the card simply appearing at full size.
+
+   Rule 1 alone isn't enough for rule 2. On a portrait screen the envelope AND the
+   card are both sized from viewport height, so the ratio between them is fixed —
+   the first rule lands on 0.93 on every phone regardless of its size, which is a
+   7% growth: real, but too small to read as anything. Landscape doesn't have the
+   problem (the card is far taller than the band there, so it lands near 0.6).
+
+   Hence the ceiling: hold the card at 0.85 even when it would be free to sit
+   larger. It's still comfortably inside the covered band, and the reveal gains a
+   ~18% growth on phones. */
+var SEALED_MAX = 0.85;
+
 function fitLetter() {
   var std = document.getElementById('std-main');
   var stage = document.querySelector('.stage');
   if (!std || !stage) return;
-  // the letter must fit within the flap/front-covered band (~52% of the stage).
   var coverable = stage.offsetHeight * 0.52;
   var natural = std.offsetHeight;               // layout height — unaffected by the scale transform
-  var fit = natural > 0 ? Math.min(1, coverable / natural) : 1;
+  var fit = natural > 0 ? Math.min(SEALED_MAX, coverable / natural) : SEALED_MAX;
   std.style.setProperty('--fit', fit.toFixed(3));
 }
 
