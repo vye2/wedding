@@ -204,16 +204,16 @@ body.is-ready .petals { opacity: 1; }
    move it up to .stage, which owns the perspective. */
 .env__back  {
   z-index: 1;
-  background-image: image-set(url(../assets/env-back.webp?v=2)  type("image/webp"), url(../assets/env-back.png?v=2)  type("image/png"));
+  background-image: image-set(url(../assets/env-back.webp?v=3)  type("image/webp"), url(../assets/env-back.png?v=3)  type("image/png"));
   filter: drop-shadow(0 7px 14px rgba(84, 64, 58, 0.26));
 }
-.env__front { z-index: 3; background-image: image-set(url(../assets/env-front.webp?v=2) type("image/webp"), url(../assets/env-front.png?v=2) type("image/png")); }
+.env__front { z-index: 3; background-image: image-set(url(../assets/env-front.webp?v=3) type("image/webp"), url(../assets/env-front.png?v=3) type("image/png")); }
 
 /* The flap is authored in the OPEN (up) position; flipped down about its hinge
    (y≈43.4% of the piece) it covers the pocket = closed. One image, both faces. */
 .env__flap {
   z-index: 4;
-  background-image: image-set(url(../assets/env-flap.webp?v=2) type("image/webp"), url(../assets/env-flap.png?v=2) type("image/png"));
+  background-image: image-set(url(../assets/env-flap.webp?v=3) type("image/webp"), url(../assets/env-flap.png?v=3) type("image/png"));
   transform-origin: 50% 43.4%;
   /* the translateY is identity here, but it keeps the function list the same in
      all three states (closed / open / sliding) so each transition interpolates
@@ -488,6 +488,13 @@ body.is-ready .petals { opacity: 1; }
      get cropped, not the top and bottom — the vertical bias used on desktop
      would do nothing, and centred keeps the clasped hands in the middle. */
   .std__photo-img { object-position: center center; }
+
+  /* The envelope covers the whole screen here, so "tap to open" sits ON it rather
+     than on the pale backdrop. Against the darker sage the sage text falls to
+     2.8:1; ink lands at 4.8:1. (White is worse still, 2.4:1 — the envelope is a
+     mid tone, so darker beats lighter.) Landscape keeps the sage: there the hint
+     sits below the envelope, on the cream. */
+  .opener__hint-text { color: var(--ink); }
 
   /* TYPE STEPS UP. Every size on the card is in cqw, i.e. relative to the card's
      WIDTH — and a phone card is ~390px where a monitor's is ~620px, so the scale
