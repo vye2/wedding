@@ -49,6 +49,16 @@
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ---- THE ONE KNOB TO TURN WHEN THE ENVELOPE IS RECOLOURED ----
+     On phones the envelope covers the screen, so "tap to open" sits ON it and
+     has to contrast with the ARTWORK, not with the page. No single value can do
+     that: ink reads 8.9:1 on a near-white envelope and 1.4:1 on a near-black one,
+     and white is the reverse. It was tuned in place four times chasing that, so
+     it now lives here — set the pair to suit the envelope's lightness, dark text
+     with a pale halo for a light envelope, the reverse for a dark one. */
+  --hint-on-env:      #ffffff;                  /* current envelope is dark */
+  --hint-on-env-halo: rgba(18, 22, 12, 0.55);
 }
 
 * { box-sizing: border-box; }
@@ -204,16 +214,16 @@ body.is-ready .petals { opacity: 1; }
    move it up to .stage, which owns the perspective. */
 .env__back  {
   z-index: 1;
-  background-image: image-set(url(../assets/env-back.webp?v=8)  type("image/webp"), url(../assets/env-back.png?v=8)  type("image/png"));
+  background-image: image-set(url(../assets/env-back.webp?v=9)  type("image/webp"), url(../assets/env-back.png?v=9)  type("image/png"));
   filter: drop-shadow(0 7px 14px rgba(84, 64, 58, 0.26));
 }
-.env__front { z-index: 3; background-image: image-set(url(../assets/env-front.webp?v=8) type("image/webp"), url(../assets/env-front.png?v=8) type("image/png")); }
+.env__front { z-index: 3; background-image: image-set(url(../assets/env-front.webp?v=9) type("image/webp"), url(../assets/env-front.png?v=9) type("image/png")); }
 
 /* The flap is authored in the OPEN (up) position; flipped down about its hinge
    (y≈43.4% of the piece) it covers the pocket = closed. One image, both faces. */
 .env__flap {
   z-index: 4;
-  background-image: image-set(url(../assets/env-flap.webp?v=8) type("image/webp"), url(../assets/env-flap.png?v=8) type("image/png"));
+  background-image: image-set(url(../assets/env-flap.webp?v=9) type("image/webp"), url(../assets/env-flap.png?v=9) type("image/png"));
   transform-origin: 50% 43.4%;
   /* the translateY is identity here, but it keeps the function list the same in
      all three states (closed / open / sliding) so each transition interpolates
@@ -490,14 +500,11 @@ body.is-ready .petals { opacity: 1; }
   .std__photo-img { object-position: center center; }
 
   /* "Tap to open" sits ON the envelope here, since the envelope covers the screen.
-     The envelope's tone has now changed several times and the right colour flipped
-     with it each time — sage on a pale one, ink on a mid one, white on a dark one.
-     So this doesn't pick a colour to suit the current envelope: ink carries a pale
-     or mid tone, and the pale halo lifts it off a darker one. It holds across the
-     whole range without being revisited on the next recolour. */
+     Both values come from :root — see the note there. Landscape is untouched: the
+     hint sits below the envelope on cream, where the base sage is right. */
   .opener__hint-text {
-    color: var(--ink);
-    text-shadow: 0 0 7px rgba(255, 255, 255, 0.9), 0 1px 2px rgba(255, 255, 255, 0.85);
+    color: var(--hint-on-env);
+    text-shadow: 0 1px 3px var(--hint-on-env-halo), 0 0 9px var(--hint-on-env-halo);
   }
 
   /* TYPE STEPS UP. Every size on the card is in cqw, i.e. relative to the card's
