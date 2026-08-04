@@ -205,9 +205,9 @@ body.is-ready .petals { opacity: 1; }
      lands at exactly 92vh however the type reflows, and the picture absorbs the
      difference instead of the total drifting.
 
-     The polaroid border comes back here: a band of stock above and beside the
-     photo, with the text block as the wider margin below. (On landscape the
-     photo bleeds to the card's edges instead.) */
+     The polaroid border carries over from the base rule — a band of stock above
+     and beside the photo, with the text block as the wider margin below. Only the
+     radius differs, to suit the taller frame. */
   .std { width: 90vw; height: 92vh; display: flex; flex-direction: column; }
   .std__photo {
     flex: 1; height: auto; min-height: 0;
@@ -312,8 +312,9 @@ body.is-ready .petals { opacity: 1; }
 .std:focus { outline: none; }
 .std__content {
   display: flex; flex-direction: column; align-items: center;
-  /* the band of stock under the full-bleed photo — the polaroid's bottom margin */
-  text-align: center; padding: 5cqw 6cqw 5.5cqw;
+  /* the 4cqw top matches the photo's other three margins, so the picture sits in
+     an even band of stock on all sides */
+  text-align: center; padding: 4cqw 6cqw 5cqw;
   border-radius: 0 0 3px 3px;
 }
 
@@ -327,12 +328,12 @@ body.is-ready .petals { opacity: 1; }
    the type below, or the ratio drifts. */
 .std__photo {
   position: relative; flex: none;
-  /* Full bleed: the picture runs the card's whole width and up to its top edge,
-     so the only band of stock is the one BELOW it holding the text — the polaroid
-     read now comes from that bottom margin alone. Its top corners take the card's
-     radius; the bottom two stay square where the text block meets it. */
-  margin: 0; width: 100%; height: 77cqw;
-  border-radius: 3px 3px 0 0; overflow: hidden;
+  /* the polaroid margin — an even band of stock above and beside the picture.
+     The bottom margin comes from .std__content's padding, so the gap below the
+     photo matches; the wider run of stock under it is the text block. */
+  margin: 4cqw 4cqw 0;
+  height: 77cqw;
+  border-radius: 1px; overflow: hidden;
 }
 /* The image layer, MASKED so its lower edge dissolves into the paper instead of
    ending on a hard seam. A mask rather than an overlay gradient, so it fades to
