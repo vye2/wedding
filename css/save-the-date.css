@@ -188,48 +188,8 @@ body.is-ready .petals { opacity: 1; }
      ~21.5% so that BODY — and the letter revealed in it — lands screen-centre. */
   transform: translateY(-21.5%);
 }
-/* PHONES — zoom into the middle of the envelope so it COVERS the screen, rather
-   than sitting small inside the backdrop. A landscape envelope can't fill a tall
-   screen while staying whole, so it's sized to cover: the body must be at least
-   as wide as the screen AND at least as tall —
-       width ≥ 100vw   and   0.632 × width ≥ 100vh  →  width ≥ 158vh
-   which on a phone resolves to the height term and leaves roughly the middle
-   third of the envelope on screen: the seam of the V, and the inner tips of the
-   floral sprays at the lower corners. The extra 1% is slack for rounding.
-   The backdrop is deliberately hidden behind it until the envelope slides away. */
-@media (orientation: portrait) {
-  .stage { width: max(101vw, 160vh); }
-
-  /* THE CARD IS THE VIEWPORT. Edge to edge, corners squared off, so no backdrop
-     shows around it at all. Its height is pinned rather than left to the content,
-     and the photo takes whatever the text block doesn't — so the card matches the
-     screen exactly however the type reflows, with the picture absorbing the
-     difference rather than the total drifting.
-
-     dvh as well as vh: on a phone the toolbars come and go, and vh alone would
-     leave a strip of backdrop showing when they retract.
-
-     The polaroid border carries over from the base rule — a band of stock above
-     and beside the photo, with the text block as the wider margin below. That's
-     the card's own frame, not a margin around it. */
-  .std {
-    width: 100vw; height: 100vh; height: 100dvh;
-    border-radius: 0;
-    display: flex; flex-direction: column;
-  }
-  .std__photo {
-    flex: 1; height: auto; min-height: 0;
-    margin: 4cqw 4cqw 0;
-    border-radius: 2px;
-  }
-  /* the card now runs into the bottom edge, so keep the last line clear of a
-     phone's home indicator */
-  .std__content { padding-bottom: calc(5cqw + env(safe-area-inset-bottom, 0px)); }
-  /* The frame is much narrower than the 3:4 photo, so here it's the SIDES that
-     get cropped, not the top and bottom — the vertical bias used on desktop
-     would do nothing, and centred keeps the clasped hands in the middle. */
-  .std__photo-img { object-position: center center; }
-}
+/* The phone overrides for .stage live in the portrait block at the END of this
+   file — see the note there about why they have to sit last. */
 
 .env__back, .env__front, .env__flap {
   position: absolute; inset: 0;
@@ -458,6 +418,59 @@ body.is-ready .petals { opacity: 1; }
 .opener__hint-text::after { content: "·"; margin: 0 0.7em; color: var(--blush-400); }
 .opener.is-open .opener__hint { opacity: 0; transition: opacity 0.4s var(--ease); }
 @keyframes hint-breathe { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+
+/* ============================ PHONES (PORTRAIT) ============================
+   KEEP THIS BLOCK LAST — after every rule it overrides.
+
+   A media query adds NO specificity, so `.std` in here and `.std` up above tie,
+   and ties are broken by source order. Sitting earlier in the file, this block
+   silently lost width, border-radius, the photo's flex sizing and
+   object-position to the base rules, while height and display — which the base
+   rules don't set — still applied. That mix is what produced a card filling the
+   screen vertically but inset at the sides.
+
+   THE ENVELOPE covers the screen here rather than sitting small inside the
+   backdrop. A landscape envelope can't fill a tall screen while staying whole,
+   so it's sized to cover: the body must be at least as wide as the screen AND
+   at least as tall —
+       width ≥ 100vw   and   0.632 × width ≥ 100vh  →  width ≥ 158vh
+   which on a phone resolves to the height term and leaves roughly the middle
+   third of the envelope on screen: the seam of the V, and the inner tips of the
+   floral sprays at the lower corners. The extra 1% is slack for rounding.
+   The backdrop is deliberately hidden behind it until the envelope slides away. */
+@media (orientation: portrait) {
+  .stage { width: max(101vw, 160vh); }
+
+  /* THE CARD IS THE VIEWPORT. Edge to edge, corners squared off, so no backdrop
+     shows around it at all. Its height is pinned rather than left to the content,
+     and the photo takes whatever the text block doesn't — so the card matches the
+     screen exactly however the type reflows, with the picture absorbing the
+     difference rather than the total drifting.
+
+     dvh as well as vh: on a phone the toolbars come and go, and vh alone would
+     leave a strip of backdrop showing when they retract.
+
+     The polaroid border carries over from the base rule — a band of stock above
+     and beside the photo, with the text block as the wider margin below. That's
+     the card's own frame, not a margin around it. */
+  .std {
+    width: 100vw; height: 100vh; height: 100dvh;
+    border-radius: 0;
+    display: flex; flex-direction: column;
+  }
+  .std__photo {
+    flex: 1; height: auto; min-height: 0;
+    margin: 4cqw 4cqw 0;
+    border-radius: 2px;
+  }
+  /* the card now runs into the bottom edge, so keep the last line clear of a
+     phone's home indicator */
+  .std__content { padding-bottom: calc(5cqw + env(safe-area-inset-bottom, 0px)); }
+  /* The frame is much narrower than the 3:4 photo, so here it's the SIDES that
+     get cropped, not the top and bottom — the vertical bias used on desktop
+     would do nothing, and centred keeps the clasped hands in the middle. */
+  .std__photo-img { object-position: center center; }
+}
 
 /* ============================ REDUCED MOTION ============================ */
 @media (prefers-reduced-motion: reduce) {
