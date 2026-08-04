@@ -204,16 +204,16 @@ body.is-ready .petals { opacity: 1; }
    move it up to .stage, which owns the perspective. */
 .env__back  {
   z-index: 1;
-  background-image: image-set(url(../assets/env-back.webp?v=6)  type("image/webp"), url(../assets/env-back.png?v=6)  type("image/png"));
+  background-image: image-set(url(../assets/env-back.webp?v=7)  type("image/webp"), url(../assets/env-back.png?v=7)  type("image/png"));
   filter: drop-shadow(0 7px 14px rgba(84, 64, 58, 0.26));
 }
-.env__front { z-index: 3; background-image: image-set(url(../assets/env-front.webp?v=6) type("image/webp"), url(../assets/env-front.png?v=6) type("image/png")); }
+.env__front { z-index: 3; background-image: image-set(url(../assets/env-front.webp?v=7) type("image/webp"), url(../assets/env-front.png?v=7) type("image/png")); }
 
 /* The flap is authored in the OPEN (up) position; flipped down about its hinge
    (y≈43.4% of the piece) it covers the pocket = closed. One image, both faces. */
 .env__flap {
   z-index: 4;
-  background-image: image-set(url(../assets/env-flap.webp?v=6) type("image/webp"), url(../assets/env-flap.png?v=6) type("image/png"));
+  background-image: image-set(url(../assets/env-flap.webp?v=7) type("image/webp"), url(../assets/env-flap.png?v=7) type("image/png"));
   transform-origin: 50% 43.4%;
   /* the translateY is identity here, but it keeps the function list the same in
      all three states (closed / open / sliding) so each transition interpolates
@@ -489,11 +489,16 @@ body.is-ready .petals { opacity: 1; }
      would do nothing, and centred keeps the clasped hands in the middle. */
   .std__photo-img { object-position: center center; }
 
-  /* NOTE: "tap to open" needs no override here. On phones the envelope covers the
-     screen so the hint sits on it, and while the envelope was dark that forced a
-     light colour — but at this pale a tone the base sage reads 5.2:1 against the
-     envelope AND against the cream backdrop landscape shows it on. One colour now
-     serves both, so the override is gone rather than inverted again. */
+  /* "Tap to open" sits ON the envelope here, since the envelope covers the screen.
+     The envelope's tone has now changed several times and the right colour flipped
+     with it each time — sage on a pale one, ink on a mid one, white on a dark one.
+     So this doesn't pick a colour to suit the current envelope: ink carries a pale
+     or mid tone, and the pale halo lifts it off a darker one. It holds across the
+     whole range without being revisited on the next recolour. */
+  .opener__hint-text {
+    color: var(--ink);
+    text-shadow: 0 0 7px rgba(255, 255, 255, 0.9), 0 1px 2px rgba(255, 255, 255, 0.85);
+  }
 
   /* TYPE STEPS UP. Every size on the card is in cqw, i.e. relative to the card's
      WIDTH — and a phone card is ~390px where a monitor's is ~620px, so the scale
