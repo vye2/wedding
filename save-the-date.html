@@ -30,8 +30,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <!-- Bespoke save-the-date theme (mirrors the locked sage + blush palette) -->
-  <link rel="stylesheet" href="css/save-the-date.css" />
+  <!-- Bespoke save-the-date theme (mirrors the locked sage + blush palette).
+       The ?v= query is a cache buster — bump it whenever the CSS or JS changes so
+       browsers pick the new file up without a hard refresh. -->
+  <link rel="stylesheet" href="css/save-the-date.css?v=5" />
 
   <!-- No-JS fallback: hide the envelope pieces so the sandwiched letter shows. -->
   <noscript>
@@ -81,14 +83,19 @@
           <p class="std__eyebrow">Save the Date</p>
 
           <h1 class="std__names" id="std-names">
-            Victor Ye <span class="std__amp">&amp;</span> Ashley Huynh
+            <span class="std__name">Victor Ye</span>
+            <span class="std__amp">&amp;</span>
+            <span class="std__name">Ashley Huynh</span>
           </h1>
 
           <p class="std__vow">are getting married</p>
 
           <div class="std__rule" aria-hidden="true"><i></i><span></span><i></i></div>
 
-          <p class="std__date">Saturday, May 15<sup>th</sup>, 2027</p>
+          <!-- the date, set as a monument — the thing the card exists to lodge -->
+          <p class="std__day">Saturday</p>
+          <p class="std__date">May 15<sup>th</sup></p>
+          <p class="std__year">2027</p>
           <p class="std__place">San Francisco Bay Area</p>
 
           <!-- Live countdown (reads the date in js/save-the-date.js) -->
@@ -102,6 +109,22 @@
 
           <p class="std__follow">Formal invitation to follow</p>
         </div>
+
+        <!-- Two botanical sprigs rising from the lower corners — the same gesture
+             embossed on the envelope this card came out of. Drawn once, mirrored. -->
+        <svg class="std__sprigs" viewBox="0 0 400 120" fill="none" aria-hidden="true" focusable="false">
+          <g id="std-sprig">
+            <path d="M22 114 C44 100 66 78 82 46" stroke="#9caf88" stroke-width="1.5" stroke-linecap="round"/>
+            <g fill="#b2c2a8">
+              <ellipse cx="36" cy="98" rx="9" ry="3.4" transform="rotate(-32 36 98)"/>
+              <ellipse cx="50" cy="85" rx="9.5" ry="3.5" transform="rotate(-41 50 85)"/>
+              <ellipse cx="62" cy="70" rx="9" ry="3.3" transform="rotate(-51 62 70)"/>
+              <ellipse cx="72" cy="56" rx="7.4" ry="2.9" transform="rotate(-59 72 56)"/>
+            </g>
+            <circle cx="82" cy="44" r="2.8" fill="#e0a6b2"/>
+          </g>
+          <use href="#std-sprig" transform="translate(400, 0) scale(-1, 1)"/>
+        </svg>
       </main>
 
       <!-- Front of the pocket — covers the letter's lower half -->
@@ -140,6 +163,6 @@
     </defs>
   </svg>
 
-  <script src="js/save-the-date.js"></script>
+  <script src="js/save-the-date.js?v=5"></script>
 </body>
 </html>

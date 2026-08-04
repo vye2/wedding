@@ -33,24 +33,42 @@ wedding stationery and to be hosted for free on **GitHub Pages**.
 
 - **`index.html`** — the full site: story, itinerary, locations, RSVP, FAQ.
 - **`save-the-date.html`** — a cinematic *save-the-date* on **one non-scrolling
-  screen**. Guests land on the couple's **own blush floral envelope, sized full
-  bleed**: it's deliberately oversized so its body covers the whole viewport — edge
-  to edge on a desktop, and on a phone a **deep zoom that leaves only the middle of
-  the envelope on screen**. The envelope is built from three layered pieces
+  screen**. Guests land on the couple's **own blush floral envelope, as large as the
+  screen allows**. On a landscape screen the whole envelope shows at ~97% of the
+  viewport height (a monitor is wider than the envelope's 1.58:1 body, so height is
+  the binding constraint); on a portrait phone it **covers** instead — a deep zoom
+  leaving only the middle of the envelope on screen. The envelope is built from
+  three layered pieces
   (`assets/env-back`, `env-front`, `env-flap`) that share one coordinate space so
   they stack exactly; the flap is authored open and shown **flipped down** to seal
   it. There's **no wax seal** — a "tap to open" hint and a soft sheen invite the tap.
   **Tap the envelope** and the **flap rotates up in 3D about its hinge** (swinging
   out of view at this size, by design), revealing the **one letter sandwiched
   between the front pocket and the back**; the **envelope pieces then slide down off
-  the letter**, which stays centered and becomes the whole screen. It's a **handmade
-  deckle-edge letter** (its torn edge is an SVG turbulence filter) carrying a
-  **single framed portrait of the couple**, a live countdown to **Saturday, May 15,
-  2027**, and a quiet footer link back to the full site. Blush + sage throughout,
-  with leaves drifting in front of the scene. Everyone sees the same page — no
-  personalization. Fully keyboard-accessible; honors `prefers-reduced-motion` (skips
-  the envelope, shows the letter outright) and falls back gracefully with JavaScript
-  disabled.
+  the letter**, which stays centered and grows to **~94% of the screen height**.
+
+  The letter is a **portrait save-the-date card** (5:7-ish stock) with a handmade
+  **deckle edge** (an SVG turbulence filter), read top to bottom: a **circular
+  portrait** of the couple → `SAVE THE DATE` → the names stacked on three lines in
+  Great Vibes with a gold ampersand → *are getting married* → a gold hairline and
+  diamond → **the date set as a monument** (`SATURDAY` / **May 15th** / `2027`) →
+  the region → a live countdown → *Formal invitation to follow*. Two botanical
+  sprigs rise from the lower corners, echoing the sprays embossed on the envelope
+  the card came out of. Blush + sage throughout, with leaves drifting in front of
+  the scene. Everyone sees the same page — no personalization. Fully
+  keyboard-accessible; honors `prefers-reduced-motion` (skips the envelope, shows
+  the letter outright) and falls back gracefully with JavaScript disabled.
+
+  **Sizing note.** The card's height is content-driven — every type size is in
+  container units (`cqw`), so they also set the card's proportion. `js/save-the-date.js`
+  then measures it and hands CSS two scales: `--grow` (the revealed size, capped to
+  94% of the viewport height) and `--fit` (shrunk to hide inside the envelope
+  pocket while sealed). Measuring beats arithmetic here — it holds even when the
+  web fonts render taller than expected.
+
+  **Cache note.** `save-the-date.html` loads its CSS and JS with a `?v=N` query.
+  **Bump that number whenever you edit either file**, or browsers will keep serving
+  the old one.
 
   **Add the portrait:** the letter carries one photo, framed as a circular keepsake
   (`<figure class="std__photo">` in `save-the-date.html`). Replace the placeholder

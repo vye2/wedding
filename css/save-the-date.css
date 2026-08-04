@@ -141,32 +141,43 @@ body {
   opacity: 0;
   transition: opacity 0.45s var(--ease-soft);
 }
-/* the letter grows to full size as the envelope drops away — it's already centred
-   on screen (the stage lifts the pocket to centre), so no extra rise is needed. */
-.opener.is-sliding .std { transform: translate(-50%, -50%) scale(1); }
+/* the letter grows to its full, screen-tall size as the envelope drops away —
+   it's already centred (the stage lifts the pocket to centre), so no rise is
+   needed. --grow is measured in JS so the card lands just inside the viewport
+   height whatever the font metrics do. The transform FUNCTION LIST must match
+   the base rule exactly, or the scale won't interpolate smoothly. */
+.opener.is-sliding .std { transform: translate(-50%, -50%) scale(var(--grow, 1)); }
 
 /* The envelope: three layered pieces the couple made — a solid back, a front
    pocket, and a flap — all sharing one 938×1048 coordinate space so they stack
    exactly. The letter is sandwiched between the back and the front pocket.
 
-   FULL BLEED. The canvas reserves the top ~43.4% for the open flap, so the
-   envelope BODY is the bottom 56.6% of the canvas — i.e. body height = width ×
-   (1048/938) × 0.566 ≈ width × 0.632. To cover the viewport the body must be at
-   least as wide as the screen AND at least as tall, so:
-       width ≥ 100vw   and   0.632 × width ≥ 100vh  →  width ≥ 158vh
-   One formula therefore serves both layouts: on a landscape desktop it resolves
-   to ~100vw (edge to edge, the flap swinging up out of view), and on a tall
-   phone it resolves to ~158vh — a deep zoom that leaves only the middle of the
-   envelope on screen. The extra 1% is slack against sub-pixel rounding. */
+   AS LARGE AS THE SCREEN ALLOWS. The canvas reserves the top ~43.4% for the open
+   flap, so the envelope BODY is the bottom 56.6% of it — body height = width ×
+   (1048/938) × 0.566 ≈ width × 0.632.
+
+   LANDSCAPE screens (desktop): show the WHOLE envelope, as big as it will go
+   with a small buffer. The body is 1.58:1 and a monitor is wider than that, so
+   height is the binding constraint: 0.632 × width ≤ 97vh → width ≤ 153vh. It
+   therefore runs corner to corner vertically; the flap swings up out of frame,
+   which is intended.
+
+   PORTRAIT screens (phones): a landscape envelope can't fill a tall screen while
+   staying whole, so COVER instead — width ≥ 100vw and 0.632 × width ≥ 100vh
+   (≥ 158vh). That resolves to a deep zoom leaving only the middle of the
+   envelope on screen. */
 .stage {
   position: relative; z-index: 1;
-  width: max(101vw, 160vh);
+  width: min(97vw, 153vh);
   aspect-ratio: 938 / 1048;
   flex-shrink: 0;
   perspective: 1600px;
   /* the flap headroom means the body's centre sits at ~71.5% of the box. Lift by
      ~21.5% so that BODY — and the letter revealed in it — lands screen-centre. */
   transform: translateY(-21.5%);
+}
+@media (orientation: portrait) {
+  .stage { width: max(101vw, 160vh); }
 }
 
 .env__back, .env__front, .env__flap {
@@ -197,17 +208,17 @@ body {
      — so its reveal lands in the middle of the screen at any size, and it stays
      hidden behind the flap when closed regardless of its height. */
   left: 50%; top: 71.5%;
-  /* scaled down to fit inside the pocket while sandwiched (--fit is measured in
-     JS), then grows to full size as it rises out on reveal. */
-  transform: translate(-50%, -50%) translateY(0) scale(var(--fit, 0.66));
+  /* scaled down to hide inside the pocket while sandwiched (--fit, measured in
+     JS), then grown to --grow (screen-tall) as the envelope slides away. */
+  transform: translate(-50%, -50%) scale(var(--fit, 0.6));
   transition: transform 1.25s var(--ease-soft);
-  /* Full (revealed) size — as large as the screen allows, to match the full-bleed
-     envelope. Bounded BOTH ways: 94vw keeps side margins, and 120vh keeps the card
-     (roughly 1.4:1 once the portrait is added) inside the viewport height so no
-     text is ever cut off — it lands at ~86% of the screen height.
+  /* A PORTRAIT stationery card, 5:7-ish. Its height is content-driven: every type
+     size below is in cqw, so the content sums to ~1.46 × the width. Setting the
+     width to 64vh therefore lands the card at ~93vh — as tall as the screen with
+     a small buffer — while 86vw keeps it inside narrow phones.
      NOTE: percentage widths would resolve against the oversized stage, so the
      cap must be in viewport units. */
-  width: min(94vw, 120vh);
+  width: min(86vw, 64vh);
   container-type: inline-size;
   border-radius: 4px;
   background: linear-gradient(168deg, var(--paper-letter), #efe6d4);
@@ -224,94 +235,119 @@ body {
   border-radius: 6px;
 }
 .std__content {
+  position: relative; z-index: 1;
   display: flex; flex-direction: column; align-items: center;
-  text-align: center; padding: 4.5cqw 7cqw;
+  text-align: center; padding: 6.5cqw 8cqw;
   border-radius: 4px;
-  background: radial-gradient(130% 62% at 50% 0%, #fffdf8, transparent 60%);
+  background: radial-gradient(120% 46% at 50% 0%, #fffdf8, transparent 62%);
 }
 
-/* ---- Letter: "pressed-botanical stationery" — a single portrait of the couple
-   crowns a quiet, tightly-set hierarchy. Compact / landscape so the card echoes
-   the envelope's proportions. Gold used sparingly.
+/* ---- THE LETTER — a portrait save-the-date card, read top to bottom:
+   portrait · SAVE THE DATE · the names · the date monument · place · countdown.
+   Every size is in cqw, so the whole card scales as one object and the sizes
+   also SET the card's proportion (they sum to ~1.46 × width = 5:7-ish stock).
 
-   THE PORTRAIT: framed like a keepsake — a cream mat with a gold hairline ring.
-   Everything is in container units (cqw), so the frame scales with the card from
-   a deeply-zoomed phone to a full-bleed desktop. */
+   SIGNATURE: two botanical sprigs rise from the lower corners, deliberately
+   echoing the sprays embossed on the envelope the card just came out of — the
+   one gesture that carries over once the envelope is gone. Kept to a whisper. */
+.std__sprigs {
+  position: absolute; left: 0; right: 0; bottom: 1.5cqw; z-index: 0;
+  width: 100%; height: auto; opacity: 0.5; pointer-events: none;
+}
+
+/* THE PORTRAIT: a circle, matted in cream with a gold hairline ring. Width and
+   height are both set (not aspect-ratio) so it is a circle, always. */
 .std__photo {
-  position: relative; margin: 0 auto 2cqw;
-  width: 18cqw; aspect-ratio: 1;
+  position: relative; flex: none; margin: 0 auto 3.5cqw;
+  width: 26cqw; height: 26cqw;
   border-radius: 50%; overflow: hidden;
   background: linear-gradient(150deg, #f7e9ec, #eef0e6 55%, #e6ecdd);
   box-shadow:
-    0 0 0 0.8cqw var(--paper-letter),        /* cream mat */
-    0 0 0 0.95cqw #cbb27e,                   /* gold hairline */
-    0 1.1cqw 2.2cqw -0.9cqw rgba(90, 70, 60, 0.45);
+    0 0 0 1cqw var(--paper-letter),          /* cream mat */
+    0 0 0 1.15cqw #cbb27e,                   /* gold hairline */
+    0 1.4cqw 2.8cqw -1.1cqw rgba(90, 70, 60, 0.45);
 }
 /* the real photo: <img class="std__photo-img" …> — cropped to fill the circle */
 .std__photo-img { display: block; width: 100%; height: 100%; object-fit: cover; }
 /* placeholder shown until a real photo is dropped in */
 .std__photo-ph {
   position: absolute; inset: 0; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 0.8cqw;
+  align-items: center; justify-content: center; gap: 1cqw;
 }
-.std__photo-ph svg { width: 5cqw; height: auto; color: #d3a6ad; opacity: 0.9; }
+.std__photo-ph svg { width: 6.5cqw; height: auto; color: #d3a6ad; opacity: 0.9; }
 .std__photo-ph em {
-  font-family: var(--font-body); font-style: normal; font-size: 1.35cqw;
+  font-family: var(--font-body); font-style: normal; font-size: 1.7cqw;
   letter-spacing: 0.18em; text-transform: uppercase; color: #b08e96;
 }
 
 .std__eyebrow {
-  margin: 0; font-family: var(--font-display); font-weight: 600;
-  font-size: 2.3cqw; letter-spacing: 0.42em; text-indent: 0.42em;
+  margin: 0 0 2cqw; font-family: var(--font-display); font-weight: 600;
+  font-size: 3.2cqw; letter-spacing: 0.44em; text-indent: 0.44em;
   text-transform: uppercase; color: var(--sage-600);
 }
+
+/* the names carry the page — three lines, so they never crowd the card's width */
 .std__names {
-  margin: 0.9cqw 0 0; font-family: var(--font-script); font-weight: 400;
-  font-size: 6cqw; line-height: 1.02; color: var(--ink);
+  margin: 0; font-family: var(--font-script); font-weight: 400;
+  font-size: 10cqw; line-height: 1.1; color: var(--ink);
 }
-.std__amp { color: #b0894a; padding: 0 0.03em; }   /* soft gold */
+.std__name { display: block; }
+.std__amp {                                   /* the one gold flourish */
+  display: block; font-size: 5.5cqw; line-height: 1.2; color: #b0894a;
+}
 .std__vow {
-  margin: 0.4cqw 0 0; font-family: var(--font-display); font-style: italic; font-weight: 500;
-  font-size: 2.9cqw; line-height: 1.1; color: var(--sage-600); letter-spacing: 0.01em;
+  margin: 1.5cqw 0 0; font-family: var(--font-display); font-style: italic; font-weight: 500;
+  font-size: 4cqw; line-height: 1.3; color: var(--sage-600); letter-spacing: 0.01em;
 }
 
 /* a hairline gold rule with a small center diamond */
-.std__rule { display: flex; align-items: center; justify-content: center; gap: 1.6cqw; width: 44%; margin: 2cqw auto; }
+.std__rule { display: flex; align-items: center; justify-content: center; gap: 2cqw; width: 46%; margin: 4cqw auto; }
 .std__rule i { flex: 1; height: 1px; background: linear-gradient(to right, transparent, #cbb27e); }
 .std__rule i + i { background: linear-gradient(to left, transparent, #cbb27e); }
-.std__rule span { flex: none; width: 5px; height: 5px; transform: rotate(45deg); background: #b0894a; }
+.std__rule span { flex: none; width: 1.4cqw; height: 1.4cqw; transform: rotate(45deg); background: #b0894a; }
 
+/* ---- the date, set as a monument: the day above, the year below, the date
+   itself large enough to be the thing you remember. ---- */
+.std__day {
+  margin: 0 0 1.5cqw; font-family: var(--font-display); font-weight: 600;
+  font-size: 2.8cqw; letter-spacing: 0.4em; text-indent: 0.4em;
+  text-transform: uppercase; color: var(--sage-600);
+}
 .std__date {
-  margin: 0; font-family: var(--font-display); font-weight: 500; font-size: 4.6cqw; line-height: 1;
+  margin: 0; font-family: var(--font-display); font-weight: 500; font-size: 10.5cqw; line-height: 1;
   color: var(--ink); letter-spacing: 0.005em;
 }
-.std__date sup { font-size: 0.5em; vertical-align: 0.72em; margin: 0 0.02em 0 0.04em; letter-spacing: 0; }
+.std__date sup { font-size: 0.42em; vertical-align: 0.95em; margin: 0 0 0 0.06em; letter-spacing: 0; }
+.std__year {
+  margin: 1cqw 0 0; font-family: var(--font-display); font-weight: 500;
+  font-size: 4cqw; letter-spacing: 0.3em; text-indent: 0.3em; color: var(--gold);
+}
 .std__place {
-  margin: 1.3cqw 0 0; font-family: var(--font-display);
-  font-size: 2cqw; letter-spacing: 0.34em; text-indent: 0.34em;
+  margin: 3cqw 0 0; font-family: var(--font-display);
+  font-size: 2.6cqw; line-height: 1.6; letter-spacing: 0.34em; text-indent: 0.34em;
   text-transform: uppercase; color: var(--muted);
 }
 
 /* ---- refined live countdown: tabular serif numerals, hairline dividers ---- */
-.std-count { display: flex; align-items: baseline; justify-content: center; gap: 4cqw; margin: 2.2cqw 0 0; }
-.std-count__unit { position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.4cqw; }
+.std-count { display: flex; align-items: baseline; justify-content: center; gap: 6cqw; margin: 4.5cqw 0 0; }
+.std-count__unit { position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.8cqw; }
 .std-count__unit + .std-count__unit::before {
-  content: ""; position: absolute; left: -2cqw; top: 6%; height: 66%; width: 1px;
+  content: ""; position: absolute; left: -3cqw; top: 6%; height: 62%; width: 1px;
   background: linear-gradient(var(--sage-200), transparent);
 }
 .std-count__num {
-  font-family: var(--font-display); font-weight: 500; font-size: 4.2cqw; line-height: 1;
+  font-family: var(--font-display); font-weight: 500; font-size: 5.5cqw; line-height: 1;
   color: var(--sage-700); font-variant-numeric: tabular-nums;
 }
 .std-count__label {
-  font-family: var(--font-body); font-size: 1.2cqw; letter-spacing: 0.22em;
+  font-family: var(--font-body); font-size: 1.9cqw; line-height: 1.6; letter-spacing: 0.22em;
   text-transform: uppercase; color: var(--muted);
 }
-.std-count__done { margin: 0; font-family: var(--font-display); font-style: italic; font-size: 2.8cqw; color: var(--sage-600); }
+.std-count__done { margin: 4.5cqw 0 0; font-family: var(--font-display); font-style: italic; font-size: 3.6cqw; color: var(--sage-600); }
 
 .std__follow {
-  margin: 2.2cqw 0 0; font-family: var(--font-display); font-style: italic;
-  font-size: 2.7cqw; color: var(--blush-500); letter-spacing: 0.01em;
+  margin: 4cqw 0 0; font-family: var(--font-display); font-style: italic;
+  font-size: 3.4cqw; line-height: 1.5; color: var(--blush-500); letter-spacing: 0.01em;
 }
 
 /* Soft luminous sheen on the closed envelope — a gentle 'open here' cue. */
