@@ -200,20 +200,31 @@ body.is-ready .petals { opacity: 1; }
 @media (orientation: portrait) {
   .stage { width: max(101vw, 160vh); }
 
-  /* THE CARD FILLS THE PHONE. Its height is pinned rather than left to the
-     content, and the photo takes whatever the text block doesn't — so the card
-     lands at exactly 92vh however the type reflows, and the picture absorbs the
-     difference instead of the total drifting.
+  /* THE CARD IS THE VIEWPORT. Edge to edge, corners squared off, so no backdrop
+     shows around it at all. Its height is pinned rather than left to the content,
+     and the photo takes whatever the text block doesn't — so the card matches the
+     screen exactly however the type reflows, with the picture absorbing the
+     difference rather than the total drifting.
+
+     dvh as well as vh: on a phone the toolbars come and go, and vh alone would
+     leave a strip of backdrop showing when they retract.
 
      The polaroid border carries over from the base rule — a band of stock above
-     and beside the photo, with the text block as the wider margin below. Only the
-     radius differs, to suit the taller frame. */
-  .std { width: 90vw; height: 92vh; display: flex; flex-direction: column; }
+     and beside the photo, with the text block as the wider margin below. That's
+     the card's own frame, not a margin around it. */
+  .std {
+    width: 100vw; height: 100vh; height: 100dvh;
+    border-radius: 0;
+    display: flex; flex-direction: column;
+  }
   .std__photo {
     flex: 1; height: auto; min-height: 0;
     margin: 4cqw 4cqw 0;
     border-radius: 2px;
   }
+  /* the card now runs into the bottom edge, so keep the last line clear of a
+     phone's home indicator */
+  .std__content { padding-bottom: calc(5cqw + env(safe-area-inset-bottom, 0px)); }
   /* The frame is much narrower than the 3:4 photo, so here it's the SIDES that
      get cropped, not the top and bottom — the vertical bias used on desktop
      would do nothing, and centred keeps the clasped hands in the middle. */
