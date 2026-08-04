@@ -1,10 +1,11 @@
 /* =====================================================================
    Victor & Ashley — Save the Date (bespoke envelope experience)
    Palette mirrors the LOCKED sage + blush theme in css/styles.css.
-   ONE non-scrolling screen: the couple's engagement photos form a full-bleed
-   collage that surrounds a centered envelope. The envelope's flap flips up, the
-   letter sits sandwiched between back and front, then the envelope slides away
-   to reveal the letter — framed by the photos.
+   ONE non-scrolling screen: the couple's envelope, sized FULL BLEED so its body
+   covers the viewport (a deep zoom into the middle of it on a phone). The flap
+   flips up and out of view, the letter sits sandwiched between back and front,
+   then the envelope slides away to reveal the letter — which carries a single
+   framed portrait of the couple.
    ===================================================================== */
 
 :root {
@@ -77,57 +78,12 @@ body {
 }
 .skip-link:focus { top: 0.75rem; }
 
-/* ============================ PHOTO WALL ============================
-   A full-bleed collage of the couple's photos, behind everything. On wide
-   screens it's a FRAME: a 3×3 grid with a wide-open centre for the envelope,
-   so the 8 photos sit around it. On phones it reflows to a 2-wide wall. */
-.photo-wall {
-  position: fixed; inset: 0; z-index: 0;
-  display: grid; gap: 4px; padding: 0;   /* edge-to-edge, thin seams only */
-  /* a small open centre — smaller than the envelope/letter, so the centerpiece
-     always overlaps the surrounding photos with no gap between them. */
-  grid-template-columns: 1fr 0.8fr 1fr;
-  grid-template-rows: 1fr 0.76fr 1fr;
-  grid-template-areas:
-    "a b c"
-    "d . e"
-    "f g h";
-}
-.tile {
-  position: relative; margin: 0; overflow: hidden;
-  background: linear-gradient(150deg, #f7e9ec, #eef0e6 55%, #e6ecdd);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45);
-}
-/* alternate soft on-palette tints so the placeholders read as distinct photos */
-.tile:nth-child(3n+1) { background: linear-gradient(150deg, #f8e7ec, #efe6dc); }
-.tile:nth-child(3n+2) { background: linear-gradient(150deg, #e9efe0, #eef0e6); }
-.tile:nth-child(3n)   { background: linear-gradient(150deg, #f4ede0, #e5ecdc); }
-.tile:nth-child(1) { grid-area: a; }
-.tile:nth-child(2) { grid-area: b; }
-.tile:nth-child(3) { grid-area: c; }
-.tile:nth-child(4) { grid-area: d; }
-.tile:nth-child(5) { grid-area: e; }
-.tile:nth-child(6) { grid-area: f; }
-.tile:nth-child(7) { grid-area: g; }
-.tile:nth-child(8) { grid-area: h; }
-/* a real photo: <img class="tile__img" …> — fills the tile, cropped to cover */
-.tile__img { display: block; width: 100%; height: 100%; object-fit: cover; }
-/* placeholder content */
-.tile__ph {
-  position: absolute; inset: 0; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 0.4rem;
-}
-.tile__ph svg { width: 26px; height: auto; color: #cfa6ad; opacity: 0.85; }
-.tile__ph em {
-  font-family: var(--font-body); font-style: normal; font-size: 0.58rem;
-  letter-spacing: 0.2em; text-transform: uppercase; color: #a98f95;
-}
-
 /* ===================== DRIFTING LEAVES & BLOSSOMS =====================
-   A living atmosphere drifting OVER the photo wall but behind the envelope.
-   The OUTER span falls; the INNER shape sways and wobbles — nested transforms
-   compose into a natural flutter. Size/opacity/blur/speed set per-piece in JS. */
-.petals { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+   A living atmosphere drifting IN FRONT of the envelope (which now fills the
+   screen), so the scene breathes even while sealed. The OUTER span falls; the
+   INNER shape sways and wobbles — nested transforms compose into a natural
+   flutter. Size/opacity/blur/speed set per-piece in JS. */
+.petals { position: fixed; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
 .petal {
   position: absolute; top: 0; left: 0; will-change: transform, opacity;
   animation: leaf-fall var(--fall, 20s) linear infinite;
@@ -157,8 +113,9 @@ body {
 }
 
 /* ============================ OPENER (full screen) ============================
-   Centers the envelope over the photo wall. A soft cream halo behind the stage
-   lifts the centerpiece off the busy collage and keeps the letter readable. */
+   Holds the full-bleed envelope. The envelope is deliberately oversized so its
+   body covers the whole viewport — on a phone that means a deep zoom into the
+   middle of the envelope; the flap swings up out of view and is clipped. */
 .opener {
   position: relative; z-index: 2;
   height: 100vh; height: 100dvh;
@@ -175,15 +132,15 @@ body {
   transition: transform 1.15s var(--ease-soft);
   transform: translateY(128vh);
 }
-/* On reveal the flap has opened up beyond the top edge, so FADE it out instead of
-   sliding it (sliding an off-screen flap would sweep it back across the screen).
+/* The open flap has swung up beyond the top edge (off-screen at this size), so
+   FADE it out rather than sliding it — sliding it down would sweep an otherwise
+   unseen flap back across the screen.
    (`.is-open.is-sliding` out-specifies the plain `.is-open` open rule.) */
 .opener.is-open.is-sliding .env__flap {
-  transition: transform 1.15s var(--ease-soft);
-  transform: translateY(128vh) rotateX(0deg);
-  z-index: 0;   /* drop behind the letter so it doesn't cover it on the way down */
+  transform: rotateX(0deg);
+  opacity: 0;
+  transition: opacity 0.45s var(--ease-soft);
 }
-.opener.is-sliding .stage::before { opacity: 0; transition: opacity 0.5s var(--ease-soft); }
 /* the letter grows to full size as the envelope drops away — it's already centred
    on screen (the stage lifts the pocket to centre), so no extra rise is needed. */
 .opener.is-sliding .std { transform: translate(-50%, -50%) scale(1); }
@@ -191,35 +148,25 @@ body {
 /* The envelope: three layered pieces the couple made — a solid back, a front
    pocket, and a flap — all sharing one 938×1048 coordinate space so they stack
    exactly. The letter is sandwiched between the back and the front pocket.
-   Sized to DOMINATE the centre while leaving a frame of photos around it. */
+
+   FULL BLEED. The canvas reserves the top ~43.4% for the open flap, so the
+   envelope BODY is the bottom 56.6% of the canvas — i.e. body height = width ×
+   (1048/938) × 0.566 ≈ width × 0.632. To cover the viewport the body must be at
+   least as wide as the screen AND at least as tall, so:
+       width ≥ 100vw   and   0.632 × width ≥ 100vh  →  width ≥ 158vh
+   One formula therefore serves both layouts: on a landscape desktop it resolves
+   to ~100vw (edge to edge, the flap swinging up out of view), and on a tall
+   phone it resolves to ~158vh — a deep zoom that leaves only the middle of the
+   envelope on screen. The extra 1% is slack against sub-pixel rounding. */
 .stage {
   position: relative; z-index: 1;
-  width: min(56vw, 60vh);
+  width: max(101vw, 160vh);
   aspect-ratio: 938 / 1048;
   flex-shrink: 0;
   perspective: 1600px;
-  /* the canvas reserves ~43% of its height at the top for the open flap, so its
-     visible pocket sits at ~71.5% of the box. Lift by ~21.5% so that POCKET —
-     and the letter revealed in it — lands at the centre of the screen. */
+  /* the flap headroom means the body's centre sits at ~71.5% of the box. Lift by
+     ~21.5% so that BODY — and the letter revealed in it — lands screen-centre. */
   transform: translateY(-21.5%);
-}
-/* Phones (portrait): the frame reflows to a 2-wide wall behind, and the envelope
-   grows to fill most of the width while photos peek above/below. */
-@media (max-width: 640px) {
-  .photo-wall {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(4, 1fr);
-    grid-template-areas: none;
-  }
-  .tile { grid-area: auto !important; }
-  .stage { width: min(96vw, 62vh); transform: translateY(-21.5%); }
-}
-/* Soft shadow under the closed envelope. IMPORTANT: on a pseudo-element, never a
-   `filter` on .stage itself — a filter on the perspective element would flatten
-   the flap's 3D hinge (it would just slide instead of rotating). */
-.stage::before {
-  content: ""; position: absolute; z-index: 0; inset: 45% 4% 2%;
-  border-radius: 14px; background: rgba(108, 76, 74, 0.28); filter: blur(26px);
 }
 
 .env__back, .env__front, .env__flap {
@@ -242,8 +189,8 @@ body {
 .opener.is-open .env__flap { transform: rotateX(0deg); }
 
 /* ---- THE LETTER: the actual save-the-date, sandwiched between back (z1) and
-   front pocket (z3). Hidden inside the pocket while sealed; on reveal it grows to
-   full size and becomes the centerpiece, framed by the surrounding photos. ---- */
+   front pocket (z3). Hidden inside the pocket while sealed; once the envelope
+   slides away it is the whole screen. ---- */
 .std {
   position: absolute; z-index: 2;
   /* Centred on the pocket centre (71.5% of the tall stage) via translate(-50%,-50%)
@@ -254,9 +201,13 @@ body {
      JS), then grows to full size as it rises out on reveal. */
   transform: translate(-50%, -50%) translateY(0) scale(var(--fit, 0.66));
   transition: transform 1.25s var(--ease-soft);
-  /* full (revealed) size — larger than the pocket so it reads as a centerpiece;
-     --fit shrinks it to hide while sandwiched. Capped to the viewport so it fits. */
-  width: min(90vw, 560px);
+  /* Full (revealed) size — as large as the screen allows, to match the full-bleed
+     envelope. Bounded BOTH ways: 94vw keeps side margins, and 120vh keeps the card
+     (roughly 1.4:1 once the portrait is added) inside the viewport height so no
+     text is ever cut off — it lands at ~86% of the screen height.
+     NOTE: percentage widths would resolve against the oversized stage, so the
+     cap must be in viewport units. */
+  width: min(94vw, 120vh);
   container-type: inline-size;
   border-radius: 4px;
   background: linear-gradient(168deg, var(--paper-letter), #efe6d4);
@@ -268,21 +219,46 @@ body {
 .std::before {
   content: ""; position: absolute; inset: -6px; z-index: -1;
   background: linear-gradient(168deg, var(--paper-letter), #efe6d4);
-  /* a firmer shadow now that the cream halo is gone — lifts the card off the photos */
+  /* a firm shadow so the card lifts off the backdrop as it is uncovered */
   filter: url(#deckle) drop-shadow(0 16px 36px rgba(66, 52, 46, 0.38));
   border-radius: 6px;
 }
 .std__content {
   display: flex; flex-direction: column; align-items: center;
-  text-align: center; padding: 5cqw 8cqw;
+  text-align: center; padding: 4.5cqw 7cqw;
   border-radius: 4px;
   background: radial-gradient(130% 62% at 50% 0%, #fffdf8, transparent 60%);
 }
 
-/* ---- Letter: "pressed-botanical stationery" — a delicate crest echoing the
-   envelope's florals crowns a quiet, tightly-set hierarchy. Compact / landscape
-   so the card echoes the envelope's proportions. Gold used sparingly. */
-.std__crest { display: block; width: 15cqw; max-width: 108px; height: auto; margin: 0 auto 1.3cqw; }
+/* ---- Letter: "pressed-botanical stationery" — a single portrait of the couple
+   crowns a quiet, tightly-set hierarchy. Compact / landscape so the card echoes
+   the envelope's proportions. Gold used sparingly.
+
+   THE PORTRAIT: framed like a keepsake — a cream mat with a gold hairline ring.
+   Everything is in container units (cqw), so the frame scales with the card from
+   a deeply-zoomed phone to a full-bleed desktop. */
+.std__photo {
+  position: relative; margin: 0 auto 2cqw;
+  width: 18cqw; aspect-ratio: 1;
+  border-radius: 50%; overflow: hidden;
+  background: linear-gradient(150deg, #f7e9ec, #eef0e6 55%, #e6ecdd);
+  box-shadow:
+    0 0 0 0.8cqw var(--paper-letter),        /* cream mat */
+    0 0 0 0.95cqw #cbb27e,                   /* gold hairline */
+    0 1.1cqw 2.2cqw -0.9cqw rgba(90, 70, 60, 0.45);
+}
+/* the real photo: <img class="std__photo-img" …> — cropped to fill the circle */
+.std__photo-img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* placeholder shown until a real photo is dropped in */
+.std__photo-ph {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 0.8cqw;
+}
+.std__photo-ph svg { width: 5cqw; height: auto; color: #d3a6ad; opacity: 0.9; }
+.std__photo-ph em {
+  font-family: var(--font-body); font-style: normal; font-size: 1.35cqw;
+  letter-spacing: 0.18em; text-transform: uppercase; color: #b08e96;
+}
 
 .std__eyebrow {
   margin: 0; font-family: var(--font-display); font-weight: 600;
@@ -377,14 +353,14 @@ body {
 
 /* ============================ FOOTER ============================
    A quiet line pinned to the bottom; fades in once the letter is exposed
-   (JS adds body.is-revealed). Sits over the photo wall, so a soft glow behind
-   the text keeps it legible. */
+   (JS adds body.is-revealed), by which point the envelope has cleared and the
+   backdrop is the soft blush/sage gradient. A whisper of glow keeps it legible. */
 .pagefoot {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 6;
   display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
   padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom, 0px));
   text-align: center;
-  background: linear-gradient(to top, rgba(250,247,242,0.9), rgba(250,247,242,0));
+  background: linear-gradient(to top, rgba(250,247,242,0.72), rgba(250,247,242,0));
   opacity: 0; visibility: hidden;
   transition: opacity 0.8s var(--ease-soft), visibility 0.8s;
 }
