@@ -140,14 +140,15 @@ body {
   transition: transform 1.15s var(--ease-soft);
   transform: translateY(128vh);
 }
-/* The open flap has swung up beyond the top edge (off-screen at this size), so
-   FADE it out rather than sliding it — sliding it down would sweep an otherwise
-   unseen flap back across the screen.
+/* The open flap slides down with them — one envelope leaving the frame together,
+   never a fade. It drops to the BACK of the stack first so it passes behind the
+   letter on the way down instead of wiping across its face (which is also where
+   an open flap physically sits: folded up behind the card).
    (`.is-open.is-sliding` out-specifies the plain `.is-open` open rule.) */
 .opener.is-open.is-sliding .env__flap {
-  transform: rotateX(0deg);
-  opacity: 0;
-  transition: opacity 0.45s var(--ease-soft);
+  transition: transform 1.15s var(--ease-soft);
+  transform: translateY(128vh) rotateX(0deg);
+  z-index: 0;
 }
 /* the letter grows to full size as the envelope drops away — it's already centred
    on screen (the stage lifts the pocket to centre), so no extra rise is needed. */
@@ -193,11 +194,15 @@ body {
   z-index: 4;
   background-image: image-set(url(../assets/env-flap.webp) type("image/webp"), url(../assets/env-flap.png) type("image/png"));
   transform-origin: 50% 43.4%;
-  transform: rotateX(180deg);
+  /* the translateY is identity here, but it keeps the function list the same in
+     all three states (closed / open / sliding) so each transition interpolates
+     component-wise rather than through matrix decomposition — which is what a
+     180° 3D rotation needs to swing the right way. */
+  transform: translateY(0) rotateX(180deg);
   backface-visibility: visible;
   transition: transform 1.7s var(--ease-soft);   /* a slower, more graceful open */
 }
-.opener.is-open .env__flap { transform: rotateX(0deg); }
+.opener.is-open .env__flap { transform: translateY(0) rotateX(0deg); }
 
 /* ---- THE LETTER: the actual save-the-date, sandwiched between back (z1) and
    front pocket (z3). Hidden inside the pocket while sealed; once the envelope
