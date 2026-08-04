@@ -34,7 +34,7 @@ wedding stationery and to be hosted for free on **GitHub Pages**.
 
 - **`index.html`** — the full site: story, itinerary, locations, RSVP, FAQ.
 - **`save-the-date.html`** — a cinematic *save-the-date* on **one non-scrolling
-  screen**. Guests land on the couple's **own blush floral envelope, sized full
+  screen**. Guests land on the couple's **own sage floral envelope, sized full
   bleed**: it's deliberately oversized so its body covers the whole viewport — edge
   to edge on a desktop, and on a phone a **deep zoom that leaves only the middle of
   the envelope on screen**. The envelope is built from three layered pieces
@@ -172,10 +172,17 @@ Until then, treat any "submitted" RSVP as **not recorded**.
   cream centre — compressed for the web. It's set on `body` with `background-size:
   cover`, so its open centre stays behind the envelope and letter at any size.
 - **Envelope** — `assets/env-back`, `env-front`, and `env-flap` (WebP, with `.png`
-  fallbacks) are the couple's **own artwork** — their blush, floral-embossed envelope
+  fallbacks) are the couple's **own artwork** — their floral-embossed envelope
   supplied as separate pieces (back, front pocket, flap) so the flap can flip open —
   cropped to a shared coordinate space and compressed for the web. No third-party
   license applies.
+
+  They were supplied in **blush** and have been **recoloured to sage** (~`#c9d4b9`).
+  The embossing is carried entirely in luminance, so the recolour pins the hue and
+  rescales saturation and value, leaving every petal and fern untouched. The blush
+  originals are in git history if they're ever wanted back. The envelope URLs carry
+  a `?v=` — **bump it if the pieces are re-exported**, or browsers keep painting
+  the old ones.
 - **Kraft paper** — `assets/paper-kraft.png` (*"Kraft tileable 1024×1024"* from
   [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Kraft_tileable_1024x1024.png),
   released into the **public domain**) is retained from the earlier design but is no
