@@ -119,22 +119,32 @@ body {
 .petal--leaf  > i { border-radius: 0 100% 0 100%;
   background: radial-gradient(125% 125% at 30% 22%, var(--sage-200), var(--sage-500)); }
 
-/* The PINK ones are real petals — broad and rounded at the outer edge, tapering
-   to a point where they'd meet the flower. border-radius can't make that shape:
-   it rounds CORNERS, and a petal's point sits in the middle of an edge, so the
-   best it manages is a lopsided blob that reads as another leaf. These are drawn
-   instead, as an inline SVG whose curves swell past the halfway line and close to
-   a point at the base. The shading lives inside the SVG as a radial gradient, off
-   to one side, so each petal still catches the light from the same direction.
-   Inline rather than a file: they're a few hundred bytes and cost no request. */
+/* The PINK ones are ROSE petals. border-radius can't make that shape: it rounds
+   CORNERS, and a petal's widest point sits mid-edge, so the best it manages is a
+   lopsided blob that reads as another leaf. These are drawn instead.
+
+   The outer edge is ONE broad arc. A central dip was tried and abandoned: paired
+   with wide shoulders and a narrow base, any dip at all — even 4% of the height —
+   reads as a heart rather than a petal. Real rose petals are widest above the
+   middle and narrow to a small claw, which is what the curve does here, and the
+   two sides are deliberately unequal so it doesn't read as a plain oval.
+
+   Rose petals are also slightly BROADER than tall, hence the height override
+   against .petal > i, matched to the 100x95 viewBox so nothing is squashed.
+
+   The shading is a radial gradient inside the SVG, kept off to one side so every
+   petal catches the light from the same direction. Inline rather than a file:
+   a few hundred bytes each and no extra request. */
+.petal--bloom > i,
+.petal--pale > i { height: calc(var(--sz, 15px) * 0.95); }
 .petal--bloom > i {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 115'%3E%3Cdefs%3E%3CradialGradient id='b' cx='33%25' cy='24%25' r='92%25'%3E%3Cstop offset='0' stop-color='%23fdeff1'/%3E%3Cstop offset='0.55' stop-color='%23f5c3cd'/%3E%3Cstop offset='1' stop-color='%23e79aa8'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M50 113C21 91 5 61 13 36 19 11 39 2 50 2s31 9 37 34c8 25-8 55-37 77z' fill='url(%23b)'/%3E%3C/svg%3E")
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 95'%3E%3Cdefs%3E%3CradialGradient id='b' cx='33%25' cy='26%25' r='92%25'%3E%3Cstop offset='0' stop-color='%23fdeff1'/%3E%3Cstop offset='0.55' stop-color='%23f5c3cd'/%3E%3Cstop offset='1' stop-color='%23e79aa8'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M48 90C24 78 5 60 4 38 3 17 20 2 45 2 71 2 97 15 96 40 95 62 72 79 48 90Z' fill='url(%23b)'/%3E%3C/svg%3E")
     center / 100% 100% no-repeat;
 }
 .petal--pale > i {
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 115'%3E%3Cdefs%3E%3CradialGradient id='p' cx='33%25' cy='24%25' r='92%25'%3E%3Cstop offset='0' stop-color='%23fffafa'/%3E%3Cstop offset='0.55' stop-color='%23fbe0e5'/%3E%3Cstop offset='1' stop-color='%23f4c2cb'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M50 113C21 91 5 61 13 36 19 11 39 2 50 2s31 9 37 34c8 25-8 55-37 77z' fill='url(%23p)'/%3E%3C/svg%3E")
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 95'%3E%3Cdefs%3E%3CradialGradient id='p' cx='33%25' cy='26%25' r='92%25'%3E%3Cstop offset='0' stop-color='%23fffafa'/%3E%3Cstop offset='0.55' stop-color='%23fbe0e5'/%3E%3Cstop offset='1' stop-color='%23f4c2cb'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M48 90C24 78 5 60 4 38 3 17 20 2 45 2 71 2 97 15 96 40 95 62 72 79 48 90Z' fill='url(%23p)'/%3E%3C/svg%3E")
     center / 100% 100% no-repeat;
 }
 
