@@ -81,9 +81,8 @@ function initOpener() {
     }, 1400);
 
     // 3) The envelope has cleared the frame (1.15s slide) and the letter stands
-    //    alone. Fade in the footer and move focus to the letter.
+    //    alone. Move focus to it.
     setTimeout(function () {
-      document.body.classList.add('is-revealed');
       var main = document.getElementById('std-main');
       if (main) {
         main.setAttribute('tabindex', '-1');
@@ -101,7 +100,6 @@ function initOpener() {
 function revealInstant() {
   var opener = document.getElementById('opener');
   if (opener) { opener.classList.add('is-open', 'is-sliding'); }
-  document.body.classList.add('is-revealed');
 }
 
 /* ------------------------------------------------------------------ *

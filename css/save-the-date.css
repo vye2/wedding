@@ -272,48 +272,58 @@ body {
 }
 .std__content {
   display: flex; flex-direction: column; align-items: center;
-  text-align: center; padding: 4.5cqw 7cqw;
-  border-radius: 4px;
-  background: radial-gradient(130% 62% at 50% 0%, #fffdf8, transparent 60%);
+  text-align: center; padding: 2cqw 7cqw 5cqw;
+  border-radius: 0 0 4px 4px;
 }
 
 /* ---- Letter: "pressed-botanical stationery" — a single portrait of the couple
    crowns a quiet, tightly-set hierarchy. Compact / landscape so the card echoes
    the envelope's proportions. Gold used sparingly.
 
-   THE PORTRAIT: framed like a keepsake — a cream mat with a gold hairline ring.
-   Everything is in container units (cqw), so the frame scales with the card from
-   a deeply-zoomed phone to a full-bleed desktop. */
+   THE PORTRAIT: the hero. It runs the card's full width across the top at 77cqw
+   tall — about TWO THIRDS of the card's height, since the content block below
+   sums to ~38cqw (77 + 38, so the photo is 2/3 of 115). Retune this if you retune
+   the type below, or the ratio drifts. */
 .std__photo {
-  position: relative; margin: 0 auto 2cqw;
-  width: 18cqw; aspect-ratio: 1;
-  border-radius: 50%; overflow: hidden;
-  background: linear-gradient(150deg, #f7e9ec, #eef0e6 55%, #e6ecdd);
-  box-shadow:
-    0 0 0 0.8cqw var(--paper-letter),        /* cream mat */
-    0 0 0 0.95cqw #cbb27e,                   /* gold hairline */
-    0 1.1cqw 2.2cqw -0.9cqw rgba(90, 70, 60, 0.45);
+  position: relative; flex: none; margin: 0;
+  width: 100%; height: 77cqw;
+  border-radius: 4px 4px 0 0; overflow: hidden;
 }
-/* the real photo: <img class="std__photo-img" …> — cropped to fill the circle */
+/* The image layer, MASKED so its lower edge dissolves into the paper instead of
+   ending on a hard seam. A mask rather than an overlay gradient, so it fades to
+   whatever is actually behind it — no colour to keep in sync with the stock. */
+.std__photo-media {
+  position: absolute; inset: 0;
+  background: linear-gradient(150deg, #f7e9ec, #eef0e6 55%, #e6ecdd);
+  -webkit-mask-image: linear-gradient(to bottom, #000 56%, rgba(0, 0, 0, 0) 97%);
+          mask-image: linear-gradient(to bottom, #000 56%, rgba(0, 0, 0, 0) 97%);
+}
+/* the real photo: <img class="std__photo-img" …> — cropped to fill the frame */
 .std__photo-img { display: block; width: 100%; height: 100%; object-fit: cover; }
-/* placeholder shown until a real photo is dropped in */
+/* placeholder shown until a real photo is dropped in — biased upward so it sits
+   in the solid part of the frame rather than down in the fade */
 .std__photo-ph {
   position: absolute; inset: 0; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 0.8cqw;
+  align-items: center; justify-content: center; gap: 1cqw; padding-bottom: 20cqw;
 }
-.std__photo-ph svg { width: 5cqw; height: auto; color: #d3a6ad; opacity: 0.9; }
+.std__photo-ph svg { width: 6.5cqw; height: auto; color: #d3a6ad; opacity: 0.9; }
 .std__photo-ph em {
-  font-family: var(--font-body); font-style: normal; font-size: 1.35cqw;
+  font-family: var(--font-body); font-style: normal; font-size: 1.7cqw;
   letter-spacing: 0.18em; text-transform: uppercase; color: #b08e96;
 }
 
+/* "Save the Date" sits ON the photo, low enough to land in its dissolving edge —
+   so it reads over the picture but always against near-paper, which keeps it
+   legible whatever photo goes in. The soft white glow covers the rest. */
 .std__eyebrow {
+  position: absolute; left: 0; right: 0; bottom: 5%; z-index: 1;
   margin: 0; font-family: var(--font-display); font-weight: 600;
-  font-size: 2.3cqw; letter-spacing: 0.42em; text-indent: 0.42em;
-  text-transform: uppercase; color: var(--sage-600);
+  font-size: 3.2cqw; letter-spacing: 0.44em; text-indent: 0.44em;
+  text-transform: uppercase; color: var(--sage-700);
+  text-shadow: 0 1px 4px rgba(255, 253, 248, 0.92), 0 0 16px rgba(255, 253, 248, 0.8);
 }
 .std__names {
-  margin: 0.9cqw 0 0; font-family: var(--font-script); font-weight: 400;
+  margin: 0; font-family: var(--font-script); font-weight: 400;
   font-size: 6cqw; line-height: 1.02; color: var(--ink);
 }
 .std__amp { color: #b0894a; padding: 0 0.03em; }   /* soft gold */
@@ -333,11 +343,6 @@ body {
   color: var(--ink); letter-spacing: 0.005em;
 }
 .std__date sup { font-size: 0.5em; vertical-align: 0.72em; margin: 0 0.02em 0 0.04em; letter-spacing: 0; }
-.std__place {
-  margin: 1.3cqw 0 0; font-family: var(--font-display);
-  font-size: 2cqw; letter-spacing: 0.34em; text-indent: 0.34em;
-  text-transform: uppercase; color: var(--muted);
-}
 
 /* ---- refined live countdown: tabular serif numerals, hairline dividers ---- */
 .std-count { display: flex; align-items: baseline; justify-content: center; gap: 4cqw; margin: 2.2cqw 0 0; }
@@ -397,28 +402,6 @@ body {
 .opener__hint-text::after { content: "·"; margin: 0 0.7em; color: var(--blush-400); }
 .opener.is-open .opener__hint { opacity: 0; transition: opacity 0.4s var(--ease); }
 @keyframes hint-breathe { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
-
-/* ============================ FOOTER ============================
-   A quiet line pinned to the bottom; fades in once the letter is exposed
-   (JS adds body.is-revealed), by which point the envelope has cleared and the
-   backdrop is the soft blush/sage gradient. A whisper of glow keeps it legible. */
-.pagefoot {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 6;
-  display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
-  padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom, 0px));
-  text-align: center;
-  background: linear-gradient(to top, rgba(250,247,242,0.72), rgba(250,247,242,0));
-  opacity: 0; visibility: hidden;
-  transition: opacity 0.8s var(--ease-soft), visibility 0.8s;
-}
-body.is-revealed .pagefoot { opacity: 1; visibility: visible; }
-.pagefoot__link {
-  color: var(--sage-700); font-weight: 600; font-size: 0.78rem; letter-spacing: 0.06em;
-  text-decoration: none; border-bottom: 1px solid var(--sage-300); padding-bottom: 1px;
-  transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
-}
-.pagefoot__link:hover { color: var(--sage-700); border-color: var(--sage-500); }
-.pagefoot__hash { font-family: var(--font-body); color: var(--blush-500); letter-spacing: 0.16em; font-size: 0.72rem; }
 
 /* ============================ REDUCED MOTION ============================ */
 @media (prefers-reduced-motion: reduce) {

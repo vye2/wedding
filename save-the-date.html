@@ -33,7 +33,7 @@
   <!-- Bespoke save-the-date theme (mirrors the locked sage + blush palette).
        The ?v= query is a cache buster — bump it whenever the CSS or JS changes so
        browsers pick the new file up without a hard refresh. -->
-  <link rel="stylesheet" href="css/save-the-date.css?v=13" />
+  <link rel="stylesheet" href="css/save-the-date.css?v=14" />
 
   <!-- No-JS fallback: hide the envelope pieces so the sandwiched letter shows. -->
   <noscript>
@@ -41,7 +41,6 @@
       .env__back, .env__front, .env__flap, .env__tip-glow, .env__open,
       .opener__hint { display: none !important; }
       .std { transform: translate(-50%, -50%) scale(1) !important; }
-      .pagefoot { opacity: 1 !important; visibility: visible !important; }
     </style>
   </noscript>
 </head>
@@ -66,22 +65,24 @@
            (between the back and the front pocket). Its top is glimpsed when the
            flap lifts; the whole letter is exposed as the envelope slides down. -->
       <main class="std" id="std-main" aria-labelledby="std-names">
-        <div class="std__content">
-          <!-- THE PORTRAIT — one photo of the couple, framed like a keepsake.
-               TO ADD THE REAL PHOTO: replace the <span class="std__photo-ph">…</span>
-               below with:
-                 <img class="std__photo-img" src="assets/portrait.jpg"
-                      alt="Victor and Ashley" />
-               Any orientation works — it's cropped to fill the circle. -->
-          <figure class="std__photo">
+        <!-- THE PORTRAIT — a hero photo across the top two thirds of the card, its
+             lower edge dissolving into the paper. "Save the Date" sits over it.
+             TO ADD THE REAL PHOTO: replace the <span class="std__photo-ph">…</span>
+             below with:
+               <img class="std__photo-img" src="assets/portrait.jpg"
+                    alt="Victor and Ashley" />
+             It's cropped to fill the frame (object-fit: cover). -->
+        <figure class="std__photo">
+          <span class="std__photo-media">
             <span class="std__photo-ph" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none"><path d="M12 20.5s-6.6-4-8.9-8C1 9.3 2.7 6 6 6c2 0 3.3 1.2 4 2.4C10.7 7.2 12 6 14 6c3.3 0 5 3.3 2.9 6.5-2.3 4-8.9 8-8.9 8z" fill="currentColor"/></svg>
               <em>Your photo</em>
             </span>
-          </figure>
-
+          </span>
           <p class="std__eyebrow">Save the Date</p>
+        </figure>
 
+        <div class="std__content">
           <h1 class="std__names" id="std-names">
             Victor Ye <span class="std__amp">&amp;</span> Ashley Huynh
           </h1>
@@ -91,7 +92,6 @@
           <div class="std__rule" aria-hidden="true"><i></i><span></span><i></i></div>
 
           <p class="std__date">Saturday, May 15<sup>th</sup>, 2027</p>
-          <p class="std__place">San Francisco Bay Area</p>
 
           <!-- Live countdown (reads the date in js/save-the-date.js) -->
           <div class="std-count" id="countdown" role="timer" aria-label="Time remaining until the wedding day">
@@ -126,12 +126,6 @@
     </p>
   </section>
 
-  <!-- Minimal footer — fades in once the letter is exposed. -->
-  <footer class="pagefoot" id="pagefoot">
-    <a class="pagefoot__link" href="index.html">Explore the full site</a>
-    <span class="pagefoot__hash">#HappilyEverHuynh</span>
-  </footer>
-
   <!-- SVG filter that gives the letter its torn, handmade deckle edge -->
   <svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
     <defs>
@@ -142,6 +136,6 @@
     </defs>
   </svg>
 
-  <script src="js/save-the-date.js?v=12"></script>
+  <script src="js/save-the-date.js?v=13"></script>
 </body>
 </html>
