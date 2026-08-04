@@ -36,7 +36,47 @@ document.addEventListener('DOMContentLoaded', function () {
     makePetals();
     initOpener();
   }
+
+  // Hold the scene until the backdrop is actually decoded, so it and the envelope
+  // appear together. Re-measure the letter first: by now the web fonts have
+  // settled, so this is the scale the card is first seen at.
+  whenBackdropReady(function () {
+    fitLetter();
+    document.body.classList.add('is-ready');
+  });
 });
+
+/* Resolve once the body's backdrop image has decoded AND the web fonts are in —
+   the two things that change what the first painted frame looks like. Falls
+   through on a timer so a slow or failed image can never leave the page blank. */
+function whenBackdropReady(done) {
+  var fired = false;
+  function go() { if (fired) return; fired = true; done(); }
+
+  setTimeout(go, 3000);                      // safety net
+
+  var waits = [];
+
+  // Read the URL back off the computed style rather than repeating it here, so
+  // this can't drift out of sync with the stylesheet (or its ?v= cache buster).
+  var url = null;
+  try {
+    var m = /url\(["']?([^"')]+)/.exec(window.getComputedStyle(document.body).backgroundImage);
+    if (m) { url = m[1]; }
+  } catch (e) { /* fall through to the timer */ }
+
+  if (url) {
+    waits.push(new Promise(function (resolve) {
+      var img = new Image();
+      img.onload = img.onerror = resolve;    // errors resolve too — show the page
+      img.src = url;
+    }));
+  }
+  if (document.fonts && document.fonts.ready) { waits.push(document.fonts.ready); }
+
+  if (!waits.length) { go(); return; }
+  Promise.all(waits).then(go, go);
+}
 
 /* Scale the letter down just enough to hide inside the pocket while sandwiched;
    it grows back to full size (scale 1) as it rises out on reveal. */

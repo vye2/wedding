@@ -135,6 +135,16 @@ body {
 }
 .opener[hidden] { display: none !important; }   /* reduced-motion / no-JS fallback */
 
+/* Hold the scene back until the backdrop has actually decoded (JS adds
+   body.is-ready), so the envelope and the florals arrive together instead of the
+   envelope landing on blank ivory while the picture is still downloading.
+   JS also re-measures the letter before lifting this, so the card is never seen
+   at the wrong scale. There's a timeout behind it — a slow or failed image can't
+   leave the page empty — and the <noscript> block restores both outright. */
+.opener, .petals { opacity: 0; transition: opacity 0.6s var(--ease-soft); }
+body.is-ready .opener,
+body.is-ready .petals { opacity: 1; }
+
 /* On reveal: the envelope pieces (back, front pocket, flap) slide straight down
    and off, exposing the letter — which stays exactly where it was. The now-open
    flap drops behind the letter so it doesn't sweep across it on the way down. */
@@ -244,9 +254,12 @@ body {
      — so its reveal lands in the middle of the screen at any size, and it stays
      hidden behind the flap when closed regardless of its height. */
   left: 50%; top: 71.5%;
-  /* scaled down to fit inside the pocket while sandwiched (--fit is measured in
-     JS), then grows to full size as it rises out on reveal. */
-  transform: translate(-50%, -50%) translateY(0) scale(var(--fit, 0.66));
+  /* Scaled down to hide inside the pocket while sandwiched; --fit is measured in
+     JS, then it grows to full size as the envelope slides away.
+     The FALLBACK matters: it's what applies for the instant before JS measures,
+     and 0.66 was large enough that the card poked out past the sealed envelope.
+     0.42 is smaller than any real measurement, so it can never leak. */
+  transform: translate(-50%, -50%) translateY(0) scale(var(--fit, 0.42));
   transition: transform 1.25s var(--ease-soft);
   /* Full (revealed) size — kept just under the envelope's body width, so it reads
      as the card that came OUT of that envelope rather than something larger than
@@ -319,8 +332,11 @@ body {
    Tracking eases off to 0.3em — at this size the wide letter-spacing the small
    version used would run the line past the edges of the card. */
 .std__eyebrow {
-  position: absolute; left: 0; right: 0; top: 50%; z-index: 1;
-  transform: translateY(-50%);
+  /* sits at the FOOT of the picture but clear of the dissolve, which starts at
+     66% — translateY(-100%) hangs the line upward from that mark, so its baseline
+     block ends just above the fade however large the type gets. */
+  position: absolute; left: 0; right: 0; top: 63%; z-index: 1;
+  transform: translateY(-100%);
   margin: 0; text-align: center;
   font-family: var(--font-display); font-weight: 600;
   font-size: 6cqw; letter-spacing: 0.3em; text-indent: 0.3em;
