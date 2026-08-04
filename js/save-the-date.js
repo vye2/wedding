@@ -153,12 +153,13 @@ function makePetals() {
   var shapes = ['petal--leaf', 'petal--bloom', 'petal--bloom', 'petal--leaf', 'petal--pale'];
 
   // Three depth layers: farther pieces are smaller, fainter, blurrier and slower.
-  // The leaves now drift in front of the envelope, so they carry the ambience —
-  // enough of them to feel alive, sheer enough not to fight the letter.
+  // The leaves drift in front of the envelope, so they carry the ambience.
+  // Counts are doubled from 6/7/6 — a fuller fall, still sheer enough per piece
+  // that it doesn't fight the letter.
   var layers = [
-    { n: 6, sz: [9, 12],  op: 0.26, bl: 1.4,  fall: [26, 34], sway: [8, 11] },
-    { n: 7, sz: [13, 17], op: 0.46, bl: 0.35, fall: [19, 25], sway: [6, 8] },
-    { n: 6, sz: [18, 24], op: 0.68, bl: 0,    fall: [13, 18], sway: [4.5, 6.5] }
+    { n: 12, sz: [9, 12],  op: 0.26, bl: 1.4,  fall: [26, 34], sway: [8, 11] },
+    { n: 14, sz: [13, 17], op: 0.46, bl: 0.35, fall: [19, 25], sway: [6, 8] },
+    { n: 12, sz: [18, 24], op: 0.68, bl: 0,    fall: [13, 18], sway: [4.5, 6.5] }
   ];
 
   function rnd(a, b) { return a + Math.random() * (b - a); }

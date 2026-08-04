@@ -274,15 +274,21 @@ body.is-ready .petals { opacity: 1; }
      itself, pushed through an SVG turbulence filter to fray its outline.) */
   border-radius: 3px;
   background: var(--paper-letter);
+  /* Shadow on EVERY side: the first layer has no offset, so it spreads evenly
+     around the top and sides; the second is offset down to keep the card grounded
+     rather than floating. */
   box-shadow:
-    0 1.6cqw 3.4cqw -1cqw rgba(66, 52, 46, 0.4),
+    0 0 3.2cqw rgba(66, 52, 46, 0.26),
+    0 1.4cqw 3.4cqw -0.8cqw rgba(66, 52, 46, 0.34),
     0 0 0 1px rgba(90, 70, 60, 0.06);
 }
 /* the letter is focused programmatically for screen readers on reveal — no ring */
 .std:focus { outline: none; }
 .std__content {
   display: flex; flex-direction: column; align-items: center;
-  text-align: center; padding: 3cqw 6cqw 5cqw;
+  /* the 4cqw top matches the photo's other three margins, so the picture sits in
+     an even band of stock on all sides */
+  text-align: center; padding: 4cqw 6cqw 5cqw;
   border-radius: 0 0 3px 3px;
 }
 
@@ -297,7 +303,8 @@ body.is-ready .petals { opacity: 1; }
 .std__photo {
   position: relative; flex: none;
   /* the polaroid margin — an even band of stock above and beside the picture.
-     Left off the bottom, where the photo dissolves into the card instead. */
+     The bottom margin comes from .std__content's padding, so the gap below the
+     photo matches; the wider run of stock under it is the text block. */
   margin: 4cqw 4cqw 0;
   height: 77cqw;
   border-radius: 1px; overflow: hidden;
@@ -308,11 +315,6 @@ body.is-ready .petals { opacity: 1; }
 .std__photo-media {
   display: block; position: absolute; inset: 0;
   background: linear-gradient(150deg, #f7e9ec, #eef0e6 55%, #e6ecdd);   /* while it loads */
-  /* The fade is kept short — it starts two thirds down — because the photo's
-     subject (the clasped hands and the ring) sits low in the frame and a longer
-     dissolve would wash it out. */
-  -webkit-mask-image: linear-gradient(to bottom, #000 66%, rgba(0, 0, 0, 0) 99%);
-          mask-image: linear-gradient(to bottom, #000 66%, rgba(0, 0, 0, 0) 99%);
 }
 .std__photo-img {
   display: block; width: 100%; height: 100%; object-fit: cover;
@@ -332,10 +334,10 @@ body.is-ready .petals { opacity: 1; }
    Tracking eases off to 0.3em — at this size the wide letter-spacing the small
    version used would run the line past the edges of the card. */
 .std__eyebrow {
-  /* sits at the FOOT of the picture but clear of the dissolve, which starts at
-     66% — translateY(-100%) hangs the line upward from that mark, so its baseline
-     block ends just above the fade however large the type gets. */
-  position: absolute; left: 0; right: 0; top: 63%; z-index: 1;
+  /* sits at the FOOT of the picture — translateY(-100%) hangs the line upward
+     from the 93% mark, so its block ends an even margin above the photo's bottom
+     edge however large the type gets. */
+  position: absolute; left: 0; right: 0; top: 93%; z-index: 1;
   transform: translateY(-100%);
   margin: 0; text-align: center;
   font-family: var(--font-display); font-weight: 600;
