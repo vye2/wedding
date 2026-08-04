@@ -177,12 +177,33 @@ Until then, treat any "submitted" RSVP as **not recorded**.
   cropped to a shared coordinate space and compressed for the web. No third-party
   license applies.
 
-  They were supplied in **blush** and have been **recoloured to a deep olive** (`#4e533b`).
-  The embossing is carried entirely in luminance, so the recolour pins the hue and
+  They were supplied in **blush** (`#f2c4be`) and have been **recoloured**. The
+  embossing is carried entirely in luminance, so the recolour pins the hue and
   rescales saturation and value, leaving every petal and fern untouched. The blush
-  originals are in git history if they're ever wanted back. The envelope URLs carry
-  a `?v=` — **bump it if the pieces are re-exported**, or browsers keep painting
-  the old ones.
+  originals are in git history if they're ever wanted back.
+
+  **Recolouring the envelope** takes three steps:
+
+  1. Restore the blush originals (`git checkout <pre-recolour commit> -- assets/env-*`)
+     so the transform doesn't compound onto an already-recoloured file.
+  2. Convert each piece: split off alpha, take RGB to HSV, pin H, scale S and V,
+     merge back, reattach alpha. The numbers below are derived from the source and
+     the target — they aren't guesses.
+  3. **Bump the `?v=` on the envelope URLs** in `css/save-the-date.css`, or browsers
+     keep painting the old pieces, **and set `--hint-on-env`** in `:root` to suit the
+     new lightness (see the note there — it can't be a constant).
+
+  Shades tried so far, with the transform each needs from the blush source:
+
+  | Colour | Hue | Sat | Val | Reads as | Hint |
+  | --- | --- | --- | --- | --- | --- |
+  | `#dfe6da` | 95° | ×0.243 | ×0.950 | nearly white | ink |
+  | `#e8c7c8` | 358° | ×0.662 | ×0.959 | blush, close to the original | ink |
+  | `#9caf88` | 89° | ×1.037 | ×0.723 | the palette's `--sage-400` | ink |
+  | `#9c8f88` | 21° | ×0.597 | ×0.645 | warm taupe | ink |
+  | `#819171` | 90° | ×1.027 | ×0.599 | muted olive-sage | either |
+  | `#7a895b` | 79° | ×1.600 | ×0.570 | olive | white |
+  | `#4e533b` | 72° | ×1.346 | ×0.343 | deep military olive | white |
 - **Kraft paper** — `assets/paper-kraft.png` (*"Kraft tileable 1024×1024"* from
   [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Kraft_tileable_1024x1024.png),
   released into the **public domain**) is retained from the earlier design but is no

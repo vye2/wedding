@@ -57,8 +57,8 @@
      and white is the reverse. It was tuned in place four times chasing that, so
      it now lives here — set the pair to suit the envelope's lightness, dark text
      with a pale halo for a light envelope, the reverse for a dark one. */
-  --hint-on-env:      #ffffff;                  /* current envelope is dark */
-  --hint-on-env-halo: rgba(18, 22, 12, 0.55);
+  --hint-on-env:      var(--ink);                     /* current envelope is light */
+  --hint-on-env-halo: rgba(255, 255, 255, 0.9);
 }
 
 * { box-sizing: border-box; }
@@ -214,16 +214,16 @@ body.is-ready .petals { opacity: 1; }
    move it up to .stage, which owns the perspective. */
 .env__back  {
   z-index: 1;
-  background-image: image-set(url(../assets/env-back.webp?v=9)  type("image/webp"), url(../assets/env-back.png?v=9)  type("image/png"));
+  background-image: image-set(url(../assets/env-back.webp?v=10)  type("image/webp"), url(../assets/env-back.png?v=10)  type("image/png"));
   filter: drop-shadow(0 7px 14px rgba(84, 64, 58, 0.26));
 }
-.env__front { z-index: 3; background-image: image-set(url(../assets/env-front.webp?v=9) type("image/webp"), url(../assets/env-front.png?v=9) type("image/png")); }
+.env__front { z-index: 3; background-image: image-set(url(../assets/env-front.webp?v=10) type("image/webp"), url(../assets/env-front.png?v=10) type("image/png")); }
 
 /* The flap is authored in the OPEN (up) position; flipped down about its hinge
    (y≈43.4% of the piece) it covers the pocket = closed. One image, both faces. */
 .env__flap {
   z-index: 4;
-  background-image: image-set(url(../assets/env-flap.webp?v=9) type("image/webp"), url(../assets/env-flap.png?v=9) type("image/png"));
+  background-image: image-set(url(../assets/env-flap.webp?v=10) type("image/webp"), url(../assets/env-flap.png?v=10) type("image/png"));
   transform-origin: 50% 43.4%;
   /* the translateY is identity here, but it keeps the function list the same in
      all three states (closed / open / sliding) so each transition interpolates
