@@ -161,12 +161,12 @@ body {
    BODY is the bottom 56.6% of the canvas — body height = width × (1048/938) ×
    0.566 ≈ width × 0.632. The width below is the dial: it's set so the body nests
    inside the open centre of the floral backdrop, with the wreath framing it,
-   rather than covering the whole screen. Height binds on a monitor (92vh puts the
-   body at ~58% of the screen height); 80vw stops it crowding a wide-short window.
+   rather than covering the whole screen. Height binds on a monitor (74vh puts the
+   body at ~47% of the screen height); 72vw stops it crowding a wide-short window.
    The flap still swings up past the top edge as it opens, which is intended. */
 .stage {
   position: relative; z-index: 1;
-  width: min(80vw, 92vh);
+  width: min(72vw, 74vh);
   aspect-ratio: 938 / 1048;
   flex-shrink: 0;
   perspective: 1600px;
@@ -177,7 +177,7 @@ body {
 /* Phones: a landscape envelope on a tall screen — fill the width and let it sit
    in the middle of the frame's open centre. */
 @media (orientation: portrait) {
-  .stage { width: min(88vw, 60vh); }
+  .stage { width: min(80vw, 54vh); }
 }
 
 .env__back, .env__front, .env__flap {
@@ -218,7 +218,7 @@ body {
      against the .stage width above if either changes.
      NOTE: percentage widths would resolve against the stage, not the viewport,
      so the cap must be in viewport units. */
-  width: min(84vw, 78vh);
+  width: min(76vw, 63vh);
   container-type: inline-size;
   border-radius: 4px;
   background: linear-gradient(168deg, var(--paper-letter), #efe6d4);
