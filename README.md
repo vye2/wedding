@@ -34,7 +34,7 @@ wedding stationery and to be hosted for free on **GitHub Pages**.
 
 - **`index.html`** — the full site: story, itinerary, locations, RSVP, FAQ.
 - **`save-the-date.html`** — a cinematic *save-the-date* on **one non-scrolling
-  screen**. Guests land on the couple's **own taupe floral envelope, sized full
+  screen**. Guests land on the couple's **own sage floral envelope, sized full
   bleed**: it's deliberately oversized so its body covers the whole viewport — edge
   to edge on a desktop, and on a phone a **deep zoom that leaves only the middle of
   the envelope on screen**. The envelope is built from three layered pieces
@@ -177,7 +177,7 @@ Until then, treat any "submitted" RSVP as **not recorded**.
   cropped to a shared coordinate space and compressed for the web. No third-party
   license applies.
 
-  They were supplied in **blush** and have been **recoloured to a warm taupe** (`#9c8f88`).
+  They were supplied in **blush** and have been **recoloured to the palette's primary sage** (`#9caf88`, i.e. `--sage-400`).
   The embossing is carried entirely in luminance, so the recolour pins the hue and
   rescales saturation and value, leaving every petal and fern untouched. The blush
   originals are in git history if they're ever wanted back. The envelope URLs carry
