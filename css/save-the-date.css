@@ -458,14 +458,26 @@ body.is-ready .petals { opacity: 1; }
     border-radius: 0;
     display: flex; flex-direction: column;
   }
+  /* The photo is capped at 60% of the viewport height. flex-grow is 0 so it can
+     never exceed that basis, and flex-shrink is 1 so it gives way if the type
+     ever needs more room than what's left. (max-height repeats the cap as a
+     guard; the vh pair is a fallback for browsers without dvh.) */
   .std__photo {
-    flex: 1; height: auto; min-height: 0;
+    flex: 0 1 60vh;  max-height: 60vh;
+    flex: 0 1 60dvh; max-height: 60dvh;
+    height: auto; min-height: 0;
     margin: 4cqw 4cqw 0;
     border-radius: 2px;
   }
-  /* the card now runs into the bottom edge, so keep the last line clear of a
-     phone's home indicator */
-  .std__content { padding-bottom: calc(5cqw + env(safe-area-inset-bottom, 0px)); }
+  /* The text block takes whatever the photo leaves and centres itself in it, so
+     capping the photo opens up the lower half rather than leaving dead stock at
+     the foot of the card. It doesn't shrink — the photo yields first.
+     The card runs into the bottom edge, so keep the last line clear of a phone's
+     home indicator. */
+  .std__content {
+    flex: 1 0 auto; justify-content: center;
+    padding-bottom: calc(5cqw + env(safe-area-inset-bottom, 0px));
+  }
   /* The frame is much narrower than the 3:4 photo, so here it's the SIDES that
      get cropped, not the top and bottom — the vertical bias used on desktop
      would do nothing, and centred keeps the clasped hands in the middle. */
