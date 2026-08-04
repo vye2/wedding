@@ -473,8 +473,8 @@ body.is-ready .petals { opacity: 1; }
   /* The dissolve is short and low, since the title now sits near the foot of the
      frame — a longer one would climb into the type and wash the white out. */
   .std__photo-media {
-    -webkit-mask-image: linear-gradient(to bottom, #000 86%, rgba(0, 0, 0, 0) 100%);
-            mask-image: linear-gradient(to bottom, #000 86%, rgba(0, 0, 0, 0) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 92%, rgba(0, 0, 0, 0) 100%);
+            mask-image: linear-gradient(to bottom, #000 92%, rgba(0, 0, 0, 0) 100%);
   }
   /* The text block takes only what it needs; the photo has the rest. It doesn't
      shrink, so the picture yields if the type ever needs more room.
@@ -494,27 +494,28 @@ body.is-ready .petals { opacity: 1; }
      that reads well on a desktop comes out around a third too small here.
      The text block takes only what it needs, so there's room to correct it. */
   /* THE TITLE STACKS — SAVE / the / DATE — with the two key words carrying it and
-     "the" reduced to a hinge between them. Its foot sits low on the frame, at
-     85%, still clear of the dissolve at 86% so the white type always lands on
-     solid picture rather than fading out with it.
+     "the" reduced to a hinge between them. Its foot sits right down at 90% of
+     the frame, still clear of the dissolve at 92% so the white type always lands
+     on solid picture rather than fading out with it.
 
-     The three lines are set tight: 0.8 line-height on the display words (safe —
-     they're all caps, so nothing descends into the line below) and no margins
-     around the small one, so the stack reads as one block rather than three
-     separate lines.
+     The three lines are set very tight: 0.75 line-height on the display words
+     and 0.95 on the small one, with no margins, so the stack reads as a single
+     block. That's below the type's own cap height, which only works because
+     these are all caps — nothing descends into the line beneath. The line boxes
+     overlap slightly; the glyphs still clear each other by a few pixels.
 
      The parent's tracking and indent are cleared; each line sets its own, since
      they need very different amounts at these sizes. */
   .std__eyebrow {
-    top: 85%;
+    top: 90%;
     letter-spacing: normal; text-indent: 0;
   }
   .std__eyebrow-key {
-    display: block; font-size: 24cqw; line-height: 0.8;
+    display: block; font-size: 20cqw; line-height: 0.75;
     letter-spacing: 0.1em; text-indent: 0.1em;   /* indent offsets the trailing space, keeping it centred */
   }
   .std__eyebrow-mid {
-    display: block; font-size: 5.5cqw; line-height: 1.1;
+    display: block; font-size: 4.8cqw; line-height: 0.95;
     letter-spacing: 0.42em; text-indent: 0.42em;
     margin: 0;
   }
