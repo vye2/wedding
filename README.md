@@ -44,14 +44,19 @@ wedding stationery and to be hosted for free on **GitHub Pages**.
   **Tap the envelope** and the **flap rotates up in 3D about its hinge** (swinging
   out of view at this size, by design), revealing the **one letter sandwiched
   between the front pocket and the back**; the **envelope pieces then slide down off
-  the letter**, which stays centered and becomes the whole screen. It's a **handmade
-  deckle-edge letter** (its torn edge is an SVG turbulence filter) carrying a
-  **single framed portrait of the couple**, a live countdown to **Saturday, May 15,
-  2027**, and a quiet footer link back to the full site. Blush + sage throughout,
-  with leaves drifting in front of the scene. Everyone sees the same page — no
-  personalization. Fully keyboard-accessible; honors `prefers-reduced-motion` (skips
-  the envelope, shows the letter outright) and falls back gracefully with JavaScript
-  disabled.
+  the letter**, which stays centered.
+
+  The letter is a **polaroid**: flat cream stock, square-ish corners and a plain
+  drop shadow, with an even band of that stock above and beside the photo. (It was
+  previously a deckle edge — a copy of the card sitting behind itself, pushed
+  through an SVG turbulence filter to fray its outline — which read as rustic torn
+  paper.) The couple's **engagement photo is the hero** across the top two thirds,
+  its lower edge dissolving into the card, with **SAVE THE DATE** set white across
+  it at the same size as the names. Below: the names, the date, and a live
+  countdown to **Saturday, May 15, 2027**. Blush + sage throughout, with leaves
+  drifting in front of the scene. Everyone sees the same page — no personalization.
+  Fully keyboard-accessible; honors `prefers-reduced-motion` (skips the envelope,
+  shows the letter outright) and falls back gracefully with JavaScript disabled.
 
   **Add the portrait:** the letter carries one photo, framed as a circular keepsake
   (`<figure class="std__photo">` in `save-the-date.html`). Replace the placeholder

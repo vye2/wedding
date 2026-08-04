@@ -40,7 +40,7 @@
   --paper:      #f2ece1;
   --paper-flap: #efe8db;
   --paper-deep: #e6ddcb;
-  /* Handmade deckle-edge letter stock */
+  /* The card stock — also the polaroid border around the photo */
   --paper-letter: #f8f3ea;
 
   --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
@@ -256,24 +256,21 @@ body {
      so the cap must be in viewport units. */
   width: min(76vw, 63vh);
   container-type: inline-size;
-  border-radius: 4px;
-  background: linear-gradient(168deg, var(--paper-letter), #efe6d4);
+  /* A CLEAN POLAROID, not torn stationery: flat stock, square-ish corners, and a
+     plain drop shadow. (The old look was a deckle edge — a copy of the card behind
+     itself, pushed through an SVG turbulence filter to fray its outline.) */
+  border-radius: 3px;
+  background: var(--paper-letter);
+  box-shadow:
+    0 1.6cqw 3.4cqw -1cqw rgba(66, 52, 46, 0.4),
+    0 0 0 1px rgba(90, 70, 60, 0.06);
 }
 /* the letter is focused programmatically for screen readers on reveal — no ring */
 .std:focus { outline: none; }
-/* handmade, deckle torn edge — a backing of the SAME paper (so it reads as a
-   torn silhouette, not a darker frame) */
-.std::before {
-  content: ""; position: absolute; inset: -6px; z-index: -1;
-  background: linear-gradient(168deg, var(--paper-letter), #efe6d4);
-  /* a firm shadow so the card lifts off the backdrop as it is uncovered */
-  filter: url(#deckle) drop-shadow(0 16px 36px rgba(66, 52, 46, 0.38));
-  border-radius: 6px;
-}
 .std__content {
   display: flex; flex-direction: column; align-items: center;
-  text-align: center; padding: 2cqw 7cqw 5cqw;
-  border-radius: 0 0 4px 4px;
+  text-align: center; padding: 3cqw 6cqw 5cqw;
+  border-radius: 0 0 3px 3px;
 }
 
 /* ---- Letter: "pressed-botanical stationery" — a single portrait of the couple
@@ -285,9 +282,12 @@ body {
    sums to ~38cqw (77 + 38, so the photo is 2/3 of 115). Retune this if you retune
    the type below, or the ratio drifts. */
 .std__photo {
-  position: relative; flex: none; margin: 0;
-  width: 100%; height: 77cqw;
-  border-radius: 4px 4px 0 0; overflow: hidden;
+  position: relative; flex: none;
+  /* the polaroid margin — an even band of stock above and beside the picture.
+     Left off the bottom, where the photo dissolves into the card instead. */
+  margin: 4cqw 4cqw 0;
+  height: 77cqw;
+  border-radius: 1px; overflow: hidden;
 }
 /* The image layer, MASKED so its lower edge dissolves into the paper instead of
    ending on a hard seam. A mask rather than an overlay gradient, so it fades to
@@ -309,15 +309,23 @@ body {
   object-position: center 78%;
 }
 
-/* "Save the Date" sits ON the photo, low enough to land in its dissolving edge —
-   so it reads over the picture but always against near-paper, which keeps it
-   legible whatever photo goes in. The soft white glow covers the rest. */
+/* "Save the Date" is set ACROSS the photo — white, and the same size as the names,
+   so the two of them carry the card together. Centred on the frame, which also
+   keeps it in the solid part of the picture (the dissolve only starts at 66%).
+
+   text-align is set explicitly: this lives in .std__photo, a SIBLING of
+   .std__content, so it never inherits that block's centring.
+
+   Tracking eases off to 0.3em — at this size the wide letter-spacing the small
+   version used would run the line past the edges of the card. */
 .std__eyebrow {
-  position: absolute; left: 0; right: 0; bottom: 5%; z-index: 1;
-  margin: 0; font-family: var(--font-display); font-weight: 600;
-  font-size: 3.2cqw; letter-spacing: 0.44em; text-indent: 0.44em;
-  text-transform: uppercase; color: var(--sage-700);
-  text-shadow: 0 1px 4px rgba(255, 253, 248, 0.92), 0 0 16px rgba(255, 253, 248, 0.8);
+  position: absolute; left: 0; right: 0; top: 50%; z-index: 1;
+  transform: translateY(-50%);
+  margin: 0; text-align: center;
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 6cqw; letter-spacing: 0.3em; text-indent: 0.3em;
+  text-transform: uppercase; color: #fff;
+  text-shadow: 0 0.2cqw 1.6cqw rgba(0, 0, 0, 0.5);   /* holds it against a light frame */
 }
 .std__names {
   margin: 0; font-family: var(--font-script); font-weight: 400;
