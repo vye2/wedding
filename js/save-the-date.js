@@ -72,13 +72,13 @@ function initOpener() {
     // 1) The top flap hinges open in 3D, revealing the letter tucked inside.
     opener.classList.add('is-open');
 
-    // 2) A short beat to take in the open envelope, then the whole envelope
-    //    slides straight down and out of frame, uncovering the letter.
-    //    The flap's 1.7s swing is ~85% done by now (it eases out, so it already
-    //    reads as open); it finishes on the way down rather than sitting still.
+    // 2) A beat to take in the open envelope, then the whole envelope slides
+    //    straight down and out of frame, uncovering the letter. This lands just
+    //    after the flap's 1.7s swing has visually settled (it eases out), so the
+    //    envelope reads as fully open before it drops.
     setTimeout(function () {
       opener.classList.add('is-sliding');
-    }, 1000);
+    }, 1400);
 
     // 3) The envelope has cleared the frame (1.15s slide) and the letter stands
     //    alone. Fade in the footer and move focus to the letter.
@@ -89,7 +89,7 @@ function initOpener() {
         main.setAttribute('tabindex', '-1');
         main.focus({ preventScroll: true });
       }
-    }, 2500);
+    }, 2900);
   }
 
   // The whole envelope is the control — a generous, obvious hit area.
