@@ -482,6 +482,20 @@ body.is-ready .petals { opacity: 1; }
      get cropped, not the top and bottom — the vertical bias used on desktop
      would do nothing, and centred keeps the clasped hands in the middle. */
   .std__photo-img { object-position: center center; }
+
+  /* TYPE STEPS UP. Every size on the card is in cqw, i.e. relative to the card's
+     WIDTH — and a phone card is ~390px where a monitor's is ~620px, so the scale
+     that reads well on a desktop comes out around a third too small here.
+     Capping the photo at 60vh freed the room to correct it. */
+  .std__eyebrow { font-size: 7cqw; }
+  .std__names   { font-size: 9cqw; }
+  .std__date    { font-size: 6.5cqw; }
+  .std__follow  { font-size: 4cqw; margin-top: 2.2cqw; }
+  .std-count    { gap: 5cqw; margin-top: 2.4cqw; }
+  .std-count__num   { font-size: 6cqw; }
+  .std-count__label { font-size: 2.2cqw; }
+  /* the hairline divider sits halfway into the gap, so it tracks the gap above */
+  .std-count__unit + .std-count__unit::before { left: -2.5cqw; }
 }
 
 /* ============================ REDUCED MOTION ============================ */
