@@ -69,10 +69,13 @@ body {
      ivory keeps the page on-palette while the image loads; the plain url() is a
      fallback for browsers without image-set(). */
   background-color: var(--ivory);
-  background-image: url(../assets/bg-floral.jpg);
+  /* the ?v= is a cache buster on the IMAGE itself — bump it whenever bg-floral is
+     re-exported, or browsers keep serving the previous picture from cache even
+     though the file on disk changed. */
+  background-image: url(../assets/bg-floral.jpg?v=2);
   background-image: image-set(
-    url(../assets/bg-floral.webp) type("image/webp"),
-    url(../assets/bg-floral.jpg)  type("image/jpeg"));
+    url(../assets/bg-floral.webp?v=2) type("image/webp"),
+    url(../assets/bg-floral.jpg?v=2)  type("image/jpeg"));
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
