@@ -39,7 +39,7 @@
   <!-- Bespoke save-the-date theme (mirrors the locked sage + blush palette).
        The ?v= query is a cache buster — bump it whenever the CSS or JS changes so
        browsers pick the new file up without a hard refresh. -->
-  <link rel="stylesheet" href="css/save-the-date.css?v=28" />
+  <link rel="stylesheet" href="css/save-the-date.css?v=29" />
 
   <!-- No-JS fallback: hide the envelope pieces so the sandwiched letter shows. -->
   <noscript>
@@ -73,10 +73,10 @@
            (between the back and the front pocket). Its top is glimpsed when the
            flap lifts; the whole letter is exposed as the envelope slides down. -->
       <main class="std" id="std-main" aria-labelledby="std-names">
-        <!-- THE PORTRAIT — the hero of the card, sitting inside a polaroid border,
-             with "Save the Date" over its foot. On portrait screens the card fills
-             the phone, so the frame is far taller. Either way the photo is cropped
-             to fill, and .std__photo-img's object-position picks what survives. -->
+        <!-- THE PORTRAIT — the hero of the card. On landscape it sits inside a
+             polaroid border; on portrait the card fills the phone, so it runs to
+             the edges and melts into the stock at its foot. Either way the photo
+             is cropped to fill, and object-position picks what survives. -->
         <figure class="std__photo">
           <picture class="std__photo-media">
             <!-- Portrait screens get the TALL crop: the card fills a phone there, so
@@ -88,7 +88,14 @@
             <img class="std__photo-img" src="assets/portrait.jpg?v=1"
                  alt="Victor and Ashley, arms wrapped together, her engagement ring on show" />
           </picture>
-          <p class="std__eyebrow">Save the Date</p>
+          <!-- split into parts so phones can stack it — SAVE / the / DATE — while
+               landscape keeps it on one line (the spans are inline there, and the
+               whitespace between them is the word space) -->
+          <p class="std__eyebrow">
+            <span class="std__eyebrow-key">Save</span>
+            <span class="std__eyebrow-mid">the</span>
+            <span class="std__eyebrow-key">Date</span>
+          </p>
         </figure>
 
         <div class="std__content">
