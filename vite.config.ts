@@ -59,11 +59,18 @@ export default defineConfig(({ command, mode }) => ({
     // hand-made artwork sitting in assets/.
     assetsDir: 'assets/std',
 
-    // Only the save-the-date is a React app. The main site (index.html)
-    // is still hand-written static HTML and must not be swept into the
-    // bundle — naming the input explicitly is what keeps it out.
+    // Two pages, one build — so they share a React chunk and the palette
+    // stylesheet, and a guest who has seen one has the other's code
+    // already cached.
+    //
+    // Naming the inputs explicitly also keeps the build from wandering:
+    // the repo root is Vite's root, and an unnamed glob would sweep up
+    // save-the-date.html and index.html — its own OUTPUT — as input.
     rollupOptions: {
-      input: 'app/index.html',
+      input: {
+        std: 'app/index.html',
+        home: 'app/home.html',
+      },
     },
 
     // The artwork is already optimised WebP sitting in assets/; inlining

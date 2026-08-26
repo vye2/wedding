@@ -1,0 +1,52 @@
+.head {
+  text-align: center;
+  max-width: var(--measure);
+  margin: 0 auto clamp(2.5rem, 6vw, 4rem);
+}
+
+/* The section heads sit ON the thread, so each gets a small run of paper
+   behind it — the line passes behind the words rather than through them. */
+.eyebrow,
+.title,
+.intro { background: var(--ivory); }
+
+.eyebrow {
+  margin: 0;
+  padding: 0 0.9rem;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  text-transform: uppercase;
+  color: var(--thread);
+}
+
+.title {
+  margin: 0.9rem 0 0;
+  padding: 0 1rem;
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(2.1rem, 6vw, 3.1rem);
+  line-height: 1.08;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+}
+
+.intro {
+  margin: 1.1rem auto 0;
+  padding: 0 1rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2.6vw, 1.2rem);
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* On a phone the thread is at the left edge and the head is beside it,
+   so the paper backing is pointless and the centring reads as weak.
+   Align left instead. */
+@media (max-width: 62rem) {
+  .head { text-align: left; margin-left: 0; }
+  .eyebrow, .title, .intro { padding-left: 0; background: none; }
+  .eyebrow { text-indent: 0; }
+}

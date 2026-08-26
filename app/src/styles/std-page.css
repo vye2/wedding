@@ -1,0 +1,37 @@
+/* =====================================================================
+   Page chrome for the SAVE-THE-DATE only.
+
+   One fixed screen that never scrolls, on the couple's floral backdrop.
+   This used to live in tokens.css, but tokens.css is now shared with the
+   main page — which scrolls, and would be wrecked by `overflow: hidden`
+   and a 100dvh body.
+   ===================================================================== */
+
+body {
+  height: 100vh; height: 100dvh;
+  overflow: hidden;          /* one fixed screen — nothing scrolls */
+
+  /* The backdrop: a sunlit floral frame — roses, eucalyptus and fern around an
+     open cream centre, which is exactly where the envelope and letter sit. The
+     ivory keeps the page on-palette while the image loads; the plain url() is a
+     fallback for browsers without image-set().
+
+     The paths are ABSOLUTE, not relative: this file is bundled into
+     /assets/std/, one directory deeper than the old css/ folder, and the
+     artwork it points at hasn't moved. Absolute also means the URL that
+     useSceneReady reads back off the computed style is directly usable.
+
+     The ?v= is a cache buster on the IMAGE itself — bump it whenever
+     bg-floral is re-exported, or browsers keep serving the previous
+     picture from cache even though the file on disk changed. */
+  background-color: var(--ivory);
+  background-image: url(/assets/bg-floral.jpg?v=4);
+  background-image: image-set(
+    url(/assets/bg-floral.webp?v=4) type("image/webp"),
+    url(/assets/bg-floral.jpg?v=4)  type("image/jpeg"));
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#root { height: 100%; }

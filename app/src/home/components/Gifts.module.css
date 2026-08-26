@@ -1,0 +1,68 @@
+.section { padding: var(--step) 0 calc(var(--step) * 0.9); }
+
+/* The paper is carried by each LINE, not by the block.
+
+   Backing the whole block instead put one opaque rectangle over the
+   thread for the block's full height, which read as the thread simply
+   stopping halfway down the page. Per-line backing lets it show in the
+   gaps between lines and pass behind the words — the same trick every
+   other section on the page uses. */
+.block {
+  max-width: 32rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.eyebrow,
+.title,
+.body,
+.pending { background: var(--ivory); }
+
+.eyebrow {
+  padding: 0 0.9rem;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  text-transform: uppercase;
+  color: var(--thread);
+}
+
+.title {
+  margin: 0.9rem 0 0;
+  padding: 0 1rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(1.6rem, 4.4vw, 2.2rem);
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.body {
+  margin-top: 1.1rem;
+  padding: 0 1rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2.4vw, 1.15rem);
+  line-height: 1.7;
+  color: var(--ink-read);
+}
+
+.pending {
+  margin-top: 1.4rem;
+  padding: 0 0.9rem;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sage-600);
+}
+
+/* ============================ PHONES ============================ */
+@media (max-width: 62rem) {
+  .block { margin-left: 0; text-align: left; max-width: 24rem; }
+  .eyebrow, .title, .body, .pending { background: none; padding-left: 0; padding-right: 0; }
+  .eyebrow { text-indent: 0; }
+}

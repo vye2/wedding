@@ -1,0 +1,36 @@
+.knot {
+  display: block;
+  width: clamp(7rem, 15vw, 9.5rem);
+  height: auto;
+  overflow: visible;
+}
+
+.thread {
+  stroke: var(--thread);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  /* The thread is drawn at a real 1.4px whatever the SVG is scaled to,
+     so it stays a hairline and never thickens into a ribbon. */
+  vector-effect: non-scaling-stroke;
+}
+
+/* ---- The draw-on ----
+   pathLength="1" on the path means the whole thing is one unit long, so
+   the dash values are fractions rather than measured pixels. */
+.draw .thread {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: tie 1.9s cubic-bezier(0.33, 0, 0.15, 1) 0.5s forwards;
+}
+
+@keyframes tie {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Reduced motion: already tied. Not "tied instantly" — the animation is
+   removed outright, because a 0.001ms draw is a flash. */
+@media (prefers-reduced-motion: reduce) {
+  .draw .thread { animation: none; stroke-dashoffset: 0; }
+}

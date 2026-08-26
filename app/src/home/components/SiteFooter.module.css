@@ -1,0 +1,87 @@
+.footer {
+  padding: 0 0 clamp(3rem, 8vw, 5rem);
+  text-align: center;
+}
+
+.inner { display: flex; flex-direction: column; align-items: center; }
+
+/* The closing knot is tied around the END of the thread, so its cinch
+   has to land exactly on the footer's top edge — which is where the last
+   threaded section stops drawing the line.
+
+   The bow's centre sits at y=52 of a 200×120 viewBox, so it is 26% of
+   the rendered WIDTH down from the top (height being 60% of width, and
+   52/120 of that). Pulling it up by that fraction puts the cinch on the
+   join at any size, which a fixed pixel offset could not do.
+
+   Smaller than the hero's — an echo, not a reprise. */
+.knot {
+  --knot-w: clamp(5.5rem, 12vw, 7.5rem);
+  width: var(--knot-w);
+  margin-top: calc(var(--knot-w) * -0.26);
+}
+
+/* Great Vibes' second and last appearance on this site. */
+.names {
+  margin-top: 1.4rem;
+  font-family: var(--font-script);
+  font-size: clamp(2rem, 6vw, 2.8rem);
+  line-height: 1;
+  color: var(--ink);
+}
+.amp { color: var(--thread); opacity: 0.85; padding: 0 0.08em; font-size: 0.8em; }
+
+.date {
+  margin-top: 0.9rem;
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  text-transform: uppercase;
+  color: var(--sage-600);
+}
+
+/* The honest line: nothing on this page is final yet. */
+.note {
+  margin-top: 1.6rem;
+  max-width: 26rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.tag {
+  margin-top: 1.6rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--thread);
+}
+
+.link {
+  margin-top: 1.9rem;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 3px;
+  transition: color 0.2s var(--ease-soft), border-color 0.2s var(--ease-soft);
+}
+.link:hover { color: var(--thread); border-bottom-color: var(--thread); }
+
+/* ============================ PHONES ============================
+   KEEP LAST. The footer stays centred even though the rest of the page
+   left-aligns beside the thread — the thread has ended by here, so
+   there's nothing left to align to, and a centred close reads as one. */
+@media (max-width: 62rem) {
+  .inner { padding-left: var(--gutter); padding-right: var(--gutter); }
+  .note { max-width: 22rem; }
+}

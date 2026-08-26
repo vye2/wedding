@@ -1,0 +1,19 @@
+.page { overflow-x: clip; }
+
+/* Skips past the masthead to the first thing a guest came for. */
+.skip {
+  position: absolute;
+  left: 0.75rem;
+  top: -3.5rem;
+  z-index: 200;
+  background: var(--sage-600);
+  color: var(--white);
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: top 0.2s var(--ease);
+}
+.skip:focus { top: 0.75rem; }

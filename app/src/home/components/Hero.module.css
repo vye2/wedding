@@ -1,0 +1,120 @@
+.hero {
+  padding: clamp(4.5rem, 13vh, 8.5rem) 0 var(--step);
+  text-align: center;
+}
+
+/* On a wide screen the thread runs down the middle and the type is
+   centred over it, so the knot sits exactly on the line it belongs to. */
+.inner { display: flex; flex-direction: column; align-items: center; }
+
+.date {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;   /* offsets the trailing space, keeping it centred */
+  text-transform: uppercase;
+  color: var(--sage-600);
+  /* The paper shows through the thread behind this line — a small gap so
+     the tracking doesn't collide with a red hairline. */
+  background: var(--ivory);
+  padding: 0 0.9rem;
+  animation: rise 1s var(--ease-soft) both;
+}
+
+/* The names carry the page. Great Vibes appears exactly twice on this
+   site — here and in the footer — because a script face used more often
+   than that stops being special and starts being a texture. */
+.names {
+  margin: 1.6rem 0 0;
+  font-family: var(--font-script);
+  font-weight: 400;
+  font-size: clamp(3.2rem, 13vw, 6.4rem);
+  line-height: 1;
+  color: var(--ink);
+  background: var(--ivory);
+  padding: 0 1rem;
+  animation: rise 1s var(--ease-soft) 0.1s both;
+}
+
+/* Great Vibes' ampersand is a flourish in its own right; give it air and
+   let it sit slightly smaller so it reads as a join, not a third name. */
+.amp {
+  display: inline-block;
+  padding: 0 0.12em;
+  font-size: 0.78em;
+  color: var(--thread);
+  opacity: 0.85;
+}
+
+.knotMark {
+  margin: clamp(1.4rem, 3vw, 2.2rem) 0 0;
+}
+
+.line {
+  max-width: 30rem;
+  margin: clamp(1.6rem, 4vw, 2.4rem) 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 3.4vw, 1.7rem);
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.45;
+  color: var(--ink);
+  background: var(--ivory);
+  padding: 0 1rem;
+  animation: rise 1s var(--ease-soft) 0.2s both;
+}
+
+.sub {
+  margin: 0.9rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--ivory);
+  padding: 0 0.9rem;
+  animation: rise 1s var(--ease-soft) 0.3s both;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .date, .names, .line, .sub { animation: none; }
+}
+
+/* ============================ PHONES ============================
+   KEEP LAST.
+
+   THE HERO DROPS THE THREAD HERE, and keeps the bow.
+
+   Everywhere else on a phone the thread runs down the left edge with the
+   content beside it. The hero can't do that: the bow is tied AROUND the
+   thread, so its cinch has to sit on the line — and at the left edge of
+   a 390px screen, more than half the bow would be off-canvas. Sizing it
+   down far enough to fit made it a trinket.
+
+   Left-aligning the bow instead, and letting the thread pass to one side
+   of it, was worse: a knot that isn't tied around anything is just a
+   drawing of a knot.
+
+   So the masthead centres, as a masthead should, and simply doesn't draw
+   the line. The thread starts below, at the top of the schedule — there
+   is no jump, because there is nothing above it to jump from. */
+@media (max-width: 62rem) {
+  .hero[data-thread]::before { display: none; }
+
+  /* .wrap pads its left side to clear the thread. With no thread here
+     there is nothing to clear, and that padding would push the centred
+     masthead off-centre. Two class names deep so it beats .wrap
+     regardless of which stylesheet the bundler emits first. */
+  .hero .inner { padding-left: var(--gutter); padding-right: var(--gutter); }
+
+  .date, .names, .line, .sub { background: none; padding-left: 0; padding-right: 0; }
+  .date { letter-spacing: 0.3em; text-indent: 0.3em; }
+  .line { max-width: 20rem; }
+  .knotMark { width: clamp(7rem, 34vw, 9rem); }
+}

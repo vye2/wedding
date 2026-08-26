@@ -1,0 +1,102 @@
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  /* Transparent over the hero, papered once you scroll — so the masthead
+     is uninterrupted but the links stay readable over content. */
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background 0.35s var(--ease-soft), border-color 0.35s var(--ease-soft);
+}
+
+.nav[data-lifted="true"] {
+  background: rgba(250, 247, 242, 0.92);
+  backdrop-filter: blur(10px);
+  /* The thread, doing a second job: it's also the bar's edge. */
+  border-bottom-color: var(--thread-soft);
+}
+
+.inner {
+  max-width: var(--measure-wide);
+  margin-inline: auto;
+  padding: 0.85rem var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.mark {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.links {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  gap: clamp(1rem, 2.6vw, 2rem);
+}
+
+.link,
+.aside {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s var(--ease-soft);
+}
+
+.link:hover { color: var(--thread); }
+
+/* The one link off this page. It reads as a sibling of the section
+   links, not as a call to action — the red underline is enough to say
+   "this goes somewhere else" without competing with the knot below it. */
+.aside {
+  flex: none;
+  border-bottom: 1px solid var(--thread-soft);
+  padding-bottom: 2px;
+}
+.aside:hover { color: var(--thread); border-bottom-color: var(--thread); }
+
+/* ============================ NARROW ============================
+   KEEP LAST.
+
+   No hamburger. A menu button for five anchors on a page you can simply
+   scroll is a control that exists to be a control — so the links become
+   a single quiet scrolling row under the name, which needs no state, no
+   focus trap and no aria wiring to get right. */
+@media (max-width: 62rem) {
+  .inner {
+    flex-wrap: wrap;
+    row-gap: 0.55rem;
+    padding-top: 0.7rem;
+    padding-bottom: 0.6rem;
+  }
+
+  .mark { font-size: 0.95rem; }
+  .aside { margin-left: auto; }
+
+  .links {
+    order: 3;
+    width: 100%;
+    margin: 0;
+    gap: 1.1rem;
+    overflow-x: auto;
+    /* The row is scrollable; keep the scrollbar out of the design but
+       leave the gesture working. */
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .links::-webkit-scrollbar { display: none; }
+  .link { font-size: 0.66rem; letter-spacing: 0.13em; }
+}

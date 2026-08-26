@@ -1,0 +1,65 @@
+.section { padding: calc(var(--step) * 0.4) 0 var(--step); }
+
+.band {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+/* The middle frame is taller and the outer two are cropped shorter, so
+   the band has a centre rather than reading as three equal tiles. */
+.frame:nth-child(2) { margin-top: -1.75rem; }
+
+.figure { margin: 0; }
+
+.plate {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 2px;
+  background: linear-gradient(150deg, #f7e9ec, #eef0e6 55%, #e6ecdd);
+  display: grid;
+  place-items: center;
+}
+
+.frame:nth-child(2) .plate { aspect-ratio: 4 / 5.6; }
+
+.img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* The empty state says what it is and nothing else. No dashed outline,
+   no camera icon — the soft plate already reads as "not a photograph". */
+.pending {
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-indent: 0.28em;
+  text-transform: uppercase;
+  color: var(--sage-600);
+}
+
+.caption {
+  margin-top: 0.7rem;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+/* ============================ NARROW ============================
+   KEEP LAST. Three portrait frames across a phone would be stamps.
+   Two across, and the centre frame's offset is dropped with them. */
+@media (max-width: 62rem) {
+  .band { grid-template-columns: repeat(2, 1fr); max-width: 26rem; }
+  .frame:nth-child(2) { margin-top: 0; }
+  .frame:nth-child(2) .plate { aspect-ratio: 4 / 5; }
+
+  /* The third runs the full width as a letterbox rather than being
+     dropped — it's one of the frames still waiting for a photograph, and
+     hiding it would hide the fact that it's outstanding. */
+  .frame:nth-child(3) { grid-column: 1 / -1; }
+  .frame:nth-child(3) .plate { aspect-ratio: 16 / 9; }
+}

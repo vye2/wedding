@@ -1,0 +1,117 @@
+.section { padding: var(--step) 0; }
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+/* Each movement is a half-width card on one side of the thread. The grid
+   is two equal columns split at the thread, so a card can be dropped into
+   either without any per-card maths. */
+.item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.item > .card { grid-column: 1; text-align: right; }
+.item:nth-child(even) > .card { grid-column: 2; text-align: left; }
+
+/* The knot where this movement attaches to the thread. A small filled
+   diamond, echoing the gold one on the save-the-date's card — same
+   vocabulary, different thread. */
+.knot {
+  position: absolute;
+  top: 0.55rem;
+  left: var(--thread-x);
+  width: 7px; height: 7px;
+  transform: translate(-50%, 0) rotate(45deg);
+  background: var(--thread);
+  /* A ring of paper so the thread appears to pass behind the knot. */
+  box-shadow: 0 0 0 4px var(--ivory);
+}
+
+.place {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.5rem, 3.6vw, 1.95rem);
+  line-height: 1.1;
+  color: var(--sage-700);
+}
+
+/* The time is data, so it's set in the utility face — the page's rule is
+   that the serif is for voice and the sans is for logistics. */
+.time {
+  margin-top: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  align-items: flex-end;
+}
+.item:nth-child(even) .time { align-items: flex-start; }
+
+.timeMain {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.timeNote {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--thread);
+}
+
+.title {
+  margin: 1.1rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.15rem, 2.6vw, 1.3rem);
+  color: var(--ink);
+}
+
+/* Who it's for, said plainly — this is the line that stops someone
+   turning up at the house at ten by mistake. */
+.who {
+  margin-top: 0.3rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.body {
+  margin-top: 0.9rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.02rem, 2.4vw, 1.12rem);
+  line-height: 1.68;
+  color: var(--ink-read);
+}
+
+/* ============================ PHONES ============================
+   KEEP LAST. The thread moves to the left edge, so the two-column split
+   collapses and every card sits to its right, left-aligned. */
+@media (max-width: 62rem) {
+  .item { display: block; }
+  .item > .card,
+  .item:nth-child(even) > .card { grid-column: auto; text-align: left; }
+  .time,
+  .item:nth-child(even) .time { align-items: flex-start; }
+
+  /* .wrap pads its content to `--thread-x + 1.35rem`, so from the item's
+     own left edge the thread is a flat 1.35rem back. */
+  .knot { top: 0.45rem; left: -1.35rem; }
+}

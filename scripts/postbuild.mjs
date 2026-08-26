@@ -1,20 +1,26 @@
 /* =====================================================================
-   Put the built save-the-date where GitHub Pages will serve it.
+   Put the built pages where GitHub Pages will serve them.
 
    Pages serves this repo's root off `main` — there's a CNAME and a
-   .nojekyll and no Actions workflow — so the page has to BE a file in the
-   root, at the URL guests already have:
+   .nojekyll and no Actions workflow — so each page has to BE a file in
+   the root, at the URL guests already have:
 
        dist/app/index.html    →  save-the-date.html
+       dist/app/home.html     →  index.html
        dist/assets/std/*      →  assets/std/*
 
-   Vite can't emit straight there: its outDir is wiped on every build, and
-   the repo root holds the main site, the artwork and the git metadata.
-   So it builds into dist/ (gitignored) and this moves the two pieces out.
+   (The crossover in those first two names is deliberate. `app/index.html`
+   was the save-the-date's source before there was a second page, and
+   renaming it would have churned every path for no gain. The OUTPUT
+   names are the ones guests see, and those are right.)
 
-   Both destinations are fully derived from this file's own location, and
-   the only thing ever deleted is assets/std/ — the directory this script
-   owns. Nothing else in the repo is touched.
+   Vite can't emit straight to the root: its outDir is wiped on every
+   build, and the root holds the artwork, the git metadata and the pages
+   themselves. So it builds into dist/ (gitignored) and this moves the
+   pieces out.
+
+   Everything is derived from this file's own location, and the only
+   directory ever deleted is assets/std/ — the one this script owns.
    ===================================================================== */
 
 import { cp, mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises'
@@ -23,9 +29,13 @@ import { fileURLToPath } from 'node:url'
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
-const BUILT_PAGE = path.join(repoRoot, 'dist', 'app', 'index.html')
+/** Built page → where it has to land for Pages to serve it. */
+const PAGES = [
+  { from: path.join('dist', 'app', 'index.html'), to: 'save-the-date.html' },
+  { from: path.join('dist', 'app', 'home.html'), to: 'index.html' },
+]
+
 const BUILT_BUNDLE = path.join(repoRoot, 'dist', 'assets', 'std')
-const PAGE = path.join(repoRoot, 'save-the-date.html')
 const BUNDLE = path.join(repoRoot, 'assets', 'std')
 
 const BANNER = [
@@ -34,8 +44,7 @@ const BANNER = [
   '',
   '     Built from app/ by `npm run build`, then placed here by',
   '     scripts/postbuild.mjs so GitHub Pages serves it at the URL',
-  '     guests already have. Edit app/index.html or app/src/ instead,',
-  '     and rebuild.',
+  '     guests already have. Edit app/ instead, and rebuild.',
   '     ============================================================ -->',
 ].join('\n')
 
@@ -49,10 +58,12 @@ async function exists(target) {
 }
 
 async function main() {
-  if (!(await exists(BUILT_PAGE))) {
-    throw new Error(
-      `No build output at ${path.relative(repoRoot, BUILT_PAGE)}. Run \`npm run build\`, not this script on its own.`,
-    )
+  for (const page of PAGES) {
+    if (!(await exists(path.join(repoRoot, page.from)))) {
+      throw new Error(
+        `No build output at ${page.from}. Run \`npm run build\`, not this script on its own.`,
+      )
+    }
   }
 
   // The bundle directory is replaced wholesale rather than merged, so the
@@ -63,15 +74,25 @@ async function main() {
     await cp(BUILT_BUNDLE, BUNDLE, { recursive: true })
   }
 
-  const html = await readFile(BUILT_PAGE, 'utf8')
-  await writeFile(PAGE, html.replace(/^(<!doctype html>|<!DOCTYPE html>)/, `$1\n${BANNER}`), 'utf8')
+  for (const page of PAGES) {
+    const html = await readFile(path.join(repoRoot, page.from), 'utf8')
+    await writeFile(
+      path.join(repoRoot, page.to),
+      html.replace(/^(<!doctype html>|<!DOCTYPE html>)/, `$1\n${BANNER}`),
+      'utf8',
+    )
+  }
 
   const shipped = (await readdir(BUNDLE)).sort()
-  console.log(`\n  save-the-date.html  ←  ${path.relative(repoRoot, BUILT_PAGE)}`)
+
+  console.log('')
+  for (const page of PAGES) {
+    console.log(`  ${page.to.padEnd(20)}←  ${page.from}`)
+  }
   for (const file of shipped) {
     console.log(`  assets/std/${file}`)
   }
-  console.log(`\n  Commit those ${shipped.length + 1} files to publish.\n`)
+  console.log(`\n  Commit those ${shipped.length + PAGES.length} files to publish.\n`)
 }
 
 main().catch((error) => {

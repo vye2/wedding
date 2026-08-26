@@ -6,8 +6,15 @@
    floral backdrop) has no component to belong to. Component styling lives
    in *.module.css next to the component that owns it.
 
-   The palette mirrors the LOCKED sage + blush theme in css/styles.css.
-   Keep the two in step; don't introduce new colours here.
+   THIS FILE IS THE PALETTE. It began as a mirror of css/styles.css, the
+   old hand-written theme, but that stylesheet went with the page it
+   dressed — both pages are React now and both read their colours from
+   here. The sage + blush values below are unchanged from the locked
+   original; the one deliberate addition is --thread, and it explains
+   itself where it is declared.
+
+   Don't add colours casually. Two families, one wedding, and a palette
+   that has already survived several redesigns.
    ===================================================================== */
 
 :root {
@@ -37,6 +44,25 @@
   --line:  #e7e0d6;
   --white: #ffffff;
   --gold:  #c9a96a;
+
+  /* ---- THE RED THREAD ----------------------------------------------
+     The one colour outside the locked sage + blush palette, and the only
+     place the main page raises its voice.
+
+     Both families' weddings are red: the áo dài, the lì xì and hóngbāo,
+     the banquet hall. And the red thread — the one that ties two people
+     who are meant to meet, and tangles but never breaks — is the main
+     page's structural spine: it knots under the names, runs down the
+     schedule, and separates Ashley's answers from Victor's in the Q&A.
+
+     It is a HAIRLINE COLOUR. Thread, knots, and the odd small mark. It
+     is never a fill, never a background, never a button. If it starts
+     covering area, the page has lost the plot.
+
+     Lacquer, not pillar-box: it has to sit beside sage without fighting. */
+  --thread:      #a63b2a;
+  --thread-deep: #8a2f21;   /* knots and small solid marks */
+  --thread-soft: rgba(166, 59, 42, 0.22);   /* the thread where it recedes */
 
   /* Envelope paper tones — soft off-white */
   --paper:      #f2ece1;
@@ -77,37 +103,17 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
-  height: 100vh; height: 100dvh;
   font-family: var(--font-body);
   color: var(--ink);
   line-height: 1.6;
-  overflow: hidden;          /* one fixed screen — nothing scrolls */
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  /* The backdrop: a sunlit floral frame — roses, eucalyptus and fern around an
-     open cream centre, which is exactly where the envelope and letter sit. The
-     ivory keeps the page on-palette while the image loads; the plain url() is a
-     fallback for browsers without image-set().
-
-     The paths are ABSOLUTE, not relative: this file is bundled into
-     /assets/std/, one directory deeper than the old css/ folder, and the
-     artwork it points at hasn't moved. Absolute also means the URL that
-     useSceneReady reads back off the computed style is directly usable.
-
-     The ?v= is a cache buster on the IMAGE itself — bump it whenever
-     bg-floral is re-exported, or browsers keep serving the previous
-     picture from cache even though the file on disk changed. */
-  background-color: var(--ivory);
-  background-image: url(/assets/bg-floral.jpg?v=4);
-  background-image: image-set(
-    url(/assets/bg-floral.webp?v=4) type("image/webp"),
-    url(/assets/bg-floral.jpg?v=4)  type("image/jpeg"));
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
 }
 
-#root { height: 100%; }
+/* NOTE: what the BODY looks like is per-page, and lives next door.
+   The save-the-date is one fixed, non-scrolling screen on a floral
+   backdrop (std-page.css); the main page scrolls on plain paper
+   (home-page.css). Putting either here would break the other. */
 
 /* ============================ REDUCED MOTION ============================
    The blanket rule. Components that run an INFINITE animation (the

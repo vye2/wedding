@@ -1,0 +1,52 @@
+.section { padding: var(--step) 0; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.5rem, 3.5vw, 2.5rem);
+}
+
+/* Cards sit ON the thread here — three across, so the line runs behind
+   the middle one. They carry paper so it passes behind rather than
+   through, and a hairline sage edge so they read as one set. */
+.card {
+  background: var(--ivory);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: clamp(1.4rem, 3vw, 1.9rem);
+}
+
+.label {
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--thread);
+}
+
+.title {
+  margin: 0.8rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.15rem, 2.6vw, 1.32rem);
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+/* Logistics — utility face, and a size that stays comfortable in a
+   narrow column. */
+.body {
+  margin-top: 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+/* ============================ NARROW ============================
+   KEEP LAST. Three cards across stop working well before the phone
+   breakpoint, so this steps down at a wider width than the thread does. */
+@media (max-width: 62rem) {
+  .grid { grid-template-columns: 1fr; max-width: 26rem; gap: 1rem; }
+}

@@ -1,0 +1,146 @@
+/* =====================================================================
+   Page chrome for the MAIN PAGE.
+
+   A long, scrolling page on plain warm paper — no floral backdrop. The
+   backdrop belongs to the save-the-date, where it frames one card; behind
+   a thousand words of schedule and Q&A it would just make them hard to
+   read.
+
+   The page's own tokens live here rather than in tokens.css, because only
+   this page has long-form reading to do.
+   ===================================================================== */
+
+:root {
+  /* A touch more contrast than the card's --ink (#3d3a36). The card holds
+     six lines of type; this page holds a few thousand words, and the
+     difference tells at length. */
+  --ink-read: #332f2a;
+
+  /* The reading measure. Long-form prose gets the narrow one; the
+     schedule and the Q&A, which have material either side of the thread,
+     get the wide one. */
+  --measure: 34rem;
+  --measure-wide: 62rem;
+
+  /* The vertical rhythm every section is spaced by. */
+  --step: clamp(3.5rem, 7vw, 6.5rem);
+}
+
+html {
+  /* The nav is sticky, so anchor jumps must clear it. */
+  scroll-padding-top: 5.5rem;
+}
+
+body {
+  min-height: 100%;
+  color: var(--ink-read);
+  /* FLAT, and it has to stay flat.
+
+     A soft two-colour wash was tried here first and had to go. Wherever
+     the thread would otherwise run through a line of type, that element
+     paints a small patch of paper over it so the line passes behind the
+     words. Those patches are var(--ivory) — so the moment the page
+     behind them is a gradient rather than that exact colour, every one
+     of them shows up as a pale rectangle floating behind the headings.
+     Flat paper is what makes the whole occlusion trick invisible. */
+  background: var(--ivory);
+}
+
+/* Type defaults for a page that is mostly reading. */
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 400; }
+p { margin: 0; }
+a { color: inherit; }
+
+/* One focus style for the whole page. The save-the-date could get away
+   with a bespoke ring on its single control; here there are dozens of
+   links and buttons, and they should all look the same when tabbed to. */
+:where(a, button, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--thread);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* =====================================================================
+   PAGE INFRASTRUCTURE — global on purpose.
+
+   Everything else on this page is a CSS Module scoped to one component.
+   These three are not, because they are cross-cutting: the thread has to
+   line up across every section, the wrapper has to agree with the thread
+   about where the middle is, and the reveal is driven by one observer
+   that queries the document. Scoping them per-component would mean
+   copying the same numbers into eight files and hoping they stay equal.
+   ===================================================================== */
+
+:root {
+  /* WHERE THE THREAD IS. One variable — sections draw it, and components
+     position knots and columns against it. Move this and the whole page
+     re-aligns.
+
+     Down the middle on a wide screen, where it can separate Ashley's
+     answers from Victor's. Near the left edge on a phone, where there
+     isn't room for two columns and everything stacks beside it. */
+  --thread-x: 50%;
+  --gutter: clamp(1.25rem, 4vw, 2rem);
+}
+
+@media (max-width: 62rem) {
+  :root { --thread-x: 1.4rem; }
+}
+
+/* ---- The thread itself ----
+   Drawn per SECTION rather than once for the page: sections butt up
+   against each other with no margin between them, so the segments join
+   into one continuous line, and any section that shouldn't carry it
+   simply doesn't ask for it (the footer, which is where it ends). */
+[data-thread] { position: relative; }
+
+[data-thread]::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  left: var(--thread-x);
+  width: 1px;
+  transform: translateX(-0.5px);
+  background: var(--thread-soft);
+}
+
+/* The Q&A is the section the thread exists for — it's the line between
+   the two of them there, so it carries more weight. */
+[data-thread="strong"]::before { background: var(--thread); opacity: 0.45; }
+
+/* THE THREAD GOES BEHIND THE CONTENT, and this one line is what puts it
+   there. The thread is an absolutely-positioned pseudo-element, which
+   paints above the backgrounds of ordinary in-flow blocks — so without
+   this it drew a red line straight across the travel cards and through
+   the middle of the gift paragraph. Making the wrapper positioned puts
+   the content later in the same paint layer, so anything carrying paper
+   occludes the thread and anything transparent lets it through. */
+[data-thread] > .wrap { position: relative; }
+
+/* ---- The content wrapper ----
+   Its centre IS the thread's position, which is why the two live
+   together. On a phone the thread moves to the left edge, so the
+   wrapper's left padding has to clear it. */
+.wrap {
+  max-width: var(--measure-wide);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@media (max-width: 62rem) {
+  .wrap { padding-left: calc(var(--thread-x) + 1.35rem); padding-right: var(--gutter); }
+}
+
+/* ---- Scroll reveal ----
+   Deliberately small: 12px and a fade. The page has one orchestrated
+   moment (the knot tying itself in the hero) and this is not it. */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.7s var(--ease-soft), transform 0.7s var(--ease-soft);
+}
+[data-reveal][data-shown] { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1; transform: none; }
+}
