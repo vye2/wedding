@@ -1,0 +1,69 @@
+/* ============================ OPENER (full screen) ============================
+   Holds the full-bleed envelope. The envelope is deliberately oversized so its
+   body covers the whole viewport — on a phone that means a deep zoom into the
+   middle of the envelope; the flap swings up out of view and is clipped. */
+
+.opener {
+  position: relative; z-index: 2;
+  height: 100vh; height: 100dvh;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;   /* clip the flap swing + the slide-away to the screen */
+
+  /* Hold the scene back until the backdrop has actually decoded, so the envelope
+     and the florals arrive together instead of the envelope landing on blank
+     ivory while the picture is still downloading. useLetterFit re-measures on the
+     way through, so the card is never seen at the wrong scale.
+     There's a timeout behind the gate — a slow or failed image can't leave the
+     page empty — see useSceneReady. */
+  opacity: 0;
+  transition: opacity var(--dur-fade) var(--ease-soft);
+}
+.opener[data-ready='true'] { opacity: 1; }
+
+/* ---- Skip link ---- */
+.skipLink {
+  position: absolute; left: 0.75rem; top: -3.5rem; z-index: 200;
+  background: var(--sage-600); color: var(--white);
+  padding: 0.6rem 1rem; border-radius: 10px; font-weight: 600; text-decoration: none;
+  transition: top 0.2s var(--ease);
+}
+.skipLink:focus { top: 0.75rem; }
+
+/* ---- Hint ---- */
+.hint {
+  position: absolute; left: 0; right: 0; bottom: clamp(2.5%, 3.5vh, 4.5%); z-index: 20;
+  margin: 0; text-align: center;
+}
+.hint[data-hidden='true'] { opacity: 0; transition: opacity 0.4s var(--ease); }
+
+.hintText {
+  font-family: var(--font-body); font-size: 0.74rem; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--sage-700);
+  animation: breathe 2.8s var(--ease-soft) infinite;
+}
+.hintText::before,
+.hintText::after { content: "·"; margin: 0 0.7em; color: var(--blush-400); }
+
+@keyframes breathe { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+
+/* ============================ PHONES (PORTRAIT) ============================
+   KEEP THIS BLOCK LAST — after every rule it overrides.
+
+   "Tap to open" sits ON the envelope here, since the envelope covers the screen.
+   Both values come from :root in tokens.css — see the note there. Landscape is
+   untouched: the hint sits below the envelope on cream, where the base sage is
+   right. */
+@media (orientation: portrait) {
+  .hintText {
+    color: var(--hint-on-env);
+    text-shadow: 0 1px 3px var(--hint-on-env-halo), 0 0 9px var(--hint-on-env-halo);
+  }
+}
+
+/* ============================ REDUCED MOTION ============================
+   The blanket rule in tokens.css collapses durations to 0.001ms, which would
+   leave this infinite animation looping forever at no duration. Stop it instead,
+   and hold the hint at a legible opacity. */
+@media (prefers-reduced-motion: reduce) {
+  .hintText { animation: none; opacity: 0.85; }
+}

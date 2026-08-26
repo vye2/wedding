@@ -1,0 +1,122 @@
+/* =====================================================================
+   Victor & Ashley — Save the Date: the global layer.
+
+   Everything here is deliberately NOT a CSS Module: the palette has to be
+   inheritable by every component, and the page chrome (html, body, the
+   floral backdrop) has no component to belong to. Component styling lives
+   in *.module.css next to the component that owns it.
+
+   The palette mirrors the LOCKED sage + blush theme in css/styles.css.
+   Keep the two in step; don't introduce new colours here.
+   ===================================================================== */
+
+:root {
+  /* Sage greens */
+  --sage-50:  #f3f6f0;
+  --sage-100: #e6ece0;
+  --sage-200: #cdd9c2;
+  --sage-300: #b2c2a8;
+  --sage-400: #9caf88;   /* primary sage */
+  --sage-500: #7f9468;
+  --sage-600: #6a7f54;
+  --sage-700: #50633f;
+
+  /* Blush / pink */
+  --blush-50:  #fdf3f4;
+  --blush-100: #fce4e8;
+  --blush-200: #f8cdd4;
+  --blush-300: #f1b0bb;
+  --blush-400: #e79aa8;  /* primary blush */
+  --blush-500: #d9879a;
+
+  /* Neutrals + metallic */
+  --ivory: #faf7f2;
+  --cream: #f5efe6;
+  --ink:   #3d3a36;
+  --muted: #6f6a62;
+  --line:  #e7e0d6;
+  --white: #ffffff;
+  --gold:  #c9a96a;
+
+  /* Envelope paper tones — soft off-white */
+  --paper:      #f2ece1;
+  --paper-flap: #efe8db;
+  --paper-deep: #e6ddcb;
+  /* The card stock — also the polaroid border around the photo */
+  --paper-letter: #f8f3ea;
+
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-script: 'Great Vibes', 'Cormorant Garamond', cursive;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ---- THE ONE KNOB TO TURN WHEN THE ENVELOPE IS RECOLOURED ----
+     On phones the envelope covers the screen, so "tap to open" sits ON it and
+     has to contrast with the ARTWORK, not with the page. No single value can do
+     that: ink reads 8.9:1 on a near-white envelope and 1.4:1 on a near-black one,
+     and white is the reverse. It was tuned in place four times chasing that, so
+     it now lives here — set the pair to suit the envelope's lightness, dark text
+     with a pale halo for a light envelope, the reverse for a dark one. */
+  --hint-on-env:      var(--ink);                     /* current envelope is light */
+  --hint-on-env-halo: rgba(255, 255, 255, 0.9);
+}
+
+/* NOTE ON --dur-*: the reveal's durations (--dur-flap, --dur-slide,
+   --dur-grow, --dur-fade) are NOT declared here. They come from
+   app/src/timings.ts, which App writes onto the scene root as inline
+   custom properties — one source of truth shared by the stylesheets and
+   the JavaScript that waits on them. Every component is a descendant of
+   that root, so they inherit. Don't add fallbacks for them in component
+   CSS; a fallback is a second copy of the number. */
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  height: 100vh; height: 100dvh;
+  font-family: var(--font-body);
+  color: var(--ink);
+  line-height: 1.6;
+  overflow: hidden;          /* one fixed screen — nothing scrolls */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* The backdrop: a sunlit floral frame — roses, eucalyptus and fern around an
+     open cream centre, which is exactly where the envelope and letter sit. The
+     ivory keeps the page on-palette while the image loads; the plain url() is a
+     fallback for browsers without image-set().
+
+     The paths are ABSOLUTE, not relative: this file is bundled into
+     /assets/std/, one directory deeper than the old css/ folder, and the
+     artwork it points at hasn't moved. Absolute also means the URL that
+     useSceneReady reads back off the computed style is directly usable.
+
+     The ?v= is a cache buster on the IMAGE itself — bump it whenever
+     bg-floral is re-exported, or browsers keep serving the previous
+     picture from cache even though the file on disk changed. */
+  background-color: var(--ivory);
+  background-image: url(/assets/bg-floral.jpg?v=4);
+  background-image: image-set(
+    url(/assets/bg-floral.webp?v=4) type("image/webp"),
+    url(/assets/bg-floral.jpg?v=4)  type("image/jpeg"));
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#root { height: 100%; }
+
+/* ============================ REDUCED MOTION ============================
+   The blanket rule. Components that run an INFINITE animation (the
+   envelope's sheen, the breathing hint) switch it off properly in their
+   own stylesheet — collapsing an infinite animation to 0.001ms rather
+   than stopping it leaves the browser looping it forever at no duration. */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+  }
+}

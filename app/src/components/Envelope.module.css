@@ -1,0 +1,160 @@
+/* =====================================================================
+   THE ENVELOPE — three layered pieces the couple made: a solid back, a
+   front pocket, and a flap, all sharing one 938×1048 coordinate space so
+   they stack exactly. The letter is sandwiched between back and front.
+   ===================================================================== */
+
+/* SIZE. The canvas reserves the top ~43.4% for the open flap, so the envelope
+   BODY is the bottom 56.6% of the canvas — body height = width × (1048/938) ×
+   0.566 ≈ width × 0.632. The width below is the dial: it's set so the body nests
+   inside the open centre of the floral backdrop, with the wreath framing it,
+   rather than covering the whole screen. Height binds on a monitor (74vh puts the
+   body at ~47% of the screen height); 72vw stops it crowding a wide-short window.
+   The flap still swings up past the top edge as it opens, which is intended. */
+.stage {
+  position: relative; z-index: 1;
+  width: min(72vw, 74vh);
+  aspect-ratio: 938 / 1048;
+  flex-shrink: 0;
+  perspective: 1600px;
+  /* The flap headroom means the body's centre sits at ~71.5% of the box. Lift by
+     ~21.5% so that BODY — and the letter revealed in it — lands screen-centre. */
+  transform: translateY(-21.5%);
+}
+/* The phone override for .stage lives in the portrait block at the END of this
+   file — see the note there about why it has to sit last. */
+
+.back, .front, .flap {
+  position: absolute; inset: 0;
+  background-repeat: no-repeat; background-position: center; background-size: 100% 100%;
+}
+
+/* The base piece (the envelope with its flap missing) carries a slight shadow, so
+   the envelope lifts off the floral backdrop instead of sitting flat on it.
+   drop-shadow (not box-shadow) because it traces the image's ALPHA — the true
+   envelope silhouette — where box-shadow would outline the whole transparent
+   938×1048 canvas as a rectangle. Safe here even though the flap hinges in 3D: a
+   filter only flattens an element's own children, and this piece has none. Never
+   move it up to .stage, which owns the perspective. */
+.back {
+  z-index: 1;
+  background-image: image-set(
+    url(/assets/env-back.webp?v=11) type("image/webp"),
+    url(/assets/env-back.png?v=11)  type("image/png"));
+  filter: drop-shadow(0 7px 14px rgba(84, 64, 58, 0.26));
+}
+
+.front {
+  z-index: 3;
+  background-image: image-set(
+    url(/assets/env-front.webp?v=11) type("image/webp"),
+    url(/assets/env-front.png?v=11)  type("image/png"));
+}
+
+/* The flap is authored in the OPEN (up) position; flipped down about its hinge
+   (y≈43.4% of the piece) it covers the pocket = closed. One image, both faces. */
+.flap {
+  z-index: 4;
+  background-image: image-set(
+    url(/assets/env-flap.webp?v=11) type("image/webp"),
+    url(/assets/env-flap.png?v=11)  type("image/png"));
+  transform-origin: 50% 43.4%;
+  /* The translateY is identity here, but it keeps the function list the same in
+     all three states (closed / open / sliding) so each transition interpolates
+     component-wise rather than through matrix decomposition — which is what a
+     180° 3D rotation needs to swing the right way. */
+  transform: translateY(0) rotateX(180deg);
+  backface-visibility: visible;
+  transition: transform var(--dur-flap) var(--ease-soft);
+  /* A shadow under the flap's V, where it overlaps the envelope front — and none
+     along its straight edge, which is flush with the envelope's own top edge.
+
+     Both fall out of ONE offset, because drop-shadow traces the image's alpha and
+     hides whatever the shape itself covers. The image is a triangle with its apex
+     at the top and a horizontal base at the hinge (verified against the alpha
+     channel), so an offset AWAY from the base leaves the shadow visible along the
+     two diagonals and tucked out of sight behind the straight edge.
+
+     The offset is negative because the closed flap is rotateX(180deg): the filter
+     is painted in the element's own space and then flipped with it, so local "up"
+     lands as "down" on screen — a shadow cast downward off the V, as it should be.
+
+     Safe with the 3D hinge: a filter only flattens an element's own children, and
+     this has none. It is the PERSPECTIVE element (.stage) that must never carry
+     one — that was the bug that made the flap slide instead of rotating. */
+  filter: drop-shadow(0 -6px 9px rgba(84, 64, 58, 0.15));   /* half strength */
+}
+
+/* ---- OPEN: the flap hinges up about its origin. ---- */
+.stage[data-open='true'] .flap { transform: translateY(0) rotateX(0deg); }
+
+/* ---- SLIDING: the envelope pieces slide straight down and off, exposing
+   the letter — which stays exactly where it was. ---- */
+.stage[data-sliding='true'] .back,
+.stage[data-sliding='true'] .front {
+  transition: transform var(--dur-slide) var(--ease-soft);
+  transform: translateY(128vh);
+}
+
+/* The open flap slides down with them — one envelope leaving the frame together,
+   never a fade. It drops to the BACK of the stack first so it passes behind the
+   letter on the way down instead of wiping across its face (which is also where
+   an open flap physically sits: folded up behind the card).
+
+   Two attribute selectors out-specify the plain `[data-open]` rule above, which
+   is what keeps the flap from snapping back to its open transform mid-slide. */
+.stage[data-open='true'][data-sliding='true'] .flap {
+  transition: transform var(--dur-slide) var(--ease-soft);
+  transform: translateY(128vh) rotateX(0deg);
+  z-index: 0;
+}
+
+/* ---- Soft luminous sheen on the closed envelope — a gentle 'open here' cue. ---- */
+.glow {
+  position: absolute; z-index: 5; left: 50%; top: 60%;
+  width: 46%; aspect-ratio: 1.6; transform: translate(-50%, -50%);
+  border-radius: 50%; pointer-events: none; mix-blend-mode: soft-light;
+  background: radial-gradient(closest-side, rgba(255,252,246,0.95), rgba(255,252,246,0.25) 48%, transparent 72%);
+  filter: blur(8px);
+  animation: pulse 3.4s var(--ease-soft) infinite;
+}
+.stage[data-open='true'] .glow { opacity: 0; transition: opacity 0.4s var(--ease); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.35; transform: translate(-50%, -50%) scale(0.92); }
+  50%      { opacity: 0.85; transform: translate(-50%, -50%) scale(1.06); }
+}
+
+/* ---- Transparent control over the whole envelope (keyboard + screen-reader
+   entry point). It carries no visual of its own; the glow and the hint are
+   what invite the tap. ---- */
+.openBtn {
+  position: absolute; inset: 0; z-index: 5;
+  padding: 0; border: 0; background: none; cursor: pointer; border-radius: 10px;
+}
+.openBtn:focus-visible { outline: 3px solid var(--sage-500); outline-offset: 10px; }
+
+/* ============================ PHONES (PORTRAIT) ============================
+   KEEP THIS BLOCK LAST — after every rule it overrides. A media query adds no
+   specificity, so these tie with the base rules and are decided by source order.
+
+   THE ENVELOPE COVERS THE SCREEN here rather than sitting small inside the
+   backdrop. A landscape envelope can't fill a tall screen while staying whole,
+   so it's sized to cover: the body must be at least as wide as the screen AND
+   at least as tall —
+       width ≥ 100vw   and   0.632 × width ≥ 100vh  →  width ≥ 158vh
+   which on a phone resolves to the height term and leaves roughly the middle
+   third of the envelope on screen: the seam of the V, and the inner tips of the
+   floral sprays at the lower corners. The extra 1% is slack for rounding.
+   The backdrop is deliberately hidden behind it until the envelope slides away. */
+@media (orientation: portrait) {
+  .stage { width: max(101vw, 160vh); }
+}
+
+/* ============================ REDUCED MOTION ============================
+   The global rule in tokens.css collapses every duration to 0.001ms, which is
+   right for one-shot transitions and wrong for an INFINITE animation — that just
+   loops it forever at no duration. So the sheen is switched off outright. */
+@media (prefers-reduced-motion: reduce) {
+  .glow { animation: none; }
+}

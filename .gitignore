@@ -1,3 +1,10 @@
+# React toolchain for the save-the-date (see app/). The BUILD OUTPUT is
+# committed on purpose — GitHub Pages serves this repo's root directly, so
+# save-the-date.html and assets/std/ have to be in the tree. dist/ is only
+# the staging area scripts/postbuild.mjs copies out of.
+node_modules/
+dist/
+
 # Build scaffolding / internal tooling — keep the public site repo clean
 headless_build.log
 headless_prompt.txt

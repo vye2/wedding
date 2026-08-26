@@ -1,0 +1,254 @@
+/* =====================================================================
+   THE LETTER — sandwiched between the envelope's back (z1) and front
+   pocket (z3). Hidden inside the pocket while sealed; once the envelope
+   slides away it is the whole screen.
+
+   Everything on the card is sized in cqw against the card's OWN width
+   (container-type: inline-size below), so the whole composition scales as
+   one object whether the card is 390px wide on a phone or 620px on a
+   monitor.
+   ===================================================================== */
+
+.card {
+  position: absolute; z-index: 2;
+  /* Centred on the pocket centre (71.5% of the tall stage) via
+     translate(-50%,-50%) — so its reveal lands in the middle of the
+     screen at any size, and it stays hidden behind the flap when closed
+     regardless of its height. */
+  left: 50%; top: 71.5%;
+  /* Scaled down to hide inside the pocket while sandwiched; --fit is
+     measured by useLetterFit, then it grows to full size as the envelope
+     slides away.
+     The FALLBACK matters: it's what applies for the instant before the
+     measurement lands, and 0.66 was large enough that the card poked out
+     past the sealed envelope. 0.42 is smaller than any real measurement,
+     so it can never leak. */
+  transform: translate(-50%, -50%) translateY(0) scale(var(--fit, 0.42));
+  transition: transform var(--dur-grow) var(--ease-soft);
+  /* Full (revealed) size — kept just under the envelope's body width, so it reads
+     as the card that came OUT of that envelope rather than something larger than
+     it, and so it still nests inside the floral frame's open centre. Track this
+     against the .stage width in Envelope.module.css if either changes.
+     NOTE: percentage widths would resolve against the stage, not the viewport,
+     so the cap must be in viewport units. */
+  width: min(76vw, 63vh);
+  container-type: inline-size;
+  /* A CLEAN POLAROID, not torn stationery: flat stock, square-ish corners, and a
+     plain drop shadow. (The old look was a deckle edge — a copy of the card behind
+     itself, pushed through an SVG turbulence filter to fray its outline.) */
+  border-radius: 3px;
+  background: var(--paper-letter);
+  /* Shadow on EVERY side: the first layer has no offset, so it spreads evenly
+     around the top and sides; the second is offset down to keep the card grounded
+     rather than floating. */
+  box-shadow:
+    0 0 3.2cqw rgba(66, 52, 46, 0.26),
+    0 1.4cqw 3.4cqw -0.8cqw rgba(66, 52, 46, 0.34),
+    0 0 0 1px rgba(90, 70, 60, 0.06);
+}
+
+/* The card grows to full size as the envelope drops away — it's already
+   centred on screen (the stage lifts the pocket to centre), so no extra
+   rise is needed.
+
+   The function list matches the sealed state exactly, translateY(0) and
+   all, so the transition interpolates component-wise instead of going
+   through matrix decomposition. */
+.card[data-revealed='true'] {
+  transform: translate(-50%, -50%) translateY(0) scale(1);
+}
+
+/* The card is focused programmatically for screen readers on reveal — no ring. */
+.card:focus { outline: none; }
+
+.content {
+  display: flex; flex-direction: column; align-items: center;
+  /* The 4cqw top matches the photo's other three margins, so the picture
+     sits in an even band of stock on all sides. */
+  text-align: center; padding: 4cqw 6cqw 5cqw;
+  border-radius: 0 0 3px 3px;
+}
+
+/* THE PORTRAIT: the hero. It runs the card's full width across the top at
+   77cqw tall — about TWO THIRDS of the card's height, since the content
+   block below sums to ~38cqw (77 + 38, so the photo is 2/3 of 115).
+   Retune this if you retune the type below, or the ratio drifts. */
+.photo {
+  position: relative; flex: none;
+  /* The polaroid margin — an even band of stock above and beside the
+     picture. The bottom margin comes from .content's padding, so the gap
+     below the photo matches; the wider run of stock under it is the text
+     block. */
+  margin: 4cqw 4cqw 0;
+  height: 77cqw;
+  border-radius: 1px; overflow: hidden;
+}
+
+.photoMedia {
+  display: block; position: absolute; inset: 0;
+  background: linear-gradient(150deg, #f7e9ec, #eef0e6 55%, #e6ecdd);   /* while it loads */
+}
+
+.photoImg {
+  display: block; width: 100%; height: 100%; object-fit: cover;
+  /* The frame is wider than the square photo, so it shows a horizontal band of it.
+     Biased low so the hands and the ring land above the dissolving edge rather
+     than in it — raise this number to show more of the photo's lower half. */
+  object-position: center 78%;
+}
+
+/* "Save the Date" is set ACROSS the photo — white, and the same size as the names,
+   so the two of them carry the card together. Centred on the frame, which also
+   keeps it in the solid part of the picture (the dissolve only starts at 92%).
+
+   text-align is set explicitly: this lives in .photo, a SIBLING of .content, so it
+   never inherits that block's centring.
+
+   Tracking eases off to 0.3em — at this size the wide letter-spacing a smaller
+   version would use runs the line past the edges of the card. */
+.eyebrow {
+  /* Sits at the FOOT of the picture — translateY(-100%) hangs the line upward
+     from the 93% mark, so its block ends an even margin above the photo's bottom
+     edge however large the type gets. */
+  position: absolute; left: 0; right: 0; top: 93%; z-index: 1;
+  transform: translateY(-100%);
+  margin: 0; text-align: center;
+  /* Light weight, for a finer, daintier line than the rest of the card's serif.
+     Cormorant's 300 is genuinely thin at display size, which is the point. */
+  font-family: var(--font-display); font-weight: 300;
+  font-size: 6cqw; letter-spacing: 0.3em; text-indent: 0.3em;
+  text-transform: uppercase; color: #fff;
+  /* Two shadows: a tight one to keep the thin strokes crisp against busy pixels,
+     a wide soft one to hold the whole line against a light frame. */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0.2cqw 1.6cqw rgba(0, 0, 0, 0.5);
+}
+
+.names {
+  margin: 0; font-family: var(--font-script); font-weight: 400;
+  font-size: 6cqw; line-height: 1.02; color: var(--ink);
+}
+.amp { color: var(--ink); padding: 0 0.03em; }   /* same ink as the names */
+
+/* A hairline gold rule with a small centre diamond. */
+.rule {
+  display: flex; align-items: center; justify-content: center;
+  gap: 1.6cqw; width: 44%; margin: 2cqw auto;
+}
+.rule i { flex: 1; height: 1px; background: linear-gradient(to right, transparent, #cbb27e); }
+.rule i + i { background: linear-gradient(to left, transparent, #cbb27e); }
+.rule span { flex: none; width: 5px; height: 5px; transform: rotate(45deg); background: #b0894a; }
+
+.date {
+  margin: 0; font-family: var(--font-display); font-weight: 500; font-size: 4.6cqw; line-height: 1;
+  color: var(--ink); letter-spacing: 0.005em;
+}
+.date sup { font-size: 0.5em; vertical-align: 0.72em; margin: 0 0.02em 0 0.04em; letter-spacing: 0; }
+
+.follow {
+  margin: 2.2cqw 0 0; font-family: var(--font-display); font-style: italic;
+  font-size: 2.7cqw; color: var(--sage-700); letter-spacing: 0.01em;   /* matches the countdown */
+}
+
+/* ============================ PHONES (PORTRAIT) ============================
+   KEEP THIS BLOCK LAST — after every rule it overrides.
+
+   A media query adds NO specificity, so `.card` in here and `.card` up above
+   tie, and ties are broken by source order. When this block sat earlier it
+   silently lost width, border-radius, the photo's flex sizing and
+   object-position to the base rules, while height and display — which the base
+   rules don't set — still applied. That mix is what produced a card filling the
+   screen vertically but inset at the sides.
+
+   (Splitting the old single stylesheet per component makes this easier to hold
+   on to, not harder: each file's ordering is now self-contained, so the rule is
+   simply "portrait block last, in every module".)
+
+   THE CARD IS THE VIEWPORT here. Edge to edge, corners squared off, so no
+   backdrop shows around it at all. Its height is pinned rather than left to the
+   content, and the photo takes whatever the text block doesn't — so the card
+   matches the screen exactly however the type reflows, with the picture
+   absorbing the difference rather than the total drifting.
+
+   dvh as well as vh: on a phone the toolbars come and go, and vh alone would
+   leave a strip of backdrop showing when they retract.
+
+   The polaroid border carries over from the base rule — a band of stock above
+   and beside the photo, with the text block as the wider margin below. That's
+   the card's own frame, not a margin around it. */
+@media (orientation: portrait) {
+  .card {
+    width: 100vw; height: 100vh; height: 100dvh;
+    border-radius: 0;
+    display: flex; flex-direction: column;
+  }
+
+  /* No border, and no height cap — the picture runs to all three edges of the
+     card and takes every pixel the text block doesn't, melting into the stock at
+     its foot rather than stopping on a line. */
+  .photo {
+    flex: 1; height: auto; min-height: 0;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  /* The image layer is MASKED here so its lower edge dissolves into the paper
+     instead of ending on a hard seam. A mask rather than an overlay gradient, so
+     it fades to whatever is actually behind it — no colour to keep in sync with
+     the stock.
+
+     The dissolve is short and low, since the title sits near the foot of the
+     frame — a longer one would climb into the type and wash the white out. */
+  .photoMedia {
+    -webkit-mask-image: linear-gradient(to bottom, #000 92%, rgba(0, 0, 0, 0) 100%);
+            mask-image: linear-gradient(to bottom, #000 92%, rgba(0, 0, 0, 0) 100%);
+  }
+
+  /* The text block takes only what it needs; the photo has the rest. It doesn't
+     shrink, so the picture yields if the type ever needs more room.
+     The card runs into the bottom edge, so keep the last line clear of a phone's
+     home indicator. */
+  .content {
+    flex: 0 0 auto;
+    padding-bottom: calc(5cqw + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* The frame is much narrower than the 3:4 photo, so here it's the SIDES that
+     get cropped, not the top and bottom — the vertical bias used on desktop
+     would do nothing, and centred keeps the clasped hands in the middle. */
+  .photoImg { object-position: center center; }
+
+  /* THE TITLE STACKS — SAVE / the / DATE — with the two key words carrying it and
+     "the" reduced to a hinge between them. Its foot sits right down at 90% of
+     the frame, still clear of the dissolve at 92% so the white type always lands
+     on solid picture rather than fading out with it.
+
+     The three lines are set very tight: 0.75 line-height on the display words
+     and 0.95 on the small one, with no margins, so the stack reads as a single
+     block. That's below the type's own cap height, which only works because
+     these are all caps — nothing descends into the line beneath. The line boxes
+     overlap slightly; the glyphs still clear each other by a few pixels.
+
+     The parent's tracking and indent are cleared; each line sets its own, since
+     they need very different amounts at these sizes. */
+  .eyebrow {
+    top: 90%;
+    letter-spacing: normal; text-indent: 0;
+  }
+  .eyebrowKey {
+    display: block; font-size: 20cqw; line-height: 0.75;
+    letter-spacing: 0.1em; text-indent: 0.1em;   /* indent offsets the trailing space, keeping it centred */
+  }
+  .eyebrowMid {
+    display: block; font-size: 4.8cqw; line-height: 0.95;
+    letter-spacing: 0.42em; text-indent: 0.42em;
+    margin: 0;
+  }
+
+  /* TYPE STEPS UP. Every size on the card is relative to the card's WIDTH — and a
+     phone card is ~390px where a monitor's is ~620px, so the scale that reads
+     well on a desktop comes out around a third too small here. The text block
+     takes only what it needs, so there's room to correct it. */
+  .names  { font-size: 9cqw; }
+  .date   { font-size: 6.5cqw; }
+  .follow { font-size: 4cqw; margin-top: 2.2cqw; }
+}

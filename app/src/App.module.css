@@ -1,0 +1,7 @@
+/* The scene root exists only to carry the reveal's durations (see
+   timings.ts) down to every stylesheet that waits on them, and to give
+   the app a single mount point. It is deliberately not a box —
+   display: contents keeps it out of the layout entirely, so the fixed
+   petal field and the full-screen opener sit exactly where they would
+   without it. */
+.scene { display: contents; }

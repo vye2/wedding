@@ -1,0 +1,55 @@
+/* ---- Live countdown: tabular serif numerals, hairline dividers ----
+
+   Everything here is sized in cqw — the container being the letter (see
+   Letter.module.css, which sets container-type: inline-size). So these
+   figures scale with the card, not with the viewport, and a phone card
+   and a desktop card set the same relative type. */
+
+.count {
+  display: flex; align-items: baseline; justify-content: center;
+  gap: 4cqw; margin: 2.2cqw 0 0;
+}
+
+.unit {
+  position: relative; display: flex; flex-direction: column;
+  align-items: center; gap: 0.4cqw;
+}
+
+/* A hairline between columns, sitting halfway into the gap — so it tracks
+   the gap above rather than needing its own tuning. */
+.unit + .unit::before {
+  content: ""; position: absolute; left: -2cqw; top: 6%; height: 66%; width: 1px;
+  background: linear-gradient(var(--sage-200), transparent);
+}
+
+.num {
+  font-family: var(--font-display); font-weight: 500; font-size: 4.2cqw; line-height: 1;
+  color: var(--sage-700);
+  /* Tabular figures, or the whole row shuffles sideways every second as
+     the digits change width. */
+  font-variant-numeric: tabular-nums;
+}
+
+.label {
+  font-family: var(--font-body); font-size: 1.2cqw; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--muted);
+}
+
+.done {
+  margin: 0; font-family: var(--font-display); font-style: italic;
+  font-size: 2.8cqw; color: var(--sage-600);
+}
+
+/* ============================ PHONES (PORTRAIT) ============================
+   KEEP THIS BLOCK LAST — after every rule it overrides. A media query adds
+   NO specificity, so `.num` here and `.num` above tie, and ties are broken
+   by source order.
+
+   TYPE STEPS UP because a phone card is ~390px wide where a monitor's is
+   ~620px, and every size here is relative to that width. */
+@media (orientation: portrait) {
+  .count { gap: 5cqw; margin-top: 2.4cqw; }
+  .num   { font-size: 6cqw; }
+  .label { font-size: 2.2cqw; }
+  .unit + .unit::before { left: -2.5cqw; }
+}
