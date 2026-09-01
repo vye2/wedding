@@ -6,13 +6,19 @@
    the root, at the URL guests already have:
 
        dist/app/index.html    →  save-the-date.html
-       dist/app/home.html     →  index.html
+       dist/app/home.html     →  wedding/index.html
        dist/assets/std/*      →  assets/std/*
 
    (The crossover in those first two names is deliberate. `app/index.html`
    was the save-the-date's source before there was a second page, and
    renaming it would have churned every path for no gain. The OUTPUT
    names are the ones guests see, and those are right.)
+
+   THE MAIN PAGE LIVES AT /wedding, NOT AT THE ROOT. Pages serves a
+   directory's index.html for a bare path, so wedding/index.html is what
+   answers ashleyhuynh.victorye.me/wedding. The root index.html is NOT
+   built — it's a hand-written redirect to /wedding/, committed once and
+   left alone. This script must never overwrite it.
 
    Vite can't emit straight to the root: its outDir is wiped on every
    build, and the root holds the artwork, the git metadata and the pages
@@ -32,7 +38,7 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 /** Built page → where it has to land for Pages to serve it. */
 const PAGES = [
   { from: path.join('dist', 'app', 'index.html'), to: 'save-the-date.html' },
-  { from: path.join('dist', 'app', 'home.html'), to: 'index.html' },
+  { from: path.join('dist', 'app', 'home.html'), to: path.join('wedding', 'index.html') },
 ]
 
 const BUILT_BUNDLE = path.join(repoRoot, 'dist', 'assets', 'std')
@@ -76,6 +82,8 @@ async function main() {
 
   for (const page of PAGES) {
     const html = await readFile(path.join(repoRoot, page.from), 'utf8')
+    // /wedding is a directory now, and it isn't there on a fresh clone.
+    await mkdir(path.dirname(path.join(repoRoot, page.to)), { recursive: true })
     await writeFile(
       path.join(repoRoot, page.to),
       html.replace(/^(<!doctype html>|<!DOCTYPE html>)/, `$1\n${BANNER}`),

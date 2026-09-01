@@ -8,11 +8,16 @@ on the card in the paper invitation.
 source lives in **`app/`**; `npm run build` compiles both pages and puts the
 results back in the repo root, because Pages serves this repo's root directly.
 
-- **`index.html`** — the main page. The schedule, what to wear, getting there, a
-  Q&A with the two of them, and the practical questions.
+- **`wedding/index.html`** — the main page, served at
+  **`ashleyhuynh.victorye.me/wedding`**. The schedule, what to wear, getting
+  there, a Q&A with the two of them, and the practical questions.
 - **`save-the-date.html`** — one non-scrolling screen: an envelope that opens.
 
 Both are **generated**. Edit `app/`, run `npm run build`, commit the output.
+
+The root **`index.html`** is the exception: a hand-written redirect to
+`/wedding/`, so the bare domain still lands somewhere. The build never touches
+it.
 
 > ⚠️ **Placeholder content.** The venues are unnamed, the times are close but
 > unconfirmed, and the Q&A answers are invented — see the warning below before
@@ -48,10 +53,12 @@ Both are **generated**. Edit `app/`, run `npm run build`, commit the output.
 │           ├── home-page.css     # main page chrome + the thread, .wrap and reveal
 │           └── std-page.css      # save-the-date chrome: no-scroll, floral backdrop
 ├── vite.config.ts                # why the artwork isn't build input, and where output lands
-├── scripts/postbuild.mjs         # moves both built pages into the repo root
+├── scripts/postbuild.mjs         # moves both built pages into place
+│
+├── index.html                    # hand-written redirect → /wedding/ (NOT generated)
 │
 │   # ---- BUILD OUTPUT — generated, committed, don't hand-edit ----
-├── index.html                    # ← app/home.html
+├── wedding/index.html            # ← app/home.html   (served at /wedding)
 ├── save-the-date.html            # ← app/index.html
 ├── assets/std/                   # hashed JS + CSS for both pages
 │
@@ -248,7 +255,8 @@ npm run build     # typecheck → vite build → place the output
 That runs `tsc --noEmit`, compiles `app/` into `dist/` (gitignored), and then
 `scripts/postbuild.mjs` moves three things into the repo:
 
-- `dist/app/home.html` → **`index.html`**
+- `dist/app/home.html` → **`wedding/index.html`** — Pages serves a directory's
+  `index.html` for a bare path, so this is what answers `/wedding`
 - `dist/app/index.html` → **`save-the-date.html`**
 - `dist/assets/std/*` → **`assets/std/*`** (replaced wholesale, so old hashed
   files don't pile up)
@@ -282,6 +290,14 @@ them, and the file says so at the top.
 
 The empty **`.nojekyll`** file ensures GitHub Pages serves every file as-is, and
 **`CNAME`** points the site at `ashleyhuynh.victorye.me`.
+
+The published URLs are:
+
+| URL | File |
+| --- | --- |
+| `ashleyhuynh.victorye.me/wedding` | `wedding/index.html` |
+| `ashleyhuynh.victorye.me/save-the-date.html` | `save-the-date.html` |
+| `ashleyhuynh.victorye.me/` | `index.html` — redirects to `/wedding/` |
 
 > **Paths are domain-root-absolute.** Both pages and their stylesheets use
 > `/assets/…`, which needs the site served from a domain root — which the CNAME
